@@ -1,0 +1,2 @@
+5.0.0f4:1.9.8.0
+C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll
