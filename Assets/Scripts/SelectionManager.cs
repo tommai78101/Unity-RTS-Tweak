@@ -36,7 +36,7 @@ public sealed class Dummy {
 				SelectionManager.selectionArea.x += SelectionManager.selectionArea.width;
 				SelectionManager.selectionArea.width *= -1f;
 			}
-			else if (SelectionManager.selectionArea.height < 0) {
+			if (SelectionManager.selectionArea.height < 0) {
 				SelectionManager.selectionArea.y += SelectionManager.selectionArea.height;
 				SelectionManager.selectionArea.height *= -1f;
 			}
@@ -123,8 +123,6 @@ public class SelectionManager : MonoBehaviour {
 				GL.Vertex(this.startingVertex);
 			GL.End();
 			GL.PopMatrix();
-
-			Debug.Log(this.startingVertex.ToString("F6") + "     " + this.endingVertex.ToString("F6"));
 		}
 	}
 }
