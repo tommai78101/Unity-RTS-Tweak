@@ -43,7 +43,7 @@ public sealed class Dummy {
 		}
 	}
 
-	public void onGUI() {
+	private void onGUI() {
 		if (initialClick != -Vector3.one) {
 			//GUI.color = new Color(1, 1, 1, 0.5f);
 			//GUI.DrawTexture(SelectionManager.selectionArea, this.selectionManager.selectionTexture);
@@ -91,10 +91,6 @@ public class SelectionManager : MonoBehaviour {
 		this.dummyObject.update();
 		this.startingVertex = this.dummyObject.getInitialVertex();
 		this.endingVertex = this.dummyObject.getEndingVertex();
-	}
-
-	void OnGUI() {
-		this.dummyObject.onGUI();
 	}
 
 	void OnPostRender() {
