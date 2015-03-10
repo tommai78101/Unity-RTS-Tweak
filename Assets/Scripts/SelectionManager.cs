@@ -2,72 +2,73 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public sealed class Dummy {
-	public static Dummy Instance;
+public class SelectionManager : MonoBehaviour {
+	private sealed class Dummy {
+		public static Dummy Instance;
 
-	private Object lockObject = new Object();
-	private SelectionManager selectionManager;
-	private Vector3 initialClick;
+		private Object lockObject = new Object();
+		private SelectionManager selectionManager;
+		private Vector3 initialClick;
 
-	public Dummy(SelectionManager manager) {
-		if (Instance == null) {
-			lock (lockObject) {
-				if (Instance == null) {
-					this.selectionManager = manager;
-					initialClick = -Vector3.one;
-					Dummy.Instance = this;
+		public Dummy(SelectionManager manager) {
+			if (Instance == null) {
+				lock (lockObject) {
+					if (Instance == null) {
+						this.selectionManager = manager;
+						initialClick = -Vector3.one;
+						Dummy.Instance = this;
+					}
+				}
+			}
+			return;
+		}
+
+		public void update() {
+			if (Input.GetMouseButtonDown(0)) {
+				this.initialClick = Input.mousePosition;
+			}
+			else if (Input.GetMouseButtonUp(0)) {
+				this.initialClick = -Vector3.one;
+			}
+
+			if (Input.GetMouseButton(0)) {
+				SelectionManager.selectionArea.Set(initialClick.x, Screen.height - initialClick.y, Input.mousePosition.x - initialClick.x, (Screen.height - Input.mousePosition.y) - (Screen.height - initialClick.y));
+				if (SelectionManager.selectionArea.width < 0) {
+					SelectionManager.selectionArea.x += SelectionManager.selectionArea.width;
+					SelectionManager.selectionArea.width *= -1f;
+				}
+				if (SelectionManager.selectionArea.height < 0) {
+					SelectionManager.selectionArea.y += SelectionManager.selectionArea.height;
+					SelectionManager.selectionArea.height *= -1f;
 				}
 			}
 		}
-		return;
-	}
 
-	public void update() {
-		if (Input.GetMouseButtonDown(0)) {
-			this.initialClick = Input.mousePosition;
-		}
-		else if (Input.GetMouseButtonUp(0)) {
-			this.initialClick = -Vector3.one;
-		}
-
-		if (Input.GetMouseButton(0)) {
-			SelectionManager.selectionArea.Set(initialClick.x, Screen.height - initialClick.y, Input.mousePosition.x - initialClick.x, (Screen.height - Input.mousePosition.y) - (Screen.height - initialClick.y));
-			if (SelectionManager.selectionArea.width < 0) {
-				SelectionManager.selectionArea.x += SelectionManager.selectionArea.width;
-				SelectionManager.selectionArea.width *= -1f;
-			}
-			if (SelectionManager.selectionArea.height < 0) {
-				SelectionManager.selectionArea.y += SelectionManager.selectionArea.height;
-				SelectionManager.selectionArea.height *= -1f;
+		private void onGUI() {
+			if (initialClick != -Vector3.one) {
+				//GUI.color = new Color(1, 1, 1, 0.5f);
+				//GUI.DrawTexture(SelectionManager.selectionArea, this.selectionManager.selectionTexture);
 			}
 		}
-	}
 
-	private void onGUI() {
-		if (initialClick != -Vector3.one) {
-			//GUI.color = new Color(1, 1, 1, 0.5f);
-			//GUI.DrawTexture(SelectionManager.selectionArea, this.selectionManager.selectionTexture);
+		public Vector3 getInitialVertex() {
+			float x = Input.mousePosition.x < this.initialClick.x ? Input.mousePosition.x : this.initialClick.x;
+			float y = Input.mousePosition.y < this.initialClick.y ? Input.mousePosition.y : this.initialClick.y;
+			x /= Screen.width;
+			y /= Screen.height;
+			return new Vector3(x, y, 0f);
+		}
+
+		public Vector3 getEndingVertex() {
+			float x = Input.mousePosition.x < this.initialClick.x ? this.initialClick.x : Input.mousePosition.x;
+			float y = Input.mousePosition.y < this.initialClick.y ? this.initialClick.y : Input.mousePosition.y;
+			x /= Screen.width;
+			y /= Screen.height;
+			return new Vector3(x, y, 0f);
 		}
 	}
 
-	public Vector3 getInitialVertex() {
-		float x = Input.mousePosition.x < this.initialClick.x ? Input.mousePosition.x : this.initialClick.x;
-		float y = Input.mousePosition.y < this.initialClick.y ? Input.mousePosition.y : this.initialClick.y;
-		x /= Screen.width;
-		y /= Screen.height;
-		return new Vector3(x, y, 0f);
-	}
 
-	public Vector3 getEndingVertex() {
-		float x = Input.mousePosition.x < this.initialClick.x ? this.initialClick.x : Input.mousePosition.x;
-		float y = Input.mousePosition.y < this.initialClick.y ? this.initialClick.y : Input.mousePosition.y;
-		x /= Screen.width;
-		y /= Screen.height;
-		return new Vector3(x, y, 0f);
-	}
-}
-
-public class SelectionManager : MonoBehaviour {
 	public static Rect selectionArea = new Rect();
 
 	public Texture2D selectionTexture;

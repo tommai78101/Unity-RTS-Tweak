@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\CameraPanning.cs" />
      <Compile Include="Assets\Scripts\Division.cs" />
      <Compile Include="Assets\Scripts\FollowPlayer.cs" />
+     <Compile Include="Assets\Scripts\Mergeable.cs" />
      <Compile Include="Assets\Scripts\PlayerNavMeshAgent.cs" />
      <Compile Include="Assets\Scripts\Selectable.cs" />
      <Compile Include="Assets\Scripts\SelectionManager.cs" />
