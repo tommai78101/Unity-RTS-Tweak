@@ -4,11 +4,12 @@ using System.Collections;
 
 public class Division : MonoBehaviour {
 
-	static long id;
+	public static long id;
 
 	public GameObject target;
 	
 	bool InstantiateCompleteFlag;
+	bool CannotDivideFlag;
 
 	// Use this for initialization
 	void Start () {
@@ -26,10 +27,11 @@ public class Division : MonoBehaviour {
 				GameObject newObject = null;
 
 				if (!InstantiateCompleteFlag){
-					newObject = (GameObject) Instantiate(target);
-					newObject.name = "Player " + id++;
-					agent = newObject.GetComponent<NavMeshAgent>();
-					
+					if (!this.CannotDivideFlag) {
+						newObject = (GameObject) Instantiate(target);
+						newObject.name = "Player " + id++;
+						agent = newObject.GetComponent<NavMeshAgent>();
+					}
 					InstantiateCompleteFlag = true;
 				}
 				 
@@ -52,14 +54,16 @@ public class Division : MonoBehaviour {
 	}
 	
 	IEnumerator Wait(GameObject obj){
-		Debug.Log("Waiting 5 secs - " + obj.name);
 		yield return new WaitForSeconds(5f);
 		Division div = obj.GetComponent<Division>();
 		div.setInstantiateFlag(false);
-		Debug.Log("Set flag to false. " + obj.name);
 	}
 	
 	public void setInstantiateFlag(bool value){
 		this.InstantiateCompleteFlag = value;
+	}
+
+	public void SetCannotDivideFlag() {
+		this.CannotDivideFlag = true;
 	}
 }

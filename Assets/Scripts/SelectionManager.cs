@@ -7,14 +7,12 @@ public class SelectionManager : MonoBehaviour {
 		public static Dummy Instance;
 
 		private Object lockObject = new Object();
-		private SelectionManager selectionManager;
 		private Vector3 initialClick;
 
-		public Dummy(SelectionManager manager) {
+		public Dummy() {
 			if (Instance == null) {
 				lock (lockObject) {
 					if (Instance == null) {
-						this.selectionManager = manager;
 						initialClick = -Vector3.one;
 						Dummy.Instance = this;
 					}
@@ -68,7 +66,6 @@ public class SelectionManager : MonoBehaviour {
 		}
 	}
 
-
 	public static Rect selectionArea = new Rect();
 
 	public Texture2D selectionTexture;
@@ -84,7 +81,7 @@ public class SelectionManager : MonoBehaviour {
 	void Start() {
 		this.startingVertex = this.endingVertex = -Vector3.one;
 		this.borderColor = new Color(1f, 128f / 255f, 1f, 1f);
-		this.dummyObject = new Dummy(this);
+		this.dummyObject = new Dummy();
 	}
 
 	// Update is called once per frame
