@@ -9,17 +9,14 @@ public class Mergeable : MonoBehaviour {
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.M)) {
 			Mergeable.mergeFlag = true;
-			Debug.Log("Merge Flag enabled.");
 		}
 		else {
 			Mergeable.mergeFlag = false;
-			Debug.Log("Merge Flag disabled.");
 		}
 
 		if (Mergeable.mergeFlag) {
 			List<Selectable> objects = Selectable.selectedObjects;
 			if (objects.Count == 2) {
-				Debug.Log("Merge object count: " + objects.Count);
 				Mergeable mergeObject = objects[objects.Count - 1].GetComponent<Mergeable>();
 				if (mergeObject != null) {
 					Merge(mergeObject);
@@ -35,25 +32,17 @@ public class Mergeable : MonoBehaviour {
 							objects.RemoveAt(i);
 						}
 					}
-					Mergeable.mergeFlag = false;
-					Debug.Log("Merge Flag is now disabled: " + Mergeable.mergeFlag);
 				}
 			}
 			Mergeable.mergeFlag = false;
-			Debug.Log("Merge Flag disabled.");
-		}
-		else {
-			Debug.Log("Selected objects count: " + Selectable.selectedObjects.Count + "  Capacity: " + Selectable.selectedObjects.Capacity);
 		}
 	}
 
 	public void Merge(Mergeable mergeable) {
-		Debug.Log("Merging objects.");
 		GameObject mergedObject = Instantiate(mergeable.gameObject) as GameObject;
 		mergedObject.transform.localScale += Vector3.one;
 		mergedObject.transform.position = (this.transform.position + mergedObject.transform.position) / 2f;
 		mergedObject.name = "Player " + Division.id++;
-		Debug.Log("Destroying game objects.");
 		Destroy(mergeable.gameObject);
 		Destroy(this.gameObject);
 

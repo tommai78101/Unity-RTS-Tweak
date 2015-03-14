@@ -15,7 +15,7 @@ public class Selectable : MonoBehaviour {
 		if (renderer.enabled && Input.GetMouseButton(0)) {
 			Vector3 camPos = Camera.main.WorldToScreenPoint(this.transform.position);
 			camPos.y = Screen.height - camPos.y;
-			isBoxedSelected = SelectionManager.selectionArea.Contains(camPos);
+			isBoxedSelected = Selection.selectionArea.Contains(camPos);
 		}
 
 		if (this.isBoxedSelected) {

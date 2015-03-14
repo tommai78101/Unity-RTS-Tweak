@@ -60,7 +60,7 @@
     <Compile Include="Assets\Scripts\Mergeable.cs" />
     <Compile Include="Assets\Scripts\PlayerNavMeshAgent.cs" />
     <Compile Include="Assets\Scripts\Selectable.cs" />
-    <Compile Include="Assets\Scripts\SelectionManager.cs" />
+    <Compile Include="Assets\Scripts\Selection.cs" />
     <Compile Include="Assets\Scripts\UnitNavMeshAgent.cs" />
   </ItemGroup>
   <ItemGroup>
