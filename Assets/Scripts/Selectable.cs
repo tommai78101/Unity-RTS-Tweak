@@ -15,7 +15,17 @@ public class Selectable : MonoBehaviour {
 		if (renderer.enabled && Input.GetMouseButton(0)) {
 			Vector3 camPos = Camera.main.WorldToScreenPoint(this.transform.position);
 			camPos.y = Screen.height - camPos.y;
-			isBoxedSelected = Selection.selectionArea.Contains(camPos);
+			this.isBoxedSelected = Selection.selectionArea.Contains(camPos);
+			if (!this.isBoxedSelected) {
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit HitInfo;
+				if (Physics.Raycast(ray, out HitInfo)) {
+					GameObject obj = HitInfo.collider.gameObject;
+					if (!obj.name.Equals("Floor") && Vector3.Distance(HitInfo.point, obj.transform.position) <= 0.55f) {
+						this.isBoxedSelected = true;
+					}
+				}
+			}
 		}
 
 		if (this.isBoxedSelected) {
