@@ -30,7 +30,6 @@ public class GetReady : MonoBehaviour {
 	}
 
 	public void OnPlayerConnected(NetworkPlayer player) {
-		Debug.LogWarning("On player connected.");
 		this.clientIsReady = true;
 		if (this.serverIsReady) {
 			this.everythingIsReady = true;
@@ -38,50 +37,29 @@ public class GetReady : MonoBehaviour {
 	}
 
 	public void OnConnectedToServer() {
-		Debug.LogWarning("On connected to server.");
 		this.clientIsReady = true;
 		if (this.serverIsReady) {
 			this.everythingIsReady = true;
 		}
 	}
 
-	public void OnDisconnectedFromMasterServer(NetworkDisconnection info) {
-		Debug.LogWarning("On disconnected from master server.");
-	}
-
 	public void OnDisconnectedFromServer(NetworkDisconnection info) {
 		if (Network.isServer) {
-			Debug.LogWarning("On disconnecting from server as server.");
 			this.serverIsReady = false;
 			this.everythingIsReady = false;
 		}
 		else if (Network.isClient) {
-			Debug.LogWarning("On disconnecting from server as client.");
 			this.clientIsReady = false;
 			this.everythingIsReady = false;
 		}
 	}
 
-	public void OnFailedToConnect(NetworkConnectionError error) {
-		Debug.LogWarning("On failed to connect.");
-	}
-
-	public void OnFailedToConnectToMasterServer(NetworkConnectionError error) {
-		Debug.LogWarning("On failed to connect to master server.");
-	}
-
-	public void OnMasterServerEvent(MasterServerEvent msEvent) {
-		Debug.LogWarning("On master server event. Event: " + msEvent.ToString());
-	}
-
 	public void OnPlayerDisconnected(NetworkPlayer player) {
-		Debug.LogWarning("On player disconnected.");
 		this.everythingIsReady = false;
 		this.clientIsReady = false;
 	}
 
 	public void OnServerInitialized() {
-		Debug.LogWarning("On server initialized.");
 		this.serverIsReady = true;
 	}
 
