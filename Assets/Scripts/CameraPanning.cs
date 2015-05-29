@@ -1,5 +1,8 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿#if UNITY_EDITOR
+	using UnityEditor;
+#endif
+
+using UnityEngine;
 using System.Collections;
 
 public class CameraPanning : MonoBehaviour {
@@ -7,13 +10,28 @@ public class CameraPanning : MonoBehaviour {
 	public float distanceFromScreenBorders;
 	public bool useDebugSceneCamBorder;
 	public float camSpeed;
+	public bool mouseInFocus;
 
 	// Use this for initialization
 	void Start () {
+		this.mouseInFocus = false;
 	}
-	
+
+	public void OnApplicationFocus(bool focus) {
+		Debug.Log("CameraPanning: On Application Focus: " + focus.ToString());
+		this.mouseInFocus = focus;
+	}
+
+	public void OnApplicationPause(bool pause) {
+		Debug.Log("CameraPanning: On Application Pause: " + pause.ToString());
+	}
+
 	// Update is called once per frame
 	void Update () {
+		if (!this.mouseInFocus) {
+			return;
+		}
+		
 		//Debug.Log ("Mouse Pos: " + Input.mousePosition.x + "  " + Input.mousePosition.y);
 		//Debug.Log ("Screen size: " + Screen.currentResolution.width + " " + Screen.currentResolution.height);
 		//Left 25
@@ -37,7 +55,13 @@ public class CameraPanning : MonoBehaviour {
 		float aspectRatio = Screen.currentResolution.width / Screen.currentResolution.height;
 		float distance = distanceFromScreenBorders * aspectRatio;
 		Vector2 mousePos = Input.mousePosition;
+#if UNITY_EDITOR
 		Vector2 screen = useDebugSceneCamBorder ? Handles.GetMainGameViewSize () : new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+#else
+		Vector2 screen = new Vector2(Screen.width, Screen.height);
+#endif
+
+		
 
 		if (mousePos.x > 0 && mousePos.x < distance){
 			//Moving left
