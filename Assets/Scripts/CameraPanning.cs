@@ -18,12 +18,7 @@ public class CameraPanning : MonoBehaviour {
 	}
 
 	public void OnApplicationFocus(bool focus) {
-		Debug.Log("CameraPanning: On Application Focus: " + focus.ToString());
 		this.mouseInFocus = focus;
-	}
-
-	public void OnApplicationPause(bool pause) {
-		Debug.Log("CameraPanning: On Application Pause: " + pause.ToString());
 	}
 
 	// Update is called once per frame

@@ -78,10 +78,10 @@ public class Selectable : MonoBehaviour {
 			return;
 		}
 
-		NetworkView networkView = this.GetComponent<NetworkView>();
-		if (networkView != null) {
-			networkView.RPC("RPC_Select", RPCMode.AllBuffered, null);
-		}
+		//NetworkView networkView = this.GetComponent<NetworkView>();
+		//if (networkView != null) {
+		//	networkView.RPC("RPC_Select", RPCMode.AllBuffered, null);
+		//}
 
 		#region UNWANTED_COMMENTS
 		//Renderer renderer = this.GetComponentInChildren<Renderer>();
