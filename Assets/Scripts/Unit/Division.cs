@@ -86,7 +86,7 @@ public class Division : MonoBehaviour {
 			GameObject newObject = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), location, Quaternion.identity, UnitManager.PG_Enemy);
 			newObject.name = "Enemy " + id++;
 
-			UnitManager.instance.PlayerUnits.Add(newObject);
+			UnitManager.instance.AllUnits.Add(newObject);
 
 			Division div = newObject.GetComponent<Division>();
 			if (div != null) {

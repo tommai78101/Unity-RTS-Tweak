@@ -5,11 +5,11 @@ using System.Collections.Generic;
 public class Selectable : MonoBehaviour {
 	public static List<Selectable> selectedObjects = new List<Selectable>();
 	public bool isSelected = false;
-	public Color initialColor = Color.white;
 	public Color selectedColor;
 	public int SelectableID = 0;
 	public System.Guid UUID = System.Guid.NewGuid();
 
+	private readonly Color initialColor = Color.white;
 	private bool isBoxedSelected = false;
 	private bool isEnabled;
 
@@ -65,6 +65,23 @@ public class Selectable : MonoBehaviour {
 		}
 	}
 
+	public void Deselect() {
+		this.isSelected = false;
+		//this.selectedColor = Selectable.initialColor;
+	}
+
+	public void DisableSelection() {
+		this.isEnabled = false;
+	}
+
+	public void EnableSelection() {
+		this.isEnabled = true;
+	}
+
+	public bool IsSelectionEnabled() {
+		return this.isEnabled;
+	}
+
 	private void Start() {
 		this.isEnabled = false;
 		NetworkView playerNetworkView = this.GetComponent<NetworkView>();
@@ -78,10 +95,14 @@ public class Selectable : MonoBehaviour {
 			return;
 		}
 
-		//NetworkView networkView = this.GetComponent<NetworkView>();
-		//if (networkView != null) {
-		//	networkView.RPC("RPC_Select", RPCMode.AllBuffered, null);
-		//}
+		NetworkView networkView = this.GetComponent<NetworkView>();
+		if (networkView != null) {
+			//networkView.RPC("RPC_Select", RPCMode.AllBuffered, null);
+
+			if (networkView.isMine) {
+				this.RPC_Select();
+			}
+		}
 
 		#region UNWANTED_COMMENTS
 		//Renderer renderer = this.GetComponentInChildren<Renderer>();
@@ -129,4 +150,5 @@ public class Selectable : MonoBehaviour {
 		//}
 		#endregion
 	}
+
 }

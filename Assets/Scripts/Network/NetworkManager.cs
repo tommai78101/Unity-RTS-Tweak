@@ -86,7 +86,7 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	public void OnDisconnectedFromServer(NetworkDisconnection info) {
-		Debug.Log("Disconnected from server, now initiating destruction of game objects. Count: " + UnitManager.instance.PlayerUnits.Count);
+		Debug.Log("Disconnected from server, now initiating destruction of game objects. Count: " + UnitManager.instance.AllUnits.Count);
 		//while (UnitManager.PlayerUnits.Count > 0){
 		//	Debug.Log("Destroying objects: " + UnitManager.PlayerUnits[0].ToString());
 		//	Destroy(UnitManager.PlayerUnits[0]);

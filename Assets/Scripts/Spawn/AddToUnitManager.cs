@@ -3,6 +3,6 @@ using System.Collections;
 
 public class AddToUnitManager : MonoBehaviour {
 	public void Awake() {
-		UnitManager.instance.PlayerUnits.Add(this.gameObject);
+		UnitManager.instance.AllUnits.Add(this.gameObject);
 	}
 }

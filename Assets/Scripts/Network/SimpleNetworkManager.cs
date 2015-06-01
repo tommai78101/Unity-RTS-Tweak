@@ -5,6 +5,12 @@ public class SimpleNetworkManager : MonoBehaviour {
 	private HostData[] HostDataArray;
 	private string RegisteredGameName = "TEST_THESIS_REAL_TIME_STRATEGY";
 	private float RefreshRequestDuration = 3f;
+	
+	public int totalPlayersCount;
+
+	public void Start() {
+		this.totalPlayersCount = 0;
+	}
 
 	private void StartServer() {
 		Network.InitializeServer(16, 12345, false); //Max connections, port number, use NAT?
@@ -13,6 +19,7 @@ public class SimpleNetworkManager : MonoBehaviour {
 
 	public void OnServerInitialized() {
 		Debug.LogError("Simple Network Manager: Server has been initialized.");
+		this.totalPlayersCount++;
 	}
 
 	private void OnMasterServerEvent(MasterServerEvent msEvent) {
@@ -29,10 +36,12 @@ public class SimpleNetworkManager : MonoBehaviour {
 
 	public void OnDisconnectedFromServer(NetworkDisconnection info) {
 		Debug.LogError("Simple Network Manager: Disconnected from server.");
+		this.totalPlayersCount--;
 	}
 
 	public void OnPlayerDisconnected(NetworkPlayer player) {
 		Debug.LogError("Simple Network Manager: Disconnected by player.");
+		this.totalPlayersCount--;
 	}
 
 	private IEnumerator CR_RefreshHostList() {
