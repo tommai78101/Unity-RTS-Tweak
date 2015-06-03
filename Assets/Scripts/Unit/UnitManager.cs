@@ -11,7 +11,8 @@ public class UnitManager : MonoBehaviour {
 
 	public List<GameObject> AllUnits = new List<GameObject>();
 	public List<GameObject> PlayerUnits = new List<GameObject>();
-	public List<GameObject> EnemyUnits = new List<GameObject>();
+	//public List<Pair> SpawnedUnits = new List<Pair>();
+
 
 	public void Awake() {
 		UnitManager.instance = this;
