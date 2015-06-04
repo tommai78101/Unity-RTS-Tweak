@@ -22,8 +22,6 @@ public struct SpawnUnit {
 public class NewDivision : MonoBehaviour {
 	private Selectable ownerSelectable;
 	private Selectable spawnedSelectable;
-	private Color divisionColor = Color.cyan;
-	private Color initialColor = Color.white;
 	private NetworkView playerNetworkView;
 	private float cooldownTimer = 15f;
 	private bool isReady;
@@ -43,8 +41,10 @@ public class NewDivision : MonoBehaviour {
 	public void Update() {
 		if (!this.isReady) {
 			if (this.elapsedTime < 1f) {
-				this.StartCoroutine(CR_MoveToPosition(this.spawnedLocation + rotatedVector));
+				this.StartCoroutine(CR_MoveToPosition(this.gameObject, this.spawnedLocation + rotatedVector));
+				this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.spawnedUnit, this.spawnedLocation - rotatedVector));
 				this.StartCoroutine(CR_CooldownTime());
+				this.elapsedTime += Time.deltaTime / this.cooldownTimer;
 			}
 		}
 	}
@@ -62,18 +62,14 @@ public class NewDivision : MonoBehaviour {
 
 				this.isReady = false;
 				this.elapsedTime = 0f;
-				rotatedVector = Quaternion.Euler(0f, UnityEngine.Random.Range(-180f, 180f), 0f) * new Vector3(1f, 0f, 0f);
+				this.rotatedVector = Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f) * (Vector3.right / 2f);
 			}
 		}
 	}
 
-	private IEnumerator CR_MoveToPosition(Vector3 target) {
+	private IEnumerator CR_MoveToPosition(GameObject gameObject, Vector3 target) {
 		while (this.elapsedTime < 1f) {
-			this.transform.position = Vector3.Lerp(this.spawnedLocation, target, this.elapsedTime);
-			Vector3 negativeTarget = -target;
-			negativeTarget.y = target.y;
-			this.spawnedUnit.spawnedUnit.transform.position = Vector3.Lerp(this.spawnedLocation, negativeTarget, this.elapsedTime);
-			this.elapsedTime += Time.deltaTime / this.cooldownTimer;
+			gameObject.transform.position = Vector3.Lerp(this.spawnedLocation, target, this.elapsedTime);
 			yield return null;
 		}
 	}
@@ -84,12 +80,12 @@ public class NewDivision : MonoBehaviour {
 		while (this.elapsedTime < 1f) {
 			bool halfTime = this.elapsedTime < 0.5f;
 			if (halfTime) {
-				rendererA.material.color = Color.Lerp(this.initialColor, this.divisionColor, this.elapsedTime);
-				rendererB.material.color = Color.Lerp(this.initialColor, this.divisionColor, this.elapsedTime);
+				rendererA.material.color = Color.Lerp(Color.white, Color.cyan, this.elapsedTime);
+				rendererB.material.color = Color.Lerp(Color.white, Color.cyan, this.elapsedTime);
 			}
 			else {
-				rendererA.material.color = Color.Lerp(this.divisionColor, this.initialColor, this.elapsedTime);
-				rendererB.material.color = Color.Lerp(this.divisionColor, this.initialColor, this.elapsedTime);
+				rendererB.material.color = Color.Lerp(Color.cyan, Color.white, this.elapsedTime);
+				rendererA.material.color = Color.Lerp(Color.cyan, Color.white, this.elapsedTime);
 			}
 			yield return null;
 		}
@@ -98,6 +94,6 @@ public class NewDivision : MonoBehaviour {
 			this.spawnedSelectable.EnableSelection();
 		}
 		this.isReady = true;
-		rendererA.material.color = this.initialColor;
+		rendererA.material.color = Color.white;
 	}
 }

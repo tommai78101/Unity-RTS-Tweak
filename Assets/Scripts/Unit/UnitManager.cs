@@ -27,8 +27,8 @@ public class UnitManager : MonoBehaviour {
 
 	public void OnDisconnectedFromServer(NetworkDisconnection info) {
 		Debug.LogWarning("Unit Manager: On disconnected from server.");
-		foreach (GameObject g in this.AllUnits) {
-			Network.Destroy(g);
+		for (int i = 0; i < this.AllUnits.Count; i++) {
+			Network.Destroy(this.AllUnits[i]);
 		}
 		if (this.AllUnits.Count > 0) {
 			this.AllUnits.Clear();
