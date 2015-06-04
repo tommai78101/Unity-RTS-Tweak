@@ -55,16 +55,36 @@ public class NewDivision : MonoBehaviour {
 				this.spawnedLocation = this.gameObject.transform.position;
 				GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
 				unit.name = unit.name + " (Spawned)";
+
 				this.spawnedSelectable = unit.GetComponentInChildren<Selectable>();
 				this.spawnedSelectable.DisableSelection();
 				this.ownerSelectable.DisableSelection();
-				this.spawnedUnit = new SpawnUnit(this.gameObject, unit, this.cooldownTimer);
 
-				this.isReady = false;
-				this.elapsedTime = 0f;
 				this.rotatedVector = Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f) * (Vector3.right / 2f);
+
+				NetworkView view = unit.GetComponent<NetworkView>();
+				if (this.playerNetworkView != null && view != null) {
+					this.playerNetworkView.RPC("RPC_Add", RPCMode.AllBuffered, this.playerNetworkView.viewID, view.viewID);
+					this.playerNetworkView.RPC("RPC_Other_Spawn", RPCMode.OthersBuffered, this.spawnedLocation, this.rotatedVector);
+				}
 			}
 		}
+	}
+
+	[RPC]
+	private void RPC_Add(NetworkViewID first, NetworkViewID second) {
+		this.isReady = false;
+		this.elapsedTime = 0f;
+
+		NetworkView firstView = NetworkView.Find(first);
+		NetworkView secondView = NetworkView.Find(second);
+		this.spawnedUnit = new SpawnUnit(firstView.gameObject, secondView.gameObject, this.cooldownTimer);
+	}
+
+	[RPC]
+	private void RPC_Other_Spawn(Vector3 spawn, Vector3 rotated) {
+		this.spawnedLocation = spawn;
+		this.rotatedVector = rotated;
 	}
 
 	private IEnumerator CR_MoveToPosition(GameObject gameObject, Vector3 target) {
@@ -89,11 +109,30 @@ public class NewDivision : MonoBehaviour {
 			}
 			yield return null;
 		}
-		if (!this.ownerSelectable.IsSelectionEnabled()) {
-			this.ownerSelectable.EnableSelection();
-			this.spawnedSelectable.EnableSelection();
+
+		if (this.elapsedTime >= 1f) {
+			if (this.ownerSelectable != null && !ownerSelectable.IsSelectionEnabled()) {
+				this.ownerSelectable.EnableSelection();
+			}
+			else {
+				Selectable owner = this.spawnedUnit.owner.GetComponent<Selectable>();
+				if (owner != null && !owner.IsSelectionEnabled()) {
+					owner.EnableSelection();
+				}
+			}
+			if (this.spawnedSelectable != null && !this.spawnedSelectable.IsSelectionEnabled()) {
+				this.spawnedSelectable.EnableSelection();
+			}
+			else {
+				Selectable spawned = this.spawnedUnit.spawnedUnit.GetComponent<Selectable>();
+				if (spawned != null && !spawned.IsSelectionEnabled()) {
+					spawned.EnableSelection();
+				}
+			}
+
+			this.isReady = true;
+			rendererA.material.color = Color.white;
+			rendererB.material.color = Color.white;
 		}
-		this.isReady = true;
-		rendererA.material.color = Color.white;
 	}
 }
