@@ -37,16 +37,24 @@ public class NewDivision : MonoBehaviour {
 		this.ownerSelectable = this.GetComponent<Selectable>();
 		this.isReady = true;
 		this.playerNetworkView = this.GetComponent<NetworkView>();
-		this.elapsedTime = this.cooldownTimer;
+		this.elapsedTime = 0f;
 	}
 
 	public void Update() {
+		if (!this.isReady) {
+			if (this.elapsedTime < 1f) {
+				this.StartCoroutine(CR_MoveToPosition(this.spawnedLocation + rotatedVector));
+				this.StartCoroutine(CR_CooldownTime());
+			}
+		}
+	}
+
+	public void OnGUI() {
 		if (this.ownerSelectable != null && this.playerNetworkView.isMine) {
 			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady) {
 				this.spawnedLocation = this.gameObject.transform.position;
 				GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
 				unit.name = unit.name + " (Spawned)";
-				UnitManager.instance.PlayerUnits.Add(unit);
 				this.spawnedSelectable = unit.GetComponentInChildren<Selectable>();
 				this.spawnedSelectable.DisableSelection();
 				this.ownerSelectable.DisableSelection();
@@ -57,22 +65,15 @@ public class NewDivision : MonoBehaviour {
 				rotatedVector = Quaternion.Euler(0f, UnityEngine.Random.Range(-180f, 180f), 0f) * new Vector3(1f, 0f, 0f);
 			}
 		}
-
-		if (!this.isReady) {
-			if (this.elapsedTime < this.cooldownTimer) {
-				this.StartCoroutine(CR_MoveToPosition(this.spawnedLocation + rotatedVector));
-				this.StartCoroutine(CR_CooldownTime());
-			}
-		}
 	}
 
 	private IEnumerator CR_MoveToPosition(Vector3 target) {
-		while (elapsedTime < this.cooldownTimer) {
-			this.transform.position = Vector3.Lerp(this.spawnedLocation, target, (elapsedTime) / this.cooldownTimer);
+		while (this.elapsedTime < 1f) {
+			this.transform.position = Vector3.Lerp(this.spawnedLocation, target, this.elapsedTime);
 			Vector3 negativeTarget = -target;
 			negativeTarget.y = target.y;
-			this.spawnedUnit.spawnedUnit.transform.position = Vector3.Lerp(this.spawnedLocation, negativeTarget, (elapsedTime) / this.cooldownTimer);
-			elapsedTime += Time.deltaTime;
+			this.spawnedUnit.spawnedUnit.transform.position = Vector3.Lerp(this.spawnedLocation, negativeTarget, this.elapsedTime);
+			this.elapsedTime += Time.deltaTime / this.cooldownTimer;
 			yield return null;
 		}
 	}
@@ -80,16 +81,15 @@ public class NewDivision : MonoBehaviour {
 	public IEnumerator CR_CooldownTime() {
 		Renderer rendererA = this.spawnedUnit.owner.GetComponentInChildren<Renderer>();
 		Renderer rendererB = this.spawnedUnit.spawnedUnit.GetComponentInChildren<Renderer>();
-		while (this.elapsedTime < this.cooldownTimer) {
-			bool halfTime = (this.elapsedTime < this.cooldownTimer / 2f);
-			float lerpTime = (this.elapsedTime) / this.cooldownTimer;
+		while (this.elapsedTime < 1f) {
+			bool halfTime = this.elapsedTime < 0.5f;
 			if (halfTime) {
-				rendererA.material.color = Color.Lerp(this.initialColor, this.divisionColor, lerpTime);
-				rendererB.material.color = Color.Lerp(this.initialColor, this.divisionColor, lerpTime);
+				rendererA.material.color = Color.Lerp(this.initialColor, this.divisionColor, this.elapsedTime);
+				rendererB.material.color = Color.Lerp(this.initialColor, this.divisionColor, this.elapsedTime);
 			}
 			else {
-				rendererA.material.color = Color.Lerp(this.divisionColor, this.initialColor, lerpTime);
-				rendererB.material.color = Color.Lerp(this.divisionColor, this.initialColor, lerpTime);
+				rendererA.material.color = Color.Lerp(this.divisionColor, this.initialColor, this.elapsedTime);
+				rendererB.material.color = Color.Lerp(this.divisionColor, this.initialColor, this.elapsedTime);
 			}
 			yield return null;
 		}

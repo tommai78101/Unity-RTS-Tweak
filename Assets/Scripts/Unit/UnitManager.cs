@@ -18,10 +18,17 @@ public class UnitManager : MonoBehaviour {
 		UnitManager.instance = this;
 	}
 
+	public void OnGUI() {
+		if (Input.GetKeyDown(KeyCode.M)) {
+			Debug.Log("Player unit count: " + this.PlayerUnits.Count);
+			Debug.Log("All unit count: " + this.AllUnits.Count);
+		}
+	}
+
 	public void OnDisconnectedFromServer(NetworkDisconnection info) {
 		Debug.LogWarning("Unit Manager: On disconnected from server.");
 		foreach (GameObject g in this.AllUnits) {
-			Object.Destroy(g);
+			Network.Destroy(g);
 		}
 		if (this.AllUnits.Count > 0) {
 			this.AllUnits.Clear();
@@ -31,7 +38,7 @@ public class UnitManager : MonoBehaviour {
 	public void OnPlayerDisconnected(NetworkPlayer player) {
 		Debug.LogError("Simple Network Manager: Disconnected by player.");
 		foreach (GameObject g in this.AllUnits) {
-			Object.Destroy(g);
+			Network.Destroy(g);
 		}
 		if (this.AllUnits.Count > 0) {
 			this.AllUnits.Clear();
