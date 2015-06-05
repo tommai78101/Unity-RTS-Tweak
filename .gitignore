@@ -17,6 +17,7 @@ Build
 *.userprefs
 *.pidb
 *.booproj
+*.exe
 
 *.pidb.meta
 
