@@ -18,29 +18,29 @@ public class SimpleNetworkManager : MonoBehaviour {
 	}
 
 	public void OnServerInitialized() {
-		Debug.LogError("Simple Network Manager: Server has been initialized.");
+		//Debug.LogError("Simple Network Manager: Server has been initialized.");
 		this.totalPlayersCount++;
 	}
 
-	private void OnMasterServerEvent(MasterServerEvent msEvent) {
-		Debug.LogError("Simple Network Manager: On master server event: " + msEvent.ToString());
-	}
+	//private void OnMasterServerEvent(MasterServerEvent msEvent) {
+	//	Debug.LogError("Simple Network Manager: On master server event: " + msEvent.ToString());
+	//}
 
-	private void OnConnectedToServer() {
-		Debug.LogError("Simple Network Manager: Connected to server.");
-	}
+	//private void OnConnectedToServer() {
+	//	Debug.LogError("Simple Network Manager: Connected to server.");
+	//}
 
-	private void OnFailedToConnect(NetworkConnectionError Error) {
-		Debug.LogError("Simple Network Manager: Could not connect to server. Reason: " + Error.ToString());
-	}
+	//private void OnFailedToConnect(NetworkConnectionError Error) {
+	//	Debug.LogError("Simple Network Manager: Could not connect to server. Reason: " + Error.ToString());
+	//}
 
 	public void OnDisconnectedFromServer(NetworkDisconnection info) {
-		Debug.LogError("Simple Network Manager: Disconnected from server.");
+		//Debug.LogError("Simple Network Manager: Disconnected from server.");
 		this.totalPlayersCount--;
 	}
 
 	public void OnPlayerDisconnected(NetworkPlayer player) {
-		Debug.LogError("Simple Network Manager: Disconnected by player.");
+		//Debug.LogError("Simple Network Manager: Disconnected by player.");
 		this.totalPlayersCount--;
 	}
 

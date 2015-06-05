@@ -60,7 +60,13 @@ public class Divisible : MonoBehaviour {
 				this.spawnedSelectable.DisableSelection();
 				this.ownerSelectable.DisableSelection();
 
-				this.rotatedVector = Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f) * (Vector3.right / 2f);
+				Vector3 size = Vector3.right;
+				Renderer renderer = this.GetComponent<Renderer>();
+				if (renderer != null){
+					size = renderer.bounds.size;
+					size.y = size.z = 0f;
+				}
+				this.rotatedVector = Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f) * (size / 2f);
 
 				NetworkView view = unit.GetComponent<NetworkView>();
 				if (this.playerNetworkView != null && view != null) {
