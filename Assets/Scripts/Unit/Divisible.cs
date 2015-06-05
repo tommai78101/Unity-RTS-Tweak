@@ -19,7 +19,7 @@ public struct SpawnUnit {
 	}
 };
 
-public class NewDivision : MonoBehaviour {
+public class Divisible : MonoBehaviour {
 	private Selectable ownerSelectable;
 	private Selectable spawnedSelectable;
 	private NetworkView playerNetworkView;

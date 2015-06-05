@@ -27,7 +27,7 @@ public struct MergePair {
 	}
 };
 
-public class NewMerge : MonoBehaviour {
+public class Mergeable : MonoBehaviour {
 	private Selectable ownerSelectable;
 	private static List<MergePair> pairs = new List<MergePair>();
 	private NetworkView playerNetworkView;
@@ -41,12 +41,12 @@ public class NewMerge : MonoBehaviour {
 
 	public void Start() {
 		this.ownerSelectable = this.GetComponent<Selectable>();
-		NewMerge.pairs.Clear();
+		Mergeable.pairs.Clear();
 		this.playerNetworkView = this.GetComponent<NetworkView>();
 	}
 
 	public void Update() {
-		if (NewMerge.pairs.Count > 0) {
+		if (Mergeable.pairs.Count > 0) {
 			this.StartCoroutine(CR_Action());
 		}
 	}
@@ -77,18 +77,18 @@ public class NewMerge : MonoBehaviour {
 	}
 
 	private IEnumerator CR_Action() {
-		for (int i = 0; i < NewMerge.pairs.Count; i++) {
+		for (int i = 0; i < Mergeable.pairs.Count; i++) {
 			MoveTo(i);
 			Scale(i, 1f, 2f);
 			Update(i);
 
-			if (NewMerge.pairs[i].elapsedTime > 1f) {
-				Selectable select = NewMerge.pairs[i].first.GetComponent<Selectable>();
+			if (Mergeable.pairs[i].elapsedTime > 1f) {
+				Selectable select = Mergeable.pairs[i].first.GetComponent<Selectable>();
 				if (select != null) {
 					select.EnableSelection();
 				}
-				Network.Destroy(NewMerge.pairs[i].second);
-				NewMerge.pairs.Remove(NewMerge.pairs[i]);
+				Network.Destroy(Mergeable.pairs[i].second);
+				Mergeable.pairs.Remove(Mergeable.pairs[i]);
 			}
 			yield return null;
 		}
@@ -100,26 +100,26 @@ public class NewMerge : MonoBehaviour {
 	}
 
 	private void Scale(int i, float multiplierFrom, float multiplierTo) {
-		MergePair pair = NewMerge.pairs[i];
+		MergePair pair = Mergeable.pairs[i];
 		if (pair.first != null && pair.second != null) {
 			pair.first.transform.localScale = pair.firstInitialScale * Mathf.Lerp(multiplierFrom, multiplierTo, pair.elapsedTime);
 			pair.second.transform.localScale = pair.secondInitialScale * Mathf.Lerp(multiplierFrom, multiplierTo, pair.elapsedTime);
-			NewMerge.pairs[i] = pair;
+			Mergeable.pairs[i] = pair;
 		}
 	}
 
 	private void MoveTo(int i) {
-		MergePair pair = NewMerge.pairs[i];
+		MergePair pair = Mergeable.pairs[i];
 		if (pair.first != null && pair.second != null) {
 			pair.first.transform.position = Vector3.Lerp(pair.firstInitialPosition, pair.average, pair.elapsedTime);
 			pair.second.transform.position = Vector3.Lerp(pair.secondInitialPosition, pair.average, pair.elapsedTime);
-			NewMerge.pairs[i] = pair;
+			Mergeable.pairs[i] = pair;
 		}
 	}
 
 	private void Update(int i) {
-		MergePair pair = NewMerge.pairs[i];
+		MergePair pair = Mergeable.pairs[i];
 		pair.elapsedTime += Time.deltaTime / 15f;
-		NewMerge.pairs[i] = pair;
+		Mergeable.pairs[i] = pair;
 	}
 }
