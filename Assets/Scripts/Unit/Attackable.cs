@@ -2,6 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/*
+ * TODO: Add labels and directions for control. How-to-play-this-game?
+ */
+
+
 public struct BattlePair {
 	public GameObject attacker;
 	public GameObject attackee;
