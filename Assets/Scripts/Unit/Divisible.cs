@@ -1,6 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*
+ * TODO: Make Attackable, Selectable, Divisible, and Mergeable all global ENUM types.
+ *       However, cannot be static globals, because it is not the only instance in the entire game.
+ * 
+ * 
+ */
+
+
 public struct SpawnUnit {
 	public GameObject owner;
 	public GameObject spawnedUnit;
@@ -22,6 +30,7 @@ public struct SpawnUnit {
 public class Divisible : MonoBehaviour {
 	private Selectable ownerSelectable;
 	private Selectable spawnedSelectable;
+	private Attackable ownerAttackable;
 	private NetworkView playerNetworkView;
 	private float cooldownTimer = 15f;
 	private bool isReady;
@@ -36,6 +45,7 @@ public class Divisible : MonoBehaviour {
 		this.isReady = true;
 		this.playerNetworkView = this.GetComponent<NetworkView>();
 		this.elapsedTime = 0f;
+		this.ownerAttackable = this.GetComponent<Attackable>();
 	}
 
 	public void Update() {
@@ -51,10 +61,10 @@ public class Divisible : MonoBehaviour {
 
 	public void OnGUI() {
 		if (this.ownerSelectable != null && this.playerNetworkView.isMine) {
-			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady) {
+			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady && (!this.ownerAttackable.isReadyToAttack || !this.ownerAttackable.isAttacking)) {
 				this.spawnedLocation = this.gameObject.transform.position;
 				GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
-				unit.name = unit.name + " (Spawned)";
+				unit.name = (Network.isClient ? "client " : "server ") + System.Guid.NewGuid();
 
 				this.spawnedSelectable = unit.GetComponentInChildren<Selectable>();
 				this.spawnedSelectable.DisableSelection();

@@ -29,6 +29,7 @@ public struct MergePair {
 
 public class Mergeable : MonoBehaviour {
 	private Selectable ownerSelectable;
+	private Attackable ownerAttackable;
 	private static List<MergePair> pairs = new List<MergePair>();
 	private NetworkView playerNetworkView;
 
@@ -43,6 +44,7 @@ public class Mergeable : MonoBehaviour {
 		this.ownerSelectable = this.GetComponent<Selectable>();
 		Mergeable.pairs.Clear();
 		this.playerNetworkView = this.GetComponent<NetworkView>();
+		this.ownerAttackable = this.GetComponent<Attackable>();
 	}
 
 	public void Update() {
@@ -52,7 +54,7 @@ public class Mergeable : MonoBehaviour {
 	}
 
 	public void OnGUI() {
-		if (Input.GetKeyDown(KeyCode.D) && this.ownerSelectable.isSelected) {
+		if (Input.GetKeyDown(KeyCode.D) && this.ownerSelectable.isSelected && !(this.ownerAttackable.isReadyToAttack || this.ownerAttackable.isAttacking)) {
 			this.ownerSelectable.isSelected = false;
 			this.ownerSelectable.DisableSelection();
 			if (this.playerNetworkView != null) {
@@ -82,13 +84,28 @@ public class Mergeable : MonoBehaviour {
 			Scale(i, 1f, 2f);
 			Update(i);
 
-			if (Mergeable.pairs[i].elapsedTime > 1f) {
-				Selectable select = Mergeable.pairs[i].first.GetComponent<Selectable>();
+			MergePair pair = Mergeable.pairs[i];
+			if (pair.elapsedTime > 1f) {
+				Selectable select = pair.first.GetComponent<Selectable>();
 				if (select != null) {
 					select.EnableSelection();
 				}
-				Network.Destroy(Mergeable.pairs[i].second);
-				Mergeable.pairs.Remove(Mergeable.pairs[i]);
+
+				Attackable attack = pair.first.GetComponent<Attackable>();
+				if (attack != null) {
+					attack.IncreaseStrength();
+				}
+				attack = pair.second.GetComponent<Attackable>();
+				if (attack != null) {
+					attack.IncreaseStrength();
+				}
+
+				pair.second.SetActive(false);
+				if (!pair.second.activeSelf && this.playerNetworkView.isMine) {
+					Network.Destroy(pair.second);
+				}
+				Mergeable.pairs.Remove(pair);
+				
 			}
 			yield return null;
 		}

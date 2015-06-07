@@ -7,11 +7,13 @@ public class Selectable : MonoBehaviour {
 	public bool isSelected = false;
 	public Color selectedColor;
 	public int SelectableID = 0;
-	public System.Guid UUID = System.Guid.NewGuid();
+	public System.Guid UUID;
 
 	private readonly Color initialColor = Color.white;
 	private bool isBoxedSelected = false;
 	private bool isEnabled;
+	private Attackable attackable;
+	private DeathCheck deathCheck;
 
 	[RPC]
 	public void RPC_Select() {
@@ -43,7 +45,9 @@ public class Selectable : MonoBehaviour {
 				Debug.Log("[Selectable] Color is null.");
 				return;
 			}
-			renderer.material.color = this.selectedColor;
+			if (!this.attackable.isReadyToAttack) {
+				renderer.material.color = this.selectedColor;
+			}
 			if (Input.GetMouseButtonUp(0)) {
 				this.isSelected = true;
 				if (!Selectable.selectedObjects.Contains(this)) {
@@ -55,7 +59,9 @@ public class Selectable : MonoBehaviour {
 			if (Input.GetMouseButtonUp(0)) {
 				this.isSelected = false;
 			}
-			renderer.material.color = this.initialColor;
+			if (!this.attackable.isReadyToAttack) {
+				renderer.material.color = this.initialColor;
+			}
 		}
 
 		if (Input.GetMouseButtonUp(0)) {
@@ -63,6 +69,10 @@ public class Selectable : MonoBehaviour {
 				Selectable.selectedObjects.Remove(this);
 			}
 		}
+	}
+
+	public void Awake() {
+		 this.UUID = System.Guid.NewGuid();
 	}
 
 	public void Deselect() {
@@ -87,10 +97,28 @@ public class Selectable : MonoBehaviour {
 		if (playerNetworkView != null && playerNetworkView.isMine) {
 			this.isEnabled = true;
 		}
+
+		this.attackable = this.GetComponent<Attackable>();
+		if (this.attackable == null) {
+			Debug.LogException(new System.NullReferenceException("Attackable is null."));
+		}
+		this.deathCheck = this.GetComponent<DeathCheck>();
+		if (this.deathCheck == null) {
+			Debug.LogException(new System.NullReferenceException("Death check is null."));
+		}
 	}
 
 	private void Update() {
 		if (!isEnabled) {
+			if (this.attackable.isReadyToAttack && !this.IsSelectionEnabled()) {
+				this.EnableSelection();
+			}
+			else if (Selectable.selectedObjects.Contains(this)) {
+				this.EnableSelection();
+			}
+			else if (this.deathCheck.isDead) {
+				this.DisableSelection();
+			}
 			return;
 		}
 

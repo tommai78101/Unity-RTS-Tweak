@@ -13,9 +13,14 @@ public class UnitManager : MonoBehaviour {
 	public List<GameObject> PlayerUnits = new List<GameObject>();
 	//public List<Pair> SpawnedUnits = new List<Pair>();
 
+	private NetworkView playerNetworkView;
 
 	public void Awake() {
 		UnitManager.instance = this;
+		this.playerNetworkView = this.GetComponent<NetworkView>();
+		if (this.playerNetworkView == null) {
+			Debug.LogException(new System.NullReferenceException("Network view for Unit Manager is null. Something's wrong."));
+		}
 	}
 
 	public void OnGUI() {
@@ -35,10 +40,25 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
+	public void OnConnectedToServer() {
+		if (UnitManager.instance == null) {
+			UnitManager.instance = this;
+		}
+	}
+
+	public void OnPlayerConnected(NetworkPlayer player) {
+		if (UnitManager.instance == null) {
+			UnitManager.instance = this;
+		}
+	}
+
 	public void OnPlayerDisconnected(NetworkPlayer player) {
 		Debug.LogError("Simple Network Manager: Disconnected by player.");
 		foreach (GameObject g in this.AllUnits) {
-			Network.Destroy(g);
+			g.SetActive(false);
+			if (!g.activeSelf && this.playerNetworkView.isMine) {
+				Network.Destroy(g);
+			}
 		}
 		if (this.AllUnits.Count > 0) {
 			this.AllUnits.Clear();
