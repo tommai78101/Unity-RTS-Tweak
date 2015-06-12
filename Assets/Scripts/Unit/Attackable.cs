@@ -10,10 +10,16 @@ using System.Collections.Generic;
 public struct BattlePair {
 	public GameObject attacker;
 	public GameObject attackee;
+	public bool isIgnored;
 
 	public BattlePair(GameObject a, GameObject b) {
 		this.attacker = a;
 		this.attackee = b;
+		this.isIgnored = false;
+	}
+
+	public void SetIgnored() {
+		this.isIgnored = true;
 	}
 };
 
@@ -122,15 +128,15 @@ public class Attackable : MonoBehaviour {
 	}
 
 	private void CheckForEnemies() {
-		if (UnitManager.instance == null) {
+		if (UnitManager.Instance == null) {
 			return;
 		}
-		for (int i = 0; i < UnitManager.instance.AllUnits.Count; i++) {
-			GameObject o = UnitManager.instance.AllUnits[i];
+		for (int i = 0; i < UnitManager.Instance.AllUnits.Count; i++) {
+			GameObject o = UnitManager.Instance.AllUnits[i];
 			if (o == null) {
 				continue;
 			}
-			if (UnitManager.instance.PlayerUnits.Contains(o) || this.gameObject.name.Equals(o.name)) {
+			if (UnitManager.Instance.PlayerUnits.Contains(o) || this.gameObject.name.Equals(o.name)) {
 				continue;
 			}
 			NetworkView view = o.GetComponent<NetworkView>();
@@ -158,16 +164,18 @@ public class Attackable : MonoBehaviour {
 			DeathCheck check = enemy.GetComponent<DeathCheck>();
 			if (check != null && !check.isDead) {
 				if (Vector3.Distance(enemy.transform.position, this.gameObject.transform.position) <= 2.5f) {
-					BattlePair p = new BattlePair(this.gameObject, enemy);
-					if (!DeathCheck.pairs.Contains(p)) {
-						Attackable attack = enemy.GetComponent<Attackable>();
-						if (attack != null) {
-							if (attack.GetStrength() <= 0) {
-								check.Kill();
-								DeathCheck.pairs.Add(p);
-							}
-							else {
-								attack.DecreaseStrength();
+					if (this.gameObject != null && enemy.gameObject != null) {
+						BattlePair p = new BattlePair(this.gameObject, enemy);
+						if (!DeathCheck.pairs.Contains(p)) {
+							Attackable attack = enemy.GetComponent<Attackable>();
+							if (attack != null) {
+								if (attack.GetStrength() <= 0) {
+									check.Kill();
+									DeathCheck.pairs.Add(p);
+								}
+								else {
+									attack.DecreaseStrength();
+								}
 							}
 						}
 					}

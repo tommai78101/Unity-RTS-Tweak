@@ -42,6 +42,7 @@ public class SimpleNetworkManager : MonoBehaviour {
 	public void OnPlayerDisconnected(NetworkPlayer player) {
 		//Debug.LogError("Simple Network Manager: Disconnected by player.");
 		this.totalPlayersCount--;
+		UnitManager.DestroyAllUnits(Network.connections);
 	}
 
 	private IEnumerator CR_RefreshHostList() {
@@ -74,6 +75,7 @@ public class SimpleNetworkManager : MonoBehaviour {
 
 		if (Network.isClient || Network.isServer) {
 			if (GUI.Button(new Rect(50f, 50f, 150f, 30f), "Disconnect")) {
+				UnitManager.DestroyAllUnits(Network.connections);
 				Network.Disconnect();
 				MasterServer.UnregisterHost();
 			}

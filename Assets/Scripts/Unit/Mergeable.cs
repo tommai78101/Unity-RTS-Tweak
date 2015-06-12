@@ -111,11 +111,6 @@ public class Mergeable : MonoBehaviour {
 		}
 	}
 
-	public void OnDestroy() {
-		UnitManager.instance.PlayerUnits.Remove(this.gameObject);
-		UnitManager.instance.AllUnits.Remove(this.gameObject);
-	}
-
 	private void Scale(int i, float multiplierFrom, float multiplierTo) {
 		MergePair pair = Mergeable.pairs[i];
 		if (pair.first != null && pair.second != null) {

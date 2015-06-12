@@ -1,30 +1,45 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*
+ * TODO: Find a way to get the client to check with the server for current player number count.
+ * 
+ * Requires:
+ * 
+ * RPC, Network calls, etc.
+ * A clear awaken mind.
+ * 
+ * 
+ * When calling Network.Instantiate() successfully, the caller is the owner of the game object.
+ * 
+ */
+
+
 public class Initialize : MonoBehaviour {
-	public GetReady getReadyObject;
+	//public GetReady getReadyObject;
 	public int playerNumber;
+	public int currentHighestNumber;
+	public bool serverHasSpawned;
 	public GameObject[] playerSpawns;
+	public NetworkView networkView;
 
 	// Use this for initialization
 	void Start() {
 		this.playerNumber = -1;
-		GetReady getReady = this.GetComponent<GetReady>();
-		if (getReady != null) {
-			this.getReadyObject = getReady;
+		//this.getReadyObject = this.GetComponent<GetReady>();
+		//if (this.getReadyObject == null) {
+		//	Debug.LogException(new System.NullReferenceException("Get Ready object is null."));
+		//}
+		this.networkView = this.GetComponent<NetworkView>();
+		if (this.networkView == null) {
+			Debug.LogException(new System.NullReferenceException("Network View object is null."));
 		}
+		this.serverHasSpawned = false;
 	}
 
+	//Doc: Called on the client when you have successfully connected to a server.
 	public void OnConnectedToServer() {
-		//string type = (Network.isClient ? "(Client)" : "(Server)");
-		//Debug.LogWarning("Initialize: On connected to server as client as " + type);
-		NetworkView networkView = this.GetComponent<NetworkView>();
-		if (networkView != null) {
-			networkView.RPC("RPC_Server_Call", RPCMode.Server, null);
-		}
-		//else {
-		//	Debug.LogWarning("Initialize: Couldn't find network view. " + (Network.isClient ? "(Client)" : "(Server)"));
-		//}
+		this.playerNumber = 0;
 	}
 
 	//public void OnDisconnectedFromMasterServer(NetworkDisconnection info) {
@@ -32,10 +47,9 @@ public class Initialize : MonoBehaviour {
 	//}
 
 	public void OnDisconnectedFromServer(NetworkDisconnection info) {
-		//string type = (Network.isClient ? "(Client)" : "(Server)");
-		//Debug.LogWarning("Initialize: On disconnected to server as " + type);
-		this.playerNumber = -1;
-		Debug.Log("Player number is now: " + this.playerNumber.ToString());
+		if (Network.isServer && Network.connections.Length <= 0) {
+			this.serverHasSpawned = false;
+		}
 	}
 
 	//public void OnFailedToConnect(NetworkConnectionError error) {
@@ -50,58 +64,107 @@ public class Initialize : MonoBehaviour {
 	//	Debug.LogWarning("Initialize: On master server event: " + msEvent.ToString());
 	//}
 
+	//Doc: Called on the server whenever a new player has successfully connected.
 	public void OnPlayerConnected(NetworkPlayer player) {
-		//string type = (Network.isClient ? "(Client)" : "(Server)");
-		//Debug.LogWarning("Initialize: On player connected as server as " + type);
-		NetworkView networkView = this.GetComponent<NetworkView>();
-		if (networkView != null) {
-			networkView.RPC("RPC_Client_DrawNewNumber", RPCMode.OthersBuffered, new object[]{ this.playerNumber });
-			networkView.RPC("RPC_Client_Call", RPCMode.OthersBuffered, null);
+		NetworkView view = this.GetComponent<NetworkView>();
+		if (view != null) {
+			this.playerNumber = 0;
+			this.currentHighestNumber = this.playerNumber;
+			view.RPC("RPC_Client_DrawNewNumber", player, this.currentHighestNumber);
 		}
-		//else {
-		//	Debug.LogWarning("Initialize: Couldn't find network view. " + (Network.isClient ? "(Client)" : "(Server)"));
-		//}
 	}
 
 	//public void OnPlayerDisconnected(NetworkPlayer player) {
 	//	Debug.LogWarning("Initialize: On player disconnected.");
 	//}
 
+
+	//Doc: Called on the server whenever a Network.InitializeServer was invoked and has completed.
 	public void OnServerInitialized() {
-		//Debug.LogWarning("Initialize: On server initialized.");
-		this.playerNumber = 1;
+		Debug.LogWarning("Initialize: On server initialized.");
+		this.playerNumber = 0; //The host (server) will always be zero.
 		Debug.Log("Player number is now: " + this.playerNumber.ToString());
 	}
 
+	//[RPC]
+	//public void RPC_Server_Call() {
+	//	string type = (Network.isClient ? "(Client)" : "(Server)");
+	//	Debug.Log("Client_Call: Sending to server only. Recipient: " + type);
+	//	NetworkPlayer[] players = Network.connections;
+	//	NetworkView networkView = this.GetComponent<NetworkView>();
+	//	this.playerNumber = players.Length;
+	//	if (this.playerSpawns != null && this.playerSpawns.Length > 0) {
+	//		for (int i = 0; i <= this.playerNumber; i++) {
+	//			if (networkView != null && networkView.isMine) {
+	//				GameObject gameObject = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.playerSpawns[i].transform.position, Quaternion.identity, i);
+	//				if (gameObject != null) {
+	//					gameObject.name = gameObject + " " + this.playerNumber;
+	//				}
+	//				else {
+	//					Debug.LogError("Failed to instantiate player.");
+	//				}
+	//			}
+	//		}
+	//	}
+	//	//this.StartCoroutine(CR_RPC_Server_Call_Wait(players));
+	//}
+
+	//private IEnumerator CR_RPC_Server_Call_Wait(NetworkPlayer[] players) {
+	//}
+
 	[RPC]
-	public void RPC_Server_Call() {
-		//string type = (Network.isClient ? "(Client)" : "(Server)");
-		//Debug.Log("Server_Call: Sending to server only. Recipient: " + type);
-		if (this.playerSpawns != null && this.playerSpawns.Length > 0 && this.playerSpawns.Length > this.playerNumber-1) {
-			GameObject gameObject = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.playerSpawns[this.playerNumber-1].transform.position, Quaternion.identity, 0);
+	public void RPC_Client_DrawNewNumber(int serverNumber) {
+		if (Network.isClient) {
+			this.playerNumber = serverNumber + 1;
+			Debug.Log("serverNumber: " + serverNumber.ToString() + ". playerNumber: " + this.playerNumber.ToString());
+			this.networkView.RPC("RPC_Server_Validate", RPCMode.Server, this.playerNumber, Network.player);
+		}
+	}
+
+	[RPC]
+	public void RPC_Client_Spawn(int newNumber) {
+		if (Network.isClient) {
+			this.playerNumber = newNumber;
+			Debug.Log("newNumber: " + newNumber.ToString() + ". playerNumber: " + this.playerNumber.ToString());
+			GameObject gameObject = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.playerSpawns[this.playerNumber].transform.position, Quaternion.identity, 0);
 			if (gameObject != null) {
-				gameObject.name = gameObject + " " + this.playerNumber;
+				gameObject.name = gameObject + " " + this.playerNumber + " " + (Network.isClient ? "(Client)" : "(Server)");
+				this.networkView.RPC("RPC_Server_Spawn", RPCMode.Server, null);
+			}
+			else {
+				Debug.LogError("Failed to instantiate player.");
 			}
 		}
 	}
 
 	[RPC]
-	public void RPC_Client_Call() {
-		//string type = (Network.isClient ? "(Client)" : "(Server)");
-		//Debug.Log("Client_Call: Sending to client only. Recipient: " + type);
-		if (this.playerSpawns != null && this.playerSpawns.Length > 0 && this.playerSpawns.Length > this.playerNumber-1) {
-			GameObject gameObject = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.playerSpawns[this.playerNumber-1].transform.position, Quaternion.identity, 0);
-			if (gameObject != null) {
-				gameObject.name = gameObject + " " + this.playerNumber;
+	public void RPC_Server_Validate(int number, NetworkPlayer player) {
+		if (Network.isServer) {
+			Debug.Log("number: " + number.ToString() + ". server_currentHighestNumber: " + this.currentHighestNumber.ToString());
+			if (this.currentHighestNumber < number) {
+				this.networkView.RPC("RPC_Client_Spawn", player, number);
+				this.currentHighestNumber = number;
+				Debug.Log("After client spawning, number: " + number.ToString() + ". server_currentHighestNumber: " + this.currentHighestNumber.ToString());
+			}
+			else {
+				this.networkView.RPC("RPC_Client_DrawNewNumber", player, this.currentHighestNumber);
 			}
 		}
 	}
 
 	[RPC]
-	public void RPC_Client_DrawNewNumber(int serverPlayerNumber) {
-		string type = (Network.isClient ? "(Client)" : "(Server)");
-		//Debug.Log("Client_DrawNewNumber: Sending to client only. Recipient: " + type);
-		this.playerNumber = serverPlayerNumber + 1;
-		Debug.Log("Player number is now " + this.playerNumber.ToString() + ". Server player number is: " + serverPlayerNumber.ToString() + ". Recipient: " + type);
+	public void RPC_Server_Spawn() {
+		if (Network.isServer) {
+			if (!this.serverHasSpawned) {
+				GameObject gameObject = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.playerSpawns[this.playerNumber].transform.position, Quaternion.identity, 0);
+				if (gameObject != null) {
+					gameObject.name = gameObject + " " + this.playerNumber + " " + (Network.isClient ? "(Client)" : "(Server)");
+				}
+				else {
+					Debug.LogError("Failed to instantiate player.");
+				}
+				this.serverHasSpawned = true;
+			}
+		}
 	}
 }
