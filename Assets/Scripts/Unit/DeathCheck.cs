@@ -49,28 +49,37 @@ public class DeathCheck : MonoBehaviour {
 		for (int i = 0; i < DeathCheck.pairs.Count; i++) {
 			BattlePair p = DeathCheck.pairs[i];
 			if (!p.isIgnored) {
+				Debug.Log("Battle pair is not ignored.");
 				DeathCheck check = p.attackee.GetComponent<DeathCheck>();
 				if (check.isDead) {
+					Debug.Log("Battle pair " + i.ToString() + " has dead attackee.");
 					this.playerNetworkView = this.GetComponent<NetworkView>();
 					if (this.playerNetworkView != null) {
+						Debug.Log("Network view is still active.");
 						Attackable attack = p.attacker.GetComponent<Attackable>();
 						if (attack.GetStrength() <= 0) {
+							Debug.Log("Attacker won. Strength increased.");
 							attack.IncreaseStrength();
 						}
-						p.attackee.SetActive(false);
-						if (!p.attackee.activeSelf && this.playerNetworkView.isMine) {
+						if (this.playerNetworkView.isMine) {
 							NetworkPlayer[] players = Network.connections;
 							if (players.Length > 0 && p.attackee != null) {
+								Debug.Log("Destroying attackee through network: " + p.attackee.name);
 								Network.Destroy(p.attackee);
 							}
 							else if (p.attackee != null) {
+								Debug.Log("Destroying attackee by normal means: " + p.attackee.name);
 								Object.Destroy(p.attackee);
 							}
+							Debug.Log("Removing pair");
+							DeathCheck.pairs.Remove(p);
+							Debug.Log("Breaking away from coroutine.");
+							yield break;
 						}
 					}
-					DeathCheck.pairs.Remove(p);
 				}
 			}
+			Debug.Log("Temporary returning from coroutine.");
 			yield return null;
 		}
 	}

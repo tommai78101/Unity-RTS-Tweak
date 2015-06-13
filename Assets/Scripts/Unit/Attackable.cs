@@ -95,7 +95,7 @@ public class Attackable : MonoBehaviour {
 				this.receivedAttackCommand = false;
 			}
 		}
-		else if (Input.GetKeyDown(KeyCode.A) && this.selectable.isSelected && this.attackableNetworkView.isMine && !this.isReadyToAttack && !this.isAttacking) {
+		else if (Input.GetKeyUp(KeyCode.A) && this.selectable.isSelected && this.attackableNetworkView.isMine && !this.isReadyToAttack && !this.isAttacking) {
 			this.isReadyToAttack = true;
 			this.attackableRenderer.material.color = Color.yellow;
 		}
@@ -111,8 +111,8 @@ public class Attackable : MonoBehaviour {
 			}
 			else if (!this.isReadyToAttack && this.isAttacking && !this.receivedAttackCommand) {
 				if (this.attackableNetworkView != null) {
-					this.attackableNetworkView.RPC("RPC_Attack", RPCMode.OthersBuffered, Input.mousePosition);
 					this.receivedAttackCommand = true;
+					this.attackableNetworkView.RPC("RPC_Attack", RPCMode.OthersBuffered, Input.mousePosition);
 				}
 			}
 		}
@@ -122,9 +122,14 @@ public class Attackable : MonoBehaviour {
 
 	[RPC]
 	public void RPC_Attack(Vector3 targetPosition) {
-		Debug.Log("RPC_Attack has been called. Vector: " + targetPosition.ToString());
-		this.attackTargetPosition = targetPosition;
-		this.agent.SetDestination(this.attackTargetPosition);
+		if (Network.isClient) {
+			Debug.Log("RPC_Attack has been called. Vector: " + targetPosition.ToString());
+			this.attackTargetPosition = targetPosition;
+			this.agent.SetDestination(this.attackTargetPosition);
+		}
+		else {
+			Debug.LogError("Client RPC_Attack was not called.");
+		}
 	}
 
 	private void CheckForEnemies() {
@@ -182,7 +187,8 @@ public class Attackable : MonoBehaviour {
 				}
 				else {
 					Vector3 unitVector = (enemy.transform.position - this.gameObject.transform.position).normalized;
-					if (this.attackableNetworkView != null) {
+					if (this.attackableNetworkView != null && !this.receivedAttackCommand) {
+						this.receivedAttackCommand = true;
 						this.attackableNetworkView.RPC("RPC_Attack", RPCMode.AllBuffered, this.gameObject.transform.position + unitVector);
 					}
 				}
