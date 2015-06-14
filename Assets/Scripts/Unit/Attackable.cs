@@ -157,13 +157,16 @@ public class Attackable : MonoBehaviour {
 		if (this.attackTargetUnits.Count > 0) {
 			GameObject enemy = this.attackTargetUnits[0];
 			if (enemy == null) {
+				this.attackTargetUnits.RemoveAt(0);
 				return;
 			}
 			Selectable enemySelect = enemy.GetComponent<Selectable>();
 			if (enemySelect == null) {
+				this.attackTargetUnits.RemoveAt(0);
 				return;
 			}
 			if (enemySelect.UUID.Equals(this.selectable.UUID)) {
+				this.attackTargetUnits.RemoveAt(0);
 				return;
 			}
 			DeathCheck check = enemy.GetComponent<DeathCheck>();
@@ -194,6 +197,11 @@ public class Attackable : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void StopAttacking() {
+		this.isAttacking = false;
+		this.isReadyToAttack = false;
 	}
 
 	public void IncreaseStrength() {
