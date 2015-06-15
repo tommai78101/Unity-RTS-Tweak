@@ -33,7 +33,10 @@ public class Attackable : MonoBehaviour {
 	public bool isReadyToAttack;
 	public bool isAttacking;
 	private bool receivedAttackCommand;
-	public int strength;
+	//public int strength;
+	public float attackCooldown;
+
+
 	public List<GameObject> attackTargetUnits = new List<GameObject>();
 
 	/*
@@ -69,7 +72,8 @@ public class Attackable : MonoBehaviour {
 		this.isReadyToAttack = false;
 		this.isAttacking = false;
 		this.receivedAttackCommand = false;
-		this.strength = 1;
+		this.attackCooldown = 3f;
+		//this.strength = 1;
 	}
 
 	public void OnGUI() {
@@ -112,7 +116,7 @@ public class Attackable : MonoBehaviour {
 			else if (!this.isReadyToAttack && this.isAttacking && !this.receivedAttackCommand) {
 				if (this.attackableNetworkView != null) {
 					this.receivedAttackCommand = true;
-					this.attackableNetworkView.RPC("RPC_Attack", RPCMode.OthersBuffered, Input.mousePosition);
+					this.attackableNetworkView.RPC("RPC_Attack", RPCMode.AllBuffered, Input.mousePosition);
 				}
 			}
 		}
@@ -122,14 +126,14 @@ public class Attackable : MonoBehaviour {
 
 	[RPC]
 	public void RPC_Attack(Vector3 targetPosition) {
-		if (Network.isClient) {
+		//if (Network.isClient) {
 			Debug.Log("RPC_Attack has been called. Vector: " + targetPosition.ToString());
 			this.attackTargetPosition = targetPosition;
 			this.agent.SetDestination(this.attackTargetPosition);
-		}
-		else {
-			Debug.LogError("Client RPC_Attack was not called.");
-		}
+		//}
+		//else {
+			//Debug.LogError("Client RPC_Attack was not called.");
+		//}
 	}
 
 	private void CheckForEnemies() {
@@ -175,15 +179,25 @@ public class Attackable : MonoBehaviour {
 					if (this.gameObject != null && enemy.gameObject != null) {
 						BattlePair p = new BattlePair(this.gameObject, enemy);
 						if (!DeathCheck.pairs.Contains(p)) {
+							//TODO: Swap this to another script that keeps track of strength and HP.
 							Attackable attack = enemy.GetComponent<Attackable>();
-							if (attack != null) {
-								if (attack.GetStrength() <= 0) {
+							if (attack != null){
+								if (attack.attackCooldown <= 0f) {
+									Debug.Log("Attacked!");
 									check.Kill();
 									DeathCheck.pairs.Add(p);
+									attack.attackCooldown = 3f;
 								}
 								else {
-									attack.DecreaseStrength();
+									attack.attackCooldown -= Time.deltaTime;
 								}
+								//if (attack.GetStrength() <= 0) {
+								//	check.Kill();
+								//	DeathCheck.pairs.Add(p);	
+								//}
+								//else {
+								//	attack.DecreaseStrength();	
+								//}
 							}
 						}
 					}
@@ -204,15 +218,15 @@ public class Attackable : MonoBehaviour {
 		this.isReadyToAttack = false;
 	}
 
-	public void IncreaseStrength() {
-		this.strength++;
-	}
+	//public void IncreaseStrength() {
+	//	this.strength++;
+	//}
 
-	public void DecreaseStrength() {
-		this.strength--;
-	}
+	//public void DecreaseStrength() {
+	//	this.strength--;
+	//}
 
-	public int GetStrength() {
-		return this.strength;
-	}
+	//public int GetStrength() {
+	//	return this.strength;
+	//}
 }

@@ -21,7 +21,7 @@ public class Initialize : MonoBehaviour {
 	public int currentHighestNumber;
 	public bool serverHasSpawned;
 	public GameObject[] playerSpawns;
-	public NetworkView networkView;
+	public NetworkView playerNetworkView;
 
 	// Use this for initialization
 	void Start() {
@@ -30,8 +30,8 @@ public class Initialize : MonoBehaviour {
 		//if (this.getReadyObject == null) {
 		//	Debug.LogException(new System.NullReferenceException("Get Ready object is null."));
 		//}
-		this.networkView = this.GetComponent<NetworkView>();
-		if (this.networkView == null) {
+		this.playerNetworkView = this.GetComponent<NetworkView>();
+		if (this.playerNetworkView == null) {
 			Debug.LogException(new System.NullReferenceException("Network View object is null."));
 		}
 		this.serverHasSpawned = false;
@@ -117,7 +117,7 @@ public class Initialize : MonoBehaviour {
 		if (Network.isClient) {
 			this.playerNumber = serverNumber + 1;
 			Debug.Log("serverNumber: " + serverNumber.ToString() + ". playerNumber: " + this.playerNumber.ToString());
-			this.networkView.RPC("RPC_Server_Validate", RPCMode.Server, this.playerNumber, Network.player);
+			this.playerNetworkView.RPC("RPC_Server_Validate", RPCMode.Server, this.playerNumber, Network.player);
 		}
 	}
 
@@ -128,8 +128,9 @@ public class Initialize : MonoBehaviour {
 			Debug.Log("newNumber: " + newNumber.ToString() + ". playerNumber: " + this.playerNumber.ToString());
 			GameObject gameObject = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.playerSpawns[this.playerNumber].transform.position, Quaternion.identity, 0);
 			if (gameObject != null) {
-				gameObject.name = gameObject + " " + this.playerNumber + " " + (Network.isClient ? "(Client)" : "(Server)");
-				this.networkView.RPC("RPC_Server_Spawn", RPCMode.Server, null);
+				//Original initialized untis will have parentheses around the remote label (client or server).
+				gameObject.name = (Network.isClient ? "(client)" : "(server)") + " " + System.Guid.NewGuid().ToString();
+				this.playerNetworkView.RPC("RPC_Server_Spawn", RPCMode.Server, null);
 			}
 			else {
 				Debug.LogError("Failed to instantiate player.");
@@ -142,12 +143,12 @@ public class Initialize : MonoBehaviour {
 		if (Network.isServer) {
 			Debug.Log("number: " + number.ToString() + ". server_currentHighestNumber: " + this.currentHighestNumber.ToString());
 			if (this.currentHighestNumber < number) {
-				this.networkView.RPC("RPC_Client_Spawn", player, number);
+				this.playerNetworkView.RPC("RPC_Client_Spawn", player, number);
 				this.currentHighestNumber = number;
 				Debug.Log("After client spawning, number: " + number.ToString() + ". server_currentHighestNumber: " + this.currentHighestNumber.ToString());
 			}
 			else {
-				this.networkView.RPC("RPC_Client_DrawNewNumber", player, this.currentHighestNumber);
+				this.playerNetworkView.RPC("RPC_Client_DrawNewNumber", player, this.currentHighestNumber);
 			}
 		}
 	}

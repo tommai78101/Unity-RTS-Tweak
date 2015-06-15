@@ -38,7 +38,7 @@ public class Divisible : MonoBehaviour {
 	private Vector3 spawnedLocation = Vector3.zero;
 	private Vector3 rotatedVector = Vector3.zero;
 	private float elapsedTime;
-
+	private bool canDivide;
 
 	public void Start() {
 		this.ownerSelectable = this.GetComponent<Selectable>();
@@ -46,10 +46,12 @@ public class Divisible : MonoBehaviour {
 		this.playerNetworkView = this.GetComponent<NetworkView>();
 		this.elapsedTime = 0f;
 		this.ownerAttackable = this.GetComponent<Attackable>();
+		this.canDivide = true;
 	}
 
 	public void Update() {
-		if (!this.isReady) {
+		if (!this.isReady && this.canDivide) {
+			Debug.Log("canDivide: " + this.canDivide);
 			if (this.elapsedTime < 1f) {
 				this.StartCoroutine(CR_MoveToPosition(this.gameObject, this.spawnedLocation + rotatedVector));
 				this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.spawnedUnit, this.spawnedLocation - rotatedVector));
@@ -61,9 +63,10 @@ public class Divisible : MonoBehaviour {
 
 	public void OnGUI() {
 		if (this.ownerSelectable != null && this.playerNetworkView.isMine) {
-			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady && (!this.ownerAttackable.isReadyToAttack || !this.ownerAttackable.isAttacking)) {
+			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady && (!this.ownerAttackable.isReadyToAttack || !this.ownerAttackable.isAttacking) && this.canDivide) {
 				this.spawnedLocation = this.gameObject.transform.position;
 				GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
+				//Clones will not have parentheses around the remote node label (client, or server).
 				unit.name = (Network.isClient ? "client " : "server ") + System.Guid.NewGuid();
 
 				this.spawnedSelectable = unit.GetComponentInChildren<Selectable>();
@@ -150,5 +153,13 @@ public class Divisible : MonoBehaviour {
 			rendererA.material.color = Color.white;
 			rendererB.material.color = Color.white;
 		}
+	}
+
+	public void SetDivisible(bool flag) {
+		this.canDivide = flag;
+	}
+
+	public bool IsDivisible() {
+		return this.canDivide;
 	}
 }
