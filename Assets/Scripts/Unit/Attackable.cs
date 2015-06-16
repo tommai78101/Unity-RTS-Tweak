@@ -33,7 +33,6 @@ public class Attackable : MonoBehaviour {
 	public bool isReadyToAttack;
 	public bool isAttacking;
 	private bool receivedAttackCommand;
-	//public int strength;
 	public float attackCooldown;
 
 
@@ -72,8 +71,7 @@ public class Attackable : MonoBehaviour {
 		this.isReadyToAttack = false;
 		this.isAttacking = false;
 		this.receivedAttackCommand = false;
-		this.attackCooldown = 3f;
-		//this.strength = 1;
+		this.attackCooldown = 1.414f;
 	}
 
 	public void OnGUI() {
@@ -136,6 +134,15 @@ public class Attackable : MonoBehaviour {
 		//}
 	}
 
+	[RPC]
+	public void RPC_DecreaseHealth(NetworkViewID viewID) {
+		NetworkView view = NetworkView.Find(viewID);
+		HealthBar bar = view.gameObject.GetComponent<HealthBar>();
+		if (bar != null){
+			bar.DecreaseHealth(1);
+		}
+	}
+
 	private void CheckForEnemies() {
 		if (UnitManager.Instance == null) {
 			return;
@@ -184,20 +191,20 @@ public class Attackable : MonoBehaviour {
 							if (attack != null){
 								if (attack.attackCooldown <= 0f) {
 									Debug.Log("Attacked!");
-									check.Kill();
-									DeathCheck.pairs.Add(p);
-									attack.attackCooldown = 3f;
+									NetworkViewID viewID = enemy.GetComponent<NetworkView>().viewID;
+									this.attackableNetworkView.RPC("RPC_DecreaseHealth", RPCMode.AllBuffered, viewID);
+
+									HealthBar bar = enemy.GetComponent<HealthBar>();
+									if (bar.currentHealth <= 0f || bar.healthPercentage <= 0f) {
+										check.Kill();
+										DeathCheck.pairs.Add(p);
+									}
+
+									attack.attackCooldown = 1.414f;
 								}
 								else {
 									attack.attackCooldown -= Time.deltaTime;
 								}
-								//if (attack.GetStrength() <= 0) {
-								//	check.Kill();
-								//	DeathCheck.pairs.Add(p);	
-								//}
-								//else {
-								//	attack.DecreaseStrength();	
-								//}
 							}
 						}
 					}
@@ -217,16 +224,4 @@ public class Attackable : MonoBehaviour {
 		this.isAttacking = false;
 		this.isReadyToAttack = false;
 	}
-
-	//public void IncreaseStrength() {
-	//	this.strength++;
-	//}
-
-	//public void DecreaseStrength() {
-	//	this.strength--;
-	//}
-
-	//public int GetStrength() {
-	//	return this.strength;
-	//}
 }

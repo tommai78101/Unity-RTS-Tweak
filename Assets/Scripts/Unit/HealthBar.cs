@@ -33,13 +33,22 @@ public class HealthBar : MonoBehaviour {
 		}
 	}
 
-	public static float GetHealthPercentage(GameObject gameObject) {
-		HealthBar hp = gameObject.GetComponent<HealthBar>();
-		if (hp != null) {
-			return hp.healthPercentage;
-		}
-		else {
-			return 0f;
-		}
+	//public static float GetHealthPercentage(GameObject gameObject) {
+	//	HealthBar hp = gameObject.GetComponent<HealthBar>();
+	//	if (hp != null) {
+	//		return hp.healthPercentage;
+	//	}
+	//	else {
+	//		return 0f;
+	//	}
+	//}
+
+	private void OnGUI() {
+		GUIStyle style = new GUIStyle();
+		style.normal.textColor = Color.black;
+		style.alignment = TextAnchor.MiddleCenter;
+		Vector3 healthPosition = Camera.main.WorldToScreenPoint(this.gameObject.transform.position);
+		Rect healthRect = new Rect(healthPosition.x - 50f, (Screen.height - healthPosition.y) - 45f, 100f, 25f);
+		GUI.Label(healthRect, this.currentHealth.ToString() + "/" + this.maxHealth.ToString(), style);
 	}
 }

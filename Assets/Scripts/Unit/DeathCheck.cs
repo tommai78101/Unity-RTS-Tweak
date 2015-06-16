@@ -53,12 +53,12 @@ public class DeathCheck : MonoBehaviour {
 				if (check.isDead) {
 					this.playerNetworkView = this.GetComponent<NetworkView>();
 					if (this.playerNetworkView != null) {
-						HealthBar hp = p.attackee.GetComponent<HealthBar>();
-						if (hp != null) {
-							hp.DecreaseHealth(1);
-						}
+						//if (hp != null) {
+						//	hp.DecreaseHealth(1);
+						//}
 
-						if (this.playerNetworkView.isMine && (hp.currentHealth <= 0 || HealthBar.GetHealthPercentage(p.attackee) <= 0f)) {
+						//HealthBar hp = p.attackee.GetComponent<HealthBar>();
+						if (this.playerNetworkView.isMine){
 							NetworkPlayer[] players = Network.connections;
 							if (players.Length > 0 && p.attackee != null) {
 								Network.Destroy(p.attackee);
