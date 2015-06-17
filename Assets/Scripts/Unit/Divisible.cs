@@ -51,7 +51,6 @@ public class Divisible : MonoBehaviour {
 
 	public void Update() {
 		if (!this.isReady && this.canDivide) {
-			Debug.Log("canDivide: " + this.canDivide);
 			if (this.elapsedTime < 1f) {
 				this.StartCoroutine(CR_MoveToPosition(this.gameObject, this.spawnedLocation + rotatedVector));
 				this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.spawnedUnit, this.spawnedLocation - rotatedVector));
@@ -68,6 +67,14 @@ public class Divisible : MonoBehaviour {
 				GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
 				//Clones will not have parentheses around the remote node label (client, or server).
 				unit.name = (Network.isClient ? "client " : "server ") + System.Guid.NewGuid();
+
+				HealthBar foo = unit.GetComponent<HealthBar>();
+				HealthBar bar = this.gameObject.GetComponent<HealthBar>();
+				if (foo != null && bar != null) {
+					foo.currentHealth = bar.currentHealth;
+					foo.maxHealth = bar.maxHealth;
+					foo.healthPercentage = bar.healthPercentage;
+				}
 
 				this.spawnedSelectable = unit.GetComponentInChildren<Selectable>();
 				this.spawnedSelectable.DisableSelection();
@@ -92,11 +99,21 @@ public class Divisible : MonoBehaviour {
 
 	[RPC]
 	private void RPC_Add(NetworkViewID first, NetworkViewID second) {
-		this.isReady = false;
-		this.elapsedTime = 0f;
-
 		NetworkView firstView = NetworkView.Find(first);
 		NetworkView secondView = NetworkView.Find(second);
+
+		Divisible div = firstView.gameObject.GetComponent<Divisible>();
+		div.isReady = false;
+		div.elapsedTime = 0f;
+
+		div = secondView.gameObject.GetComponent<Divisible>();
+		div.isReady = false;
+		div.elapsedTime = 0f;
+
+		HealthBar foo = firstView.gameObject.GetComponent<HealthBar>();
+		HealthBar bar = secondView.gameObject.GetComponent<HealthBar>();
+		foo.Copy(bar);
+
 		this.spawnedUnit = new SpawnUnit(firstView.gameObject, secondView.gameObject, this.cooldownTimer);
 	}
 
@@ -161,5 +178,9 @@ public class Divisible : MonoBehaviour {
 
 	public bool IsDivisible() {
 		return this.canDivide;
+	}
+
+	public bool IsDivisibleStateReady() {
+		return this.isReady;
 	}
 }

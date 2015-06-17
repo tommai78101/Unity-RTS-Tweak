@@ -19,12 +19,19 @@ public class PlayerNavMeshAgent : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 			if (Physics.Raycast(ray, out hit)) {
-				agent.SetDestination(hit.point);
+				this.playerNetworkView.RPC("RPC_SetTarget", RPCMode.AllBuffered, hit.point);
 			}
 		}
 	}
 
 	public NavMeshAgent getAgent(){
-		return agent;
+		return this.agent;
+	}
+
+	[RPC]
+	public void RPC_SetTarget(Vector3 target) {
+		if (this.playerNetworkView.isMine) {
+			this.agent.SetDestination(target);
+		}
 	}
 }

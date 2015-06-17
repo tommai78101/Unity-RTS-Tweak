@@ -91,17 +91,10 @@ public class Mergeable : MonoBehaviour {
 					select.EnableSelection();
 				}
 
-				//Attackable attack = pair.first.GetComponent<Attackable>();
-				//if (attack != null) {
-				//	attack.IncreaseStrength();
-				//}
-				//attack = pair.second.GetComponent<Attackable>();
-				//if (attack != null) {
-				//	attack.IncreaseStrength();
-				//}
-
 				pair.second.SetActive(false);
 				if (!pair.second.activeSelf && this.playerNetworkView.isMine) {
+
+					Network.RemoveRPCsInGroup(0);
 					Network.Destroy(pair.second);
 					
 					Divisible div = pair.first.GetComponent<Divisible>();

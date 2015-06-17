@@ -130,6 +130,13 @@ public class Initialize : MonoBehaviour {
 			if (gameObject != null) {
 				//Original initialized untis will have parentheses around the remote label (client or server).
 				gameObject.name = (Network.isClient ? "(client)" : "(server)") + " " + System.Guid.NewGuid().ToString();
+
+				HealthBar bar = gameObject.GetComponent<HealthBar>();
+				if (bar != null) {
+					bar.currentHealth = bar.maxHealth = 10;
+					bar.healthPercentage = (float) bar.currentHealth / (float) bar.maxHealth;
+				}
+
 				this.playerNetworkView.RPC("RPC_Server_Spawn", RPCMode.Server, null);
 			}
 			else {
@@ -160,6 +167,12 @@ public class Initialize : MonoBehaviour {
 				GameObject gameObject = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.playerSpawns[this.playerNumber].transform.position, Quaternion.identity, 0);
 				if (gameObject != null) {
 					gameObject.name = gameObject + " " + this.playerNumber + " " + (Network.isClient ? "(Client)" : "(Server)");
+
+					HealthBar bar = gameObject.GetComponent<HealthBar>();
+					if (bar != null) {
+						bar.currentHealth = bar.maxHealth = 10;
+						bar.healthPercentage = (float) bar.currentHealth / (float) bar.maxHealth;
+					}
 				}
 				else {
 					Debug.LogError("Failed to instantiate player.");

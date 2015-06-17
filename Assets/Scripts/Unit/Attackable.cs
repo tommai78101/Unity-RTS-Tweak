@@ -190,12 +190,12 @@ public class Attackable : MonoBehaviour {
 							Attackable attack = enemy.GetComponent<Attackable>();
 							if (attack != null){
 								if (attack.attackCooldown <= 0f) {
-									Debug.Log("Attacked!");
 									NetworkViewID viewID = enemy.GetComponent<NetworkView>().viewID;
 									this.attackableNetworkView.RPC("RPC_DecreaseHealth", RPCMode.AllBuffered, viewID);
 
 									HealthBar bar = enemy.GetComponent<HealthBar>();
-									if (bar.currentHealth <= 0f || bar.healthPercentage <= 0f) {
+									Divisible div = enemy.GetComponent<Divisible>();
+									if (bar.currentHealth <= 0f || bar.healthPercentage <= 0f || !div.IsDivisibleStateReady()) {
 										check.Kill();
 										DeathCheck.pairs.Add(p);
 									}
