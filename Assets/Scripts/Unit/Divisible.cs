@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /*
  * TODO: Make Attackable, Selectable, Divisible, and Mergeable all global ENUM types.
@@ -36,9 +37,11 @@ public class Divisible : MonoBehaviour {
 	private bool isReady;
 	private SpawnUnit spawnedUnit;
 	private Vector3 spawnedLocation = Vector3.zero;
-	private Vector3 rotatedVector = Vector3.zero;
+	private List<Vector3> rotatedVector = new List<Vector3>();
 	private float elapsedTime;
 	private bool canDivide;
+
+	public int numberOfUnitsPerSpawn = 1;
 
 	public void Start() {
 		this.ownerSelectable = this.GetComponent<Selectable>();
@@ -52,9 +55,11 @@ public class Divisible : MonoBehaviour {
 	public void Update() {
 		if (!this.isReady && this.canDivide) {
 			if (this.elapsedTime < 1f) {
-				this.StartCoroutine(CR_MoveToPosition(this.gameObject, this.spawnedLocation + rotatedVector));
-				this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.spawnedUnit, this.spawnedLocation - rotatedVector));
-				this.StartCoroutine(CR_CooldownTime());
+				for (int i = 0; i < this.numberOfUnitsPerSpawn; i++) {
+					this.StartCoroutine(CR_MoveToPosition(this.gameObject, this.spawnedLocation + rotatedVector[i]));
+					this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.spawnedUnit, this.spawnedLocation - rotatedVector[i]));
+					this.StartCoroutine(CR_CooldownTime());
+				}
 				this.elapsedTime += Time.deltaTime / this.cooldownTimer;
 			}
 		}
@@ -63,35 +68,42 @@ public class Divisible : MonoBehaviour {
 	public void OnGUI() {
 		if (this.ownerSelectable != null && this.playerNetworkView.isMine) {
 			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady && (!this.ownerAttackable.isReadyToAttack || !this.ownerAttackable.isAttacking) && this.canDivide) {
-				this.spawnedLocation = this.gameObject.transform.position;
-				GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
-				//Clones will not have parentheses around the remote node label (client, or server).
-				unit.name = (Network.isClient ? "client " : "server ") + System.Guid.NewGuid();
+				float randomAngle = Random.Range(-180f, 180f);
+				float parts = 360f / (float) (this.numberOfUnitsPerSpawn + 1);
+				this.rotatedVector.Clear();
+				for (int i = 0; i < this.numberOfUnitsPerSpawn; i++) {
+					this.spawnedLocation = this.gameObject.transform.position;
+					GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
+					//Clones will not have parentheses around the remote node label (client, or server).
+					unit.name = (Network.isClient ? "client " : "server ") + System.Guid.NewGuid();
 
-				HealthBar foo = unit.GetComponent<HealthBar>();
-				HealthBar bar = this.gameObject.GetComponent<HealthBar>();
-				if (foo != null && bar != null) {
-					foo.currentHealth = bar.currentHealth;
-					foo.maxHealth = bar.maxHealth;
-					foo.healthPercentage = bar.healthPercentage;
-				}
+					HealthBar foo = unit.GetComponent<HealthBar>();
+					HealthBar bar = this.gameObject.GetComponent<HealthBar>();
+					if (foo != null && bar != null) {
+						foo.currentHealth = bar.currentHealth;
+						foo.maxHealth = bar.maxHealth;
+						foo.healthPercentage = bar.healthPercentage;
+					}
 
-				this.spawnedSelectable = unit.GetComponentInChildren<Selectable>();
-				this.spawnedSelectable.DisableSelection();
-				this.ownerSelectable.DisableSelection();
+					this.spawnedSelectable = unit.GetComponentInChildren<Selectable>();
+					this.spawnedSelectable.DisableSelection();
+					this.ownerSelectable.DisableSelection();
 
-				Vector3 size = Vector3.right;
-				Renderer renderer = this.GetComponent<Renderer>();
-				if (renderer != null){
-					size = renderer.bounds.size;
-					size.y = size.z = 0f;
-				}
-				this.rotatedVector = Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f) * (size / 2f);
+					Vector3 size = Vector3.right;
+					Renderer renderer = this.GetComponent<Renderer>();
+					if (renderer != null){
+						size = renderer.bounds.size;
+						size.y = size.z = 0f;
+					}
+					
+					randomAngle = (randomAngle + parts * i) % 360f;
+					this.rotatedVector.Add(Quaternion.Euler(0f, randomAngle, 0f) * (size / 2f));
 
-				NetworkView view = unit.GetComponent<NetworkView>();
-				if (this.playerNetworkView != null && view != null) {
-					this.playerNetworkView.RPC("RPC_Add", RPCMode.AllBuffered, this.playerNetworkView.viewID, view.viewID);
-					this.playerNetworkView.RPC("RPC_Other_Spawn", RPCMode.OthersBuffered, this.spawnedLocation, this.rotatedVector);
+					NetworkView view = unit.GetComponent<NetworkView>();
+					if (this.playerNetworkView != null && view != null) {
+						this.playerNetworkView.RPC("RPC_Add", RPCMode.AllBuffered, this.playerNetworkView.viewID, view.viewID);
+						this.playerNetworkView.RPC("RPC_Other_Spawn", RPCMode.OthersBuffered, this.spawnedLocation, this.rotatedVector[i], i);
+					}
 				}
 			}
 		}
@@ -118,9 +130,9 @@ public class Divisible : MonoBehaviour {
 	}
 
 	[RPC]
-	private void RPC_Other_Spawn(Vector3 spawn, Vector3 rotated) {
+	private void RPC_Other_Spawn(Vector3 spawn, Vector3 rotated, int index) {
 		this.spawnedLocation = spawn;
-		this.rotatedVector = rotated;
+		this.rotatedVector.Add(rotated);
 	}
 
 	private IEnumerator CR_MoveToPosition(GameObject gameObject, Vector3 target) {
