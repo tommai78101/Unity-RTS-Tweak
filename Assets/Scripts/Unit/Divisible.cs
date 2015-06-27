@@ -33,7 +33,6 @@ public class Divisible : MonoBehaviour {
 	private Selectable spawnedSelectable;
 	private Attackable ownerAttackable;
 	private NetworkView playerNetworkView;
-	private float cooldownTimer = 15f;
 	private bool isReady;
 	private SpawnUnit spawnedUnit;
 	private Vector3 spawnedLocation = Vector3.zero;
@@ -42,6 +41,8 @@ public class Divisible : MonoBehaviour {
 	private bool canDivide;
 
 	public int numberOfUnitsPerSpawn = 1;
+	public float cooldownTimer = 15f;
+	public GameObject spawnUnitPrefab;
 
 	public void Start() {
 		this.ownerSelectable = this.GetComponent<Selectable>();
@@ -50,6 +51,10 @@ public class Divisible : MonoBehaviour {
 		this.elapsedTime = 0f;
 		this.ownerAttackable = this.GetComponent<Attackable>();
 		this.canDivide = true;
+
+		if (this.spawnUnitPrefab == null) {
+			Debug.LogError(new System.NullReferenceException("Spawn Unit Prefab in Divisible is currently null. Please check  the owning unit's Divisble component."));
+		}
 	}
 
 	public void Update() {
@@ -73,7 +78,7 @@ public class Divisible : MonoBehaviour {
 				this.rotatedVector.Clear();
 				for (int i = 0; i < this.numberOfUnitsPerSpawn; i++) {
 					this.spawnedLocation = this.gameObject.transform.position;
-					GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
+					GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Cube"), this.spawnedLocation, Quaternion.identity, 0);
 					//Clones will not have parentheses around the remote node label (client, or server).
 					unit.name = (Network.isClient ? "client " : "server ") + System.Guid.NewGuid();
 
@@ -99,10 +104,12 @@ public class Divisible : MonoBehaviour {
 					randomAngle = (randomAngle + parts * i) % 360f;
 					this.rotatedVector.Add(Quaternion.Euler(0f, randomAngle, 0f) * (size / 2f));
 
-					NetworkView view = unit.GetComponent<NetworkView>();
-					if (this.playerNetworkView != null && view != null) {
-						this.playerNetworkView.RPC("RPC_Add", RPCMode.AllBuffered, this.playerNetworkView.viewID, view.viewID);
-						this.playerNetworkView.RPC("RPC_Other_Spawn", RPCMode.OthersBuffered, this.spawnedLocation, this.rotatedVector[i], i);
+					if (!Debugging.debugEnabled) {
+						NetworkView view = unit.GetComponent<NetworkView>();
+						if (this.playerNetworkView != null && view != null) {
+							this.playerNetworkView.RPC("RPC_Add", RPCMode.AllBuffered, this.playerNetworkView.viewID, view.viewID);
+							this.playerNetworkView.RPC("RPC_Other_Spawn", RPCMode.OthersBuffered, this.spawnedLocation, this.rotatedVector[i], i);
+						}
 					}
 				}
 			}

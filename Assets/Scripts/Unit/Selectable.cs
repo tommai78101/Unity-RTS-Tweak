@@ -29,9 +29,9 @@ public class Selectable : MonoBehaviour {
 					GameObject obj = HitInfo.collider.gameObject;
 					Vector3 center = obj.transform.position + new Vector3(0f, 0.5f, 0f);
 					float distance = Vector3.Distance(HitInfo.point, center);
-					Selectable selectable = obj.GetComponent<Selectable>();
 					//Debug.Log("Vector distance from " + HitInfo.point.ToString() + " to " + center.ToString() + " is: " + distance.ToString());
 					if (!obj.name.Equals("Floor") && !obj.name.EndsWith("Location")){
+						Selectable selectable = obj.GetComponent<Selectable>();
 						if (distance <= 1f && selectable.SelectableID == this.SelectableID && selectable.UUID.Equals(this.UUID)) {
 							this.isBoxedSelected = true;
 						}
@@ -110,13 +110,13 @@ public class Selectable : MonoBehaviour {
 
 	private void Update() {
 		if (!isEnabled) {
-			if (this.attackable.isReadyToAttack && !this.IsSelectionEnabled()) {
+			if (!Debugging.debugEnabled && this.attackable.isReadyToAttack && !this.IsSelectionEnabled()) {
 				this.EnableSelection();
 			}
 			else if (Selectable.selectedObjects.Contains(this)) {
 				this.EnableSelection();
 			}
-			else if (this.deathCheck.isDead) {
+			else if (!Debugging.debugEnabled && this.deathCheck.isDead) {
 				this.DisableSelection();
 			}
 			return;
