@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class UnitSelectable : MonoBehaviour {
 	public Color selectedColor = new Color(0f, 1f, 0f);
+	public System.Guid identity = System.Guid.NewGuid();
 
 	private Color initialColor;
 	private UnitStateManager manager;
@@ -35,7 +36,8 @@ public class UnitSelectable : MonoBehaviour {
 			Vector3 center = obj.transform.position + new Vector3(0f, 0.5f, 0f);
 			float distance = Vector3.Distance(hitInfo.point, center);
 			if (!obj.name.Equals("Floor")) {
-				if (distance <= 1f) {
+				System.Guid identity = obj.GetComponent<UnitSelectable>().identity;
+				if (distance <= 1f && identity.Equals(this.identity)) {
 					manager.selectFlag = true;
 				}
 			}
