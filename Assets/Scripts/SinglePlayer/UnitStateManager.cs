@@ -85,7 +85,7 @@ public class UnitStateManager : MonoBehaviour {
 			}
 			//Do attack here.
 			UnitHealth health = this.attackee.GetComponent<UnitHealth>();
-			if (health.healthPoints > 0) {
+			if (health != null && health.healthPoints > 0) {
 				this.attackee.SendMessage("DoDamage");
 			}
 			return;
@@ -148,12 +148,21 @@ public class UnitStateManager : MonoBehaviour {
 		//Check if enemies are nearby.
 		bool currentState = this.actionState.Equals(UnitState.IDLE) || this.actionState.Equals(UnitState.WAITING_FOR_ORDERS) || this.actionState.Equals(UnitState.ATTACK);
 		if (currentState) {
-			Collider[] colliders = Physics.OverlapSphere(this.transform.position, 5f);
-			if (colliders.Length > 0) {
-				this.attackee = colliders[0].gameObject;
-				this.SendMessage("AttackObject", this.attackee);
+			Collider[] colliders = Physics.OverlapSphere(this.transform.position, 1f);
+			bool enemyNearby = false;
+			for (int i = 0; i <colliders.Length; i++){
+				if (!colliders[i].name.Equals("Floor") && !colliders[i].gameObject.Equals(this.gameObject)){
+					float distance = Vector3.Distance(colliders[i].transform.position, this.transform.position);
+					Debug.Log("Distance: " + distance);
+					if (distance < 1f) {
+						this.attackee = colliders[i].gameObject;
+						this.SendMessage("AttackObject", this.attackee);
+						enemyNearby = true;
+						break;
+					}
+				}
 			}
-			else if (this.attackee != null) {
+			if (this.attackee != null && !enemyNearby) {
 				this.attackee = null;
 			}
 		}
