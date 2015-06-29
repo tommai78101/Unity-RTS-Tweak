@@ -174,12 +174,15 @@ public class UnitStateManager : MonoBehaviour {
 				if (Input.GetMouseButtonUp(1)) {
 					Move();
 				}
+				else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D)) {
+					this.commandState = UnitCommand.NO_ORDERS;
+					this.actionState = UnitState.WAITING_FOR_ORDERS;	
+				}
 				break;
 			case UnitCommand.MOVE_ORDER:
 				if (Input.GetMouseButtonUp(1)) {
 					Move();
 				}
-				//CheckSurroundings();
 				break;
 			default:
 				break;
