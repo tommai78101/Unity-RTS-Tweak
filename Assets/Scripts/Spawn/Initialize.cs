@@ -16,6 +16,9 @@ using System.Collections;
 
 
 public class Initialize : MonoBehaviour {
+	const int MAX_HEALTH = 5;
+
+
 	//public GetReady getReadyObject;
 	public int playerNumber;
 	public int currentHighestNumber;
@@ -133,7 +136,7 @@ public class Initialize : MonoBehaviour {
 
 				HealthBar bar = gameObject.GetComponent<HealthBar>();
 				if (bar != null) {
-					bar.currentHealth = bar.maxHealth = 10;
+					bar.currentHealth = bar.maxHealth = Initialize.MAX_HEALTH;
 					bar.healthPercentage = (float) bar.currentHealth / (float) bar.maxHealth;
 				}
 
@@ -170,7 +173,7 @@ public class Initialize : MonoBehaviour {
 
 					HealthBar bar = gameObject.GetComponent<HealthBar>();
 					if (bar != null) {
-						bar.currentHealth = bar.maxHealth = 10;
+						bar.currentHealth = bar.maxHealth = Initialize.MAX_HEALTH;
 						bar.healthPercentage = (float) bar.currentHealth / (float) bar.maxHealth;
 					}
 				}

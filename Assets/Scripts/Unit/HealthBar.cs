@@ -5,14 +5,23 @@ public class HealthBar : MonoBehaviour {
 	public float healthPercentage;
 	public int maxHealth;
 	public int currentHealth;
+	public float redCountdown;
 
-	//public void Start() {
-	//	this.currentHealth = this.maxHealth;
-	//	this.healthPercentage = (float) this.currentHealth / (float) this.maxHealth;
-	//}
+	private Material material;
+	private Color initialColor;
+	private bool isTakingDamage = false;
+
+	public void Start() {
+		Renderer renderer = this.GetComponent<Renderer>();
+		this.material = renderer.material;
+		this.initialColor = this.material.color;
+		this.redCountdown = 0f;
+		this.isTakingDamage = false;
+	}
 
 	public void DecreaseHealth(int attackPower) {
 		this.currentHealth -= attackPower;
+		FlashRed();
 		if (this.currentHealth < 0) {
 			this.currentHealth = 0;
 			this.healthPercentage = 0f;
@@ -46,5 +55,25 @@ public class HealthBar : MonoBehaviour {
 		this.currentHealth = other.currentHealth;
 		this.maxHealth = other.maxHealth;
 		this.healthPercentage = other.healthPercentage;
+	}
+
+	private void Update() {
+		if (this.material != null && this.isTakingDamage) {
+			if (this.redCountdown > 0f) {
+				this.redCountdown -= Time.deltaTime;
+				this.material.color = Color.Lerp(Color.red, this.initialColor, 1f - this.redCountdown);
+			}
+			else {
+				this.material.color = this.initialColor;
+				this.isTakingDamage = false;
+			}
+		}
+	}
+
+	private void FlashRed() {
+		if (this.material != null) {
+			this.redCountdown = 1f;
+			this.isTakingDamage = true;
+		}
 	}
 }
