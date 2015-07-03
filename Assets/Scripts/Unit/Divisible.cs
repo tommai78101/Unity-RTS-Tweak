@@ -61,7 +61,7 @@ public class Divisible : MonoBehaviour {
 		if (!this.isReady && this.canDivide) {
 			if (this.elapsedTime < 1f) {
 				for (int i = 0; i < this.numberOfUnitsPerSpawn; i++) {
-					this.StartCoroutine(CR_MoveToPosition(this.gameObject, this.spawnedLocation + rotatedVector[i]));
+					this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.owner, this.spawnedLocation + rotatedVector[i]));
 					this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.spawnedUnit, this.spawnedLocation - rotatedVector[i]));
 					this.StartCoroutine(CR_CooldownTime());
 				}
@@ -73,12 +73,14 @@ public class Divisible : MonoBehaviour {
 	public void OnGUI() {
 		if (this.ownerSelectable != null && this.playerNetworkView.isMine) {
 			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady && (!this.ownerAttackable.isReadyToAttack || !this.ownerAttackable.isAttacking) && this.canDivide) {
+				this.isReady = false;
 				float randomAngle = Random.Range(-180f, 180f);
 				float parts = 360f / (float) (this.numberOfUnitsPerSpawn + 1);
 				this.rotatedVector.Clear();
 				for (int i = 0; i < this.numberOfUnitsPerSpawn; i++) {
+
 					this.spawnedLocation = this.gameObject.transform.position;
-					GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Cube"), this.spawnedLocation, Quaternion.identity, 0);
+					GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
 					//Clones will not have parentheses around the remote node label (client, or server).
 					unit.name = (Network.isClient ? "client " : "server ") + System.Guid.NewGuid();
 
@@ -111,6 +113,9 @@ public class Divisible : MonoBehaviour {
 							this.playerNetworkView.RPC("RPC_Other_Spawn", RPCMode.OthersBuffered, this.spawnedLocation, this.rotatedVector[i], i);
 						}
 					}
+					else {
+						Debug.LogWarning("Debug flag is enabled.");
+					}
 				}
 			}
 		}
@@ -125,14 +130,15 @@ public class Divisible : MonoBehaviour {
 		div.isReady = false;
 		div.elapsedTime = 0f;
 
-		div = secondView.gameObject.GetComponent<Divisible>();
-		div.isReady = false;
-		div.elapsedTime = 0f;
+		Divisible div2 = secondView.gameObject.GetComponent<Divisible>();
+		div2.isReady = false;
+		div2.elapsedTime = 0f;
 
 		HealthBar foo = firstView.gameObject.GetComponent<HealthBar>();
 		HealthBar bar = secondView.gameObject.GetComponent<HealthBar>();
 		foo.Copy(bar);
 
+		Debug.Log((Network.isClient ? "(client)" : "(server)") + " is now making SpawnUnit struct object.");
 		this.spawnedUnit = new SpawnUnit(firstView.gameObject, secondView.gameObject, this.cooldownTimer);
 	}
 

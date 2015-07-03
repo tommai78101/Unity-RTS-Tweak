@@ -9,7 +9,7 @@ public class Perishable : MonoBehaviour {
 			UnitManager.Instance.AllUnits.Remove(this.gameObject);
 			Debug.Log("Current unit count: " + UnitManager.Instance.PlayerUnits.Count.ToString());
 
-			if (UnitManager.Instance.PlayerUnits.Count <= 0) {
+			if (UnitManager.Instance != null && UnitManager.Instance.PlayerUnits.Count <= 0) {
 				WinLoseCondition condition = UnitManager.Instance.gameObject.GetComponent<WinLoseCondition>();
 				if (condition != null) {
 					Debug.Log("WinLoseCondition found! Calling on event and delegate triggers.");

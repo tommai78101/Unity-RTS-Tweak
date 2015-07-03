@@ -5,8 +5,7 @@ public class UnitAttackable : MonoBehaviour {
 	const float initialCooldown = 2.317f;
 
 	public float cooldown;
-
-	private bool activateFlag;
+	public bool activateFlag;
 
 	public void SetCooldown() {
 		this.cooldown = UnitAttackable.initialCooldown;

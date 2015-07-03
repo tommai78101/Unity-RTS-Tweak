@@ -6,10 +6,10 @@ public class Selection : MonoBehaviour {
 	public static Rect selectionArea = new Rect();
 	public Material borderMaterial;
 
-	private Vector3 initialClick;
-	private Vector3 startingVertex;
-	private Vector3 endingVertex;
-	private Color borderColor;
+	protected Vector3 initialClick;
+	protected Vector3 startingVertex;
+	protected Vector3 endingVertex;
+	protected Color borderColor;
 
 	// Use this for initialization
 	void Start() {
@@ -18,7 +18,7 @@ public class Selection : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update() {
+	public virtual void Update() {
 		if (Input.GetMouseButtonDown(0)) {
 			this.initialClick = Input.mousePosition;
 		}

@@ -45,6 +45,9 @@ public class UnitManager : MonoBehaviour {
 		if (this.AllUnits.Count > 0) {
 			this.AllUnits.Clear();
 		}
+		if (UnitManager.Instance != null) {
+			UnitManager.Instance = null;
+		}
 	}
 
 	public void OnConnectedToServer() {
@@ -62,6 +65,9 @@ public class UnitManager : MonoBehaviour {
 	public void OnPlayerDisconnected(NetworkPlayer player) {
 		if (this.AllUnits.Count > 0) {
 			this.AllUnits.Clear();
+		}
+		if (UnitManager.Instance != null) {
+			UnitManager.Instance = null;
 		}
 	}
 
