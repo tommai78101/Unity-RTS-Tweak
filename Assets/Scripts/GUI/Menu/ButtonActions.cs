@@ -34,6 +34,16 @@ public class ButtonActions : MonoBehaviour {
 		Application.Quit();
 	}
 
+	public void ConnectToLocalHost() {
+		NetworkConnectionError error = Network.Connect("localhost", 12345);
+		if (error != NetworkConnectionError.NoError) {
+			Debug.Log("Server is probably not hosted, or the connection is blocked.");
+		}
+		else {
+			Application.LoadLevel("test_nav");
+		}
+	}
+
 	//MonoBehaviours
 
 	public void Start() {

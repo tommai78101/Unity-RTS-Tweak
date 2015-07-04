@@ -1,4 +1,4 @@
-﻿//Goal Outline Shader:
+//Goal Outline Shader:
 //http://wiki.unity3d.com/index.php?title=Silhouette-Outlined_Diffuse
 
 Shader "Custom/Outline" {
@@ -46,5 +46,6 @@ uniform float4 _OutlineColor;
 		}
 		ENDCG
 	} 
-	FallBack "Diffuse"
+
+	Fallback "Diffuse"
 }
