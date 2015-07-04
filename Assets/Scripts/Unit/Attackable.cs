@@ -158,7 +158,6 @@ public class Attackable : MonoBehaviour {
 			NetworkView view = o.GetComponent<NetworkView>();
 			if (!view.isMine) {
 				if ((Vector3.Distance(this.gameObject.transform.position, o.transform.position) < 4f) && !this.attackTargetUnits.Contains(o)) {
-				if ((Vector3.Distance(this.gameObject.transform.position, o.transform.position) < radius + opponentRadius + 1f) && !this.attackTargetUnits.Contains(o)) {
 					this.attackTargetUnits.Add(o);
 				}
 			}

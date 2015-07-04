@@ -61,14 +61,9 @@ public class Divisible : MonoBehaviour {
 		if (!this.isReady && this.canDivide) {
 			if (this.elapsedTime < 1f) {
 				for (int i = 0; i < this.numberOfUnitsPerSpawn; i++) {
-					if (this.rotatedVector.Count > 0) {
-						this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.owner, this.spawnedLocation + rotatedVector[i]));
-						this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.spawnedUnit, this.spawnedLocation - rotatedVector[i]));
-						this.StartCoroutine(CR_CooldownTime());
-					}
-					else {
-						return;
-					}
+					this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.owner, this.spawnedLocation + rotatedVector[i]));
+					this.StartCoroutine(CR_MoveToPosition(this.spawnedUnit.spawnedUnit, this.spawnedLocation - rotatedVector[i]));
+					this.StartCoroutine(CR_CooldownTime());
 				}
 				this.elapsedTime += Time.deltaTime / this.cooldownTimer;
 			}
