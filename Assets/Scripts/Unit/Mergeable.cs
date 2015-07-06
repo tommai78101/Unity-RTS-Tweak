@@ -24,6 +24,20 @@ public struct MergePair {
 		this.secondInitialPosition = b.transform.position;
 		this.firstInitialScale = a.transform.localScale;
 		this.secondInitialScale = b.transform.localScale;
+
+		HealthBar health = a.GetComponent<HealthBar>();
+		if (health != null) {
+			health.currentHealth *= 2;
+			health.maxHealth *= 2;
+			health.healthPercentage = (float) health.currentHealth / (float) health.maxHealth;
+		}
+
+		health = b.GetComponent<HealthBar>();
+		if (health != null) {
+			health.currentHealth *= 2;
+			health.maxHealth *= 2;
+			health.healthPercentage = (float) health.currentHealth / (float) health.maxHealth;
+		}
 	}
 };
 
@@ -91,9 +105,7 @@ public class Mergeable : MonoBehaviour {
 					select.EnableSelection();
 				}
 
-				pair.second.SetActive(false);
-				if (!pair.second.activeSelf && this.playerNetworkView.isMine) {
-
+				if (pair.second.activeSelf && this.playerNetworkView.isMine) {
 					Network.RemoveRPCsInGroup(0);
 					Network.Destroy(pair.second);
 					
