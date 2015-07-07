@@ -38,6 +38,15 @@ public struct MergePair {
 			health.maxHealth *= 2;
 			health.healthPercentage = (float) health.currentHealth / (float) health.maxHealth;
 		}
+
+		Attackable attack = a.GetComponent<Attackable>();
+		if (attack != null) {
+			attack.attackPower *= 2;
+		}
+		attack = b.GetComponent<Attackable>();
+		if (attack != null) {
+			attack.attackPower *= 2;
+		}
 	}
 };
 

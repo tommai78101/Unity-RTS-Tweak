@@ -34,6 +34,7 @@ public class Attackable : MonoBehaviour {
 	public bool isAttacking;
 	private bool receivedAttackCommand;
 	public float attackCooldown;
+	public int attackPower;
 
 
 	public List<GameObject> attackTargetUnits = new List<GameObject>();
@@ -72,6 +73,7 @@ public class Attackable : MonoBehaviour {
 		this.isAttacking = false;
 		this.receivedAttackCommand = false;
 		this.attackCooldown = 1.414f;
+		this.attackPower = 1;
 	}
 
 	public void OnGUI() {
@@ -139,7 +141,7 @@ public class Attackable : MonoBehaviour {
 		NetworkView view = NetworkView.Find(viewID);
 		HealthBar bar = view.gameObject.GetComponent<HealthBar>();
 		if (bar != null){
-			bar.DecreaseHealth(1);
+			bar.DecreaseHealth(this.attackPower);
 		}
 	}
 
