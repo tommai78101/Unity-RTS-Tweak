@@ -11,7 +11,6 @@ Shader "Custom/Outline" {
 
 CGINCLUDE
 #include "UnityCG.cginc"
-ENDCG
 
 struct appdata {
 	float4 vertex : POSITION;
