@@ -9,22 +9,22 @@ Shader "Custom/Outline" {
 		_MainTex ("Base (RGB)", 2D) = "white" {}
 	}
 
-CGINCLUDE
-#include "UnityCG.cginc"
+	CGINCLUDE
+	#include "UnityCG.cginc"
 
-struct appdata {
-	float4 vertex : POSITION;
-	float3 normal : NORMAL;
-}
+	struct appdata {
+		float4 vertex : POSITION;
+		float3 normal : NORMAL;
+	};
 
-struct vertex2float {
-	float4 pos : POSITION;
-	float4 color : COLOR;
-}
+	struct vertex2float {
+		float4 pos : POSITION;
+		float4 color : COLOR;
+	};
 
-uniform float _Outline;
-uniform float4 _OutlineColor;
-
+	uniform float _Outline;
+	uniform float4 _OutlineColor;
+	ENDCG
 
 	SubShader {
 		Tags { "RenderType"="Opaque" }
