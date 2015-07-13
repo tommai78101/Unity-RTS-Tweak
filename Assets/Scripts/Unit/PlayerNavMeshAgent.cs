@@ -15,11 +15,13 @@ public class PlayerNavMeshAgent : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetMouseButton(1) && selection.isSelected && this.playerNetworkView.isMine) {
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit)) {
-				this.playerNetworkView.RPC("RPC_SetTarget", RPCMode.AllBuffered, hit.point);
+		if (Input.GetMouseButton(1)) {
+			if (selection.isSelected && this.playerNetworkView.isMine) {
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit hit;
+				if (Physics.Raycast(ray, out hit)) {
+					this.playerNetworkView.RPC("RPC_SetTarget", RPCMode.AllBuffered, hit.point);
+				}
 			}
 		}
 	}

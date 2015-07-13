@@ -47,6 +47,15 @@ public struct MergePair {
 		if (attack != null) {
 			attack.attackPower *= 2;
 		}
+
+		Level level = a.GetComponent<Level>();
+		if (level != null) {
+			level.IncrementLevel();
+		}
+		level = b.GetComponent<Level>();
+		if (level != null) {
+			level.IncrementLevel();
+		}
 	}
 };
 
@@ -82,19 +91,35 @@ public class Mergeable : MonoBehaviour {
 			this.ownerSelectable.DisableSelection();
 			if (this.playerNetworkView != null) {
 				int count = Selectable.selectedObjects.Count;
-				while (count >= 2) {
+				int countCheck = count;
+				while (count >= 2 && countCheck >= 2) {
 					Selectable firstSelectable = Selectable.selectedObjects[0];
 					Selectable secondSelectable = Selectable.selectedObjects[1];
-					NetworkView firstNetworkView = firstSelectable.GetComponent<NetworkView>();
-					NetworkView secondNetworkView = secondSelectable.GetComponent<NetworkView>();
-
-					this.playerNetworkView.RPC("RPC_AddPair", RPCMode.AllBuffered, firstNetworkView.viewID, secondNetworkView.viewID);
-
-					firstSelectable.DisableSelection();
-					secondSelectable.DisableSelection();
-					Selectable.selectedObjects.Remove(firstSelectable);
-					Selectable.selectedObjects.Remove(secondSelectable);
-
+					if (firstSelectable != null && secondSelectable != null) {
+						Level levelFirst = firstSelectable.gameObject.GetComponent<Level>();
+						Level levelSecond = secondSelectable.gameObject.GetComponent<Level>();
+						if (levelFirst != null && levelSecond != null && (levelFirst.Compare(levelSecond) == Level.EQUALS)) {
+							NetworkView firstNetworkView = firstSelectable.GetComponent<NetworkView>();
+							NetworkView secondNetworkView = secondSelectable.GetComponent<NetworkView>();
+							this.playerNetworkView.RPC("RPC_AddPair", RPCMode.AllBuffered, firstNetworkView.viewID, secondNetworkView.viewID);
+							firstSelectable.DisableSelection();
+							secondSelectable.DisableSelection();
+							Selectable.selectedObjects.Remove(firstSelectable);
+							Selectable.selectedObjects.Remove(secondSelectable);
+						}
+						else {
+							Selectable.selectedObjects.Remove(firstSelectable);
+							Selectable.selectedObjects.Remove(secondSelectable);
+							firstSelectable.isSelected = true;
+							secondSelectable.isSelected = true;
+							Selectable.selectedObjects.Add(firstSelectable);
+							Selectable.selectedObjects.Add(secondSelectable);
+							countCheck -= 2;
+						}
+					}
+					else {
+						break;
+					}
 					count -= 2;
 				}
 			}
@@ -114,13 +139,15 @@ public class Mergeable : MonoBehaviour {
 					select.EnableSelection();
 				}
 
-				if (pair.second.activeSelf && this.playerNetworkView.isMine) {
-					Network.RemoveRPCsInGroup(0);
-					Network.Destroy(pair.second);
+				if (pair.second != null) {
+					if (pair.second.activeSelf && this.playerNetworkView.isMine) {
+						Network.RemoveRPCsInGroup(0);
+						Network.Destroy(pair.second);
 					
-					Divisible div = pair.first.GetComponent<Divisible>();
-					if (div != null && div.IsDivisible()) {
-						div.SetDivisible(false);
+						Divisible div = pair.first.GetComponent<Divisible>();
+						if (div != null && div.IsDivisible()) {
+							div.SetDivisible(false);
+						}
 					}
 				}
 				Mergeable.pairs.Remove(pair);
