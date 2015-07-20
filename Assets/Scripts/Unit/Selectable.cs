@@ -27,12 +27,14 @@ public class Selectable : MonoBehaviour {
 				RaycastHit HitInfo;
 				if (Physics.Raycast(ray, out HitInfo)) {
 					GameObject obj = HitInfo.collider.gameObject;
-					Vector3 center = obj.transform.position + new Vector3(0f, 0.5f, 0f);
-					float distance = Vector3.Distance(HitInfo.point, center);
-					//Debug.Log("Vector distance from " + HitInfo.point.ToString() + " to " + center.ToString() + " is: " + distance.ToString());
 					if (!obj.name.Equals("Floor") && !obj.name.EndsWith("Location")){
+						//Renderer objRenderer = obj.GetComponent<Renderer>();
+						//Vector3 size = objRenderer.bounds.size;
+						//Debug.Log("Size of selected object: " + size.ToString());
+						//Vector3 center = obj.transform.position + new Vector3(0f, 0.5f, 0f);
+						//float distance = Vector3.Distance(HitInfo.point, center);
 						Selectable selectable = obj.GetComponent<Selectable>();
-						if (distance <= 1f && selectable.SelectableID == this.SelectableID && selectable.UUID.Equals(this.UUID)) {
+						if (selectable.SelectableID == this.SelectableID && selectable.UUID.Equals(this.UUID)) {
 							this.isBoxedSelected = true;
 						}
 					}
