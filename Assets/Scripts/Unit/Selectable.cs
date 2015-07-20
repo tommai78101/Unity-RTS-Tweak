@@ -15,8 +15,7 @@ public class Selectable : MonoBehaviour {
 	private Attackable attackable;
 	private DeathCheck deathCheck;
 
-	[RPC]
-	public void RPC_Select() {
+	private void Select(Color selectColor) {
 		Renderer renderer = this.GetComponentInChildren<Renderer>();
 		if (renderer.enabled && Input.GetMouseButton(0)) {
 			Vector3 camPos = Camera.main.WorldToScreenPoint(this.transform.position);
@@ -28,11 +27,6 @@ public class Selectable : MonoBehaviour {
 				if (Physics.Raycast(ray, out HitInfo)) {
 					GameObject obj = HitInfo.collider.gameObject;
 					if (!obj.name.Equals("Floor") && !obj.name.EndsWith("Location")){
-						//Renderer objRenderer = obj.GetComponent<Renderer>();
-						//Vector3 size = objRenderer.bounds.size;
-						//Debug.Log("Size of selected object: " + size.ToString());
-						//Vector3 center = obj.transform.position + new Vector3(0f, 0.5f, 0f);
-						//float distance = Vector3.Distance(HitInfo.point, center);
 						Selectable selectable = obj.GetComponent<Selectable>();
 						if (selectable.SelectableID == this.SelectableID && selectable.UUID.Equals(this.UUID)) {
 							this.isBoxedSelected = true;
@@ -48,7 +42,7 @@ public class Selectable : MonoBehaviour {
 				return;
 			}
 			if (!this.attackable.isReadyToAttack) {
-				renderer.material.color = this.selectedColor;
+				renderer.material.color = selectColor;
 			}
 			if (Input.GetMouseButtonUp(0)) {
 				this.isSelected = true;
@@ -94,11 +88,11 @@ public class Selectable : MonoBehaviour {
 	}
 
 	private void Start() {
-		this.isEnabled = false;
-		NetworkView playerNetworkView = this.GetComponent<NetworkView>();
-		if (playerNetworkView != null && playerNetworkView.isMine) {
-			this.isEnabled = true;
-		}
+		this.isEnabled = true;
+		//NetworkView playerNetworkView = this.GetComponent<NetworkView>();
+		//if (playerNetworkView != null && playerNetworkView.isMine) {
+		//	this.isEnabled = true;
+		//}
 
 		this.attackable = this.GetComponent<Attackable>();
 		if (this.attackable == null) {
@@ -127,7 +121,10 @@ public class Selectable : MonoBehaviour {
 		NetworkView networkView = this.GetComponent<NetworkView>();
 		if (networkView != null) {
 			if (networkView.isMine) {
-				this.RPC_Select();
+				Select(this.selectedColor);
+			}
+			else if (!networkView.isMine) {
+				Select(Color.magenta);
 			}
 		}
 	}
