@@ -64,6 +64,7 @@ public class Mergeable : MonoBehaviour {
 	private Attackable ownerAttackable;
 	private static List<MergePair> pairs = new List<MergePair>();
 	private NetworkView playerNetworkView;
+	private bool confirmedDestroyed;
 
 	[RPC]
 	public void RPC_AddPair(NetworkViewID firstViewID, NetworkViewID secondViewID) {
@@ -77,6 +78,7 @@ public class Mergeable : MonoBehaviour {
 		Mergeable.pairs.Clear();
 		this.playerNetworkView = this.GetComponent<NetworkView>();
 		this.ownerAttackable = this.GetComponent<Attackable>();
+		this.confirmedDestroyed = false;
 	}
 
 	public void Update() {
@@ -149,9 +151,12 @@ public class Mergeable : MonoBehaviour {
 							div.SetDivisible(false);
 						}
 					}
+
+					Mergeable secondMerge = pair.second.GetComponent<Mergeable>();
+					if (secondMerge.confirmedDestroyed) {
+						Mergeable.pairs.Remove(pair);
+					}
 				}
-				Mergeable.pairs.Remove(pair);
-				
 			}
 			yield return null;
 		}
@@ -179,5 +184,9 @@ public class Mergeable : MonoBehaviour {
 		MergePair pair = Mergeable.pairs[i];
 		pair.elapsedTime += Time.deltaTime / 15f;
 		Mergeable.pairs[i] = pair;
+	}
+
+	public void OnDestroy() {
+		this.confirmedDestroyed = true;
 	}
 }
