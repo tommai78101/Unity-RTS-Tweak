@@ -56,6 +56,14 @@ public struct MergePair {
 		if (level != null) {
 			level.IncrementLevel();
 		}
+		//Mergeable merge = a.GetComponent<Mergeable>();
+		//if (merge != null) {
+		//	merge.mergeLevel++;
+		//}
+		//merge = b.GetComponent<Mergeable>();
+		//if (merge != null) {
+		//	merge.mergeLevel++;
+		//}
 	}
 };
 
@@ -65,6 +73,8 @@ public class Mergeable : MonoBehaviour {
 	private static List<MergePair> pairs = new List<MergePair>();
 	private NetworkView playerNetworkView;
 	private bool confirmedDestroyed;
+
+	public int mergeLevel;
 
 	[RPC]
 	public void RPC_AddPair(NetworkViewID firstViewID, NetworkViewID secondViewID) {
@@ -79,6 +89,7 @@ public class Mergeable : MonoBehaviour {
 		this.playerNetworkView = this.GetComponent<NetworkView>();
 		this.ownerAttackable = this.GetComponent<Attackable>();
 		this.confirmedDestroyed = false;
+		//this.mergeLevel = 1;
 	}
 
 	public void Update() {
@@ -131,16 +142,19 @@ public class Mergeable : MonoBehaviour {
 	private IEnumerator CR_Action() {
 		for (int i = 0; i < Mergeable.pairs.Count; i++) {
 			MoveTo(i);
-			Scale(i, 1f, 2f);
+			Scale(i,0f, 1f);
 			Update(i);
 
 			MergePair pair = Mergeable.pairs[i];
 			if (pair.elapsedTime > 1f) {
-				Selectable select = pair.first.GetComponent<Selectable>();
-				if (select != null) {
-					select.EnableSelection();
+				if (pair.first != null) {
+					Selectable select = pair.first.GetComponent<Selectable>();
+					if (select != null) {
+						select.EnableSelection();
+					}
 				}
 
+				bool isDestroyed = false;
 				if (pair.second != null) {
 					if (pair.second.activeSelf && this.playerNetworkView.isMine) {
 						Network.RemoveRPCsInGroup(0);
@@ -154,8 +168,13 @@ public class Mergeable : MonoBehaviour {
 
 					Mergeable secondMerge = pair.second.GetComponent<Mergeable>();
 					if (secondMerge.confirmedDestroyed) {
-						Mergeable.pairs.Remove(pair);
+						isDestroyed = true;
+						pair.second = null;
 					}
+				}
+
+				if (pair.first == null || isDestroyed) {
+					Mergeable.pairs.Remove(pair);
 				}
 			}
 			yield return null;
@@ -165,8 +184,9 @@ public class Mergeable : MonoBehaviour {
 	private void Scale(int i, float multiplierFrom, float multiplierTo) {
 		MergePair pair = Mergeable.pairs[i];
 		if (pair.first != null && pair.second != null) {
-			pair.first.transform.localScale = pair.firstInitialScale * Mathf.Lerp(multiplierFrom, multiplierTo, pair.elapsedTime);
-			pair.second.transform.localScale = pair.secondInitialScale * Mathf.Lerp(multiplierFrom, multiplierTo, pair.elapsedTime);
+			float value = Mathf.Lerp(multiplierFrom, multiplierTo, pair.elapsedTime);
+			pair.first.transform.localScale = pair.firstInitialScale + new Vector3(value, value, value);
+			pair.second.transform.localScale = pair.secondInitialScale + new Vector3(value, value, value);
 			Mergeable.pairs[i] = pair;
 		}
 	}
