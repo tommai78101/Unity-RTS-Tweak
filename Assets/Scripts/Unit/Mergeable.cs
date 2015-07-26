@@ -56,6 +56,18 @@ public struct MergePair {
 		if (level != null) {
 			level.IncrementLevel();
 		}
+
+		Selectable select = a.GetComponent<Selectable>();
+		if (select != null) {
+			select.isSelected = false;
+			select.isBoxedSelected = false;
+		}
+		select = b.GetComponent<Selectable>();
+		if (select != null) {
+			select.isSelected = false;
+			select.isBoxedSelected = false;
+		}
+
 		//Mergeable merge = a.GetComponent<Mergeable>();
 		//if (merge != null) {
 		//	merge.mergeLevel++;
@@ -101,13 +113,18 @@ public class Mergeable : MonoBehaviour {
 	public void OnGUI() {
 		if (Input.GetKeyDown(KeyCode.D) && this.ownerSelectable.isSelected && !(this.ownerAttackable.isReadyToAttack || this.ownerAttackable.isAttacking)) {
 			this.ownerSelectable.isSelected = false;
-			this.ownerSelectable.DisableSelection();
+			//this.ownerSelectable.DisableSelection();
 			if (this.playerNetworkView != null) {
+				foreach (Selectable sel in Selectable.selectedObjects) {
+					sel.isSelected = false;
+					sel.isBoxedSelected = false;
+				}
 				int count = Selectable.selectedObjects.Count;
 				int countCheck = count;
+				int index = 0;
 				while (count >= 2 && countCheck >= 2) {
-					Selectable firstSelectable = Selectable.selectedObjects[0];
-					Selectable secondSelectable = Selectable.selectedObjects[1];
+					Selectable firstSelectable = Selectable.selectedObjects[index];
+					Selectable secondSelectable = Selectable.selectedObjects[index+1];
 					if (firstSelectable != null && secondSelectable != null) {
 						Level levelFirst = firstSelectable.gameObject.GetComponent<Level>();
 						Level levelSecond = secondSelectable.gameObject.GetComponent<Level>();
@@ -123,18 +140,21 @@ public class Mergeable : MonoBehaviour {
 						else {
 							Selectable.selectedObjects.Remove(firstSelectable);
 							Selectable.selectedObjects.Remove(secondSelectable);
-							firstSelectable.isSelected = true;
-							secondSelectable.isSelected = true;
 							Selectable.selectedObjects.Add(firstSelectable);
 							Selectable.selectedObjects.Add(secondSelectable);
 							countCheck -= 2;
 						}
 					}
 					else {
-						break;
+						index++;
+						if (index >= count) {
+							break;
+						}
+						continue;
 					}
 					count -= 2;
 				}
+				Selectable.selectedObjects.Clear();
 			}
 		}
 	}
@@ -142,7 +162,7 @@ public class Mergeable : MonoBehaviour {
 	private IEnumerator CR_Action() {
 		for (int i = 0; i < Mergeable.pairs.Count; i++) {
 			MoveTo(i);
-			Scale(i,0f, 1f);
+			Scale(i, 0f, 1f);
 			Update(i);
 
 			MergePair pair = Mergeable.pairs[i];
@@ -175,6 +195,16 @@ public class Mergeable : MonoBehaviour {
 
 				if (pair.first == null || isDestroyed) {
 					Mergeable.pairs.Remove(pair);
+				}
+			}
+			else {
+				Selectable select = pair.first.GetComponent<Selectable>();
+				if (select != null) {
+					select.DisableSelection();
+				}
+				select = pair.second.GetComponent<Selectable>();
+				if (select != null) {
+					select.DisableSelection();
 				}
 			}
 			yield return null;

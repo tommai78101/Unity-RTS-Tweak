@@ -5,12 +5,12 @@ using System.Collections.Generic;
 public class Selectable : MonoBehaviour {
 	public static List<Selectable> selectedObjects = new List<Selectable>();
 	public bool isSelected = false;
+	public bool isBoxedSelected = false;
 	public Color selectedColor;
 	public int SelectableID = 0;
 	public System.Guid UUID;
 
 	private readonly Color initialColor = Color.white;
-	private bool isBoxedSelected = false;
 	private bool isEnabled;
 	private Attackable attackable;
 	private DeathCheck deathCheck;
@@ -77,6 +77,7 @@ public class Selectable : MonoBehaviour {
 
 	public void DisableSelection() {
 		this.isEnabled = false;
+		this.isSelected = false;
 	}
 
 	public void EnableSelection() {

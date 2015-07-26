@@ -75,12 +75,12 @@ public class Divisible : MonoBehaviour {
 	public void OnGUI() {
 		if (this.ownerSelectable != null && this.playerNetworkView.isMine) {
 			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady && (!this.ownerAttackable.isReadyToAttack || !this.ownerAttackable.isAttacking) && this.canDivide) {
+				this.ownerSelectable.isSelected = false;
 				this.isReady = false;
 				float randomAngle = Random.Range(-180f, 180f);
 				float parts = 360f / (float) (this.numberOfUnitsPerSpawn + 1);
 				this.rotatedVector.Clear();
 				for (int i = 0; i < this.numberOfUnitsPerSpawn; i++) {
-
 					this.spawnedLocation = this.gameObject.transform.position;
 					GameObject unit = (GameObject) Network.Instantiate(Resources.Load("Prefabs/Player"), this.spawnedLocation, Quaternion.identity, 0);
 					//Clones will not have parentheses around the remote node label (client, or server).

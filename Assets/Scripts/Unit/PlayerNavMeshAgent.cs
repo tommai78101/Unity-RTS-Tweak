@@ -32,8 +32,8 @@ public class PlayerNavMeshAgent : MonoBehaviour {
 
 	[RPC]
 	public void RPC_SetTarget(Vector3 target) {
-		if (this.playerNetworkView.isMine) {
+		//if (this.playerNetworkView.isMine) {
 			this.agent.SetDestination(target);
-		}
+		//}
 	}
 }
