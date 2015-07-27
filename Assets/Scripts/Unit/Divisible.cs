@@ -75,7 +75,7 @@ public class Divisible : MonoBehaviour {
 	public void OnGUI() {
 		if (this.ownerSelectable != null && this.playerNetworkView.isMine) {
 			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady && (!this.ownerAttackable.isReadyToAttack || !this.ownerAttackable.isAttacking) && this.canDivide) {
-				this.ownerSelectable.isSelected = false;
+				this.ownerSelectable.Deselect();
 				this.isReady = false;
 				float randomAngle = Random.Range(-180f, 180f);
 				float parts = 360f / (float) (this.numberOfUnitsPerSpawn + 1);

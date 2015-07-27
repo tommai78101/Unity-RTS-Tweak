@@ -5,38 +5,41 @@ using System.Collections.Generic;
 public class Selectable : MonoBehaviour {
 	public static List<Selectable> selectedObjects = new List<Selectable>();
 	public bool isSelected = false;
-	public bool isBoxedSelected = false;
+	public bool isBoxSelected = false;
+	public bool isEnabled;
 	public Color selectedColor;
-	public int SelectableID = 0;
-	public System.Guid UUID;
+	public System.Guid UUID; 
 
+	private int SelectableID = 0;
 	private readonly Color initialColor = Color.white;
-	private bool isEnabled;
-	private Attackable attackable;
+	private Attackable attackable; 
 	private DeathCheck deathCheck;
 
-	private void Select(Color selectColor) {
+	private void SelectAction(Color selectColor) {
 		Renderer renderer = this.GetComponentInChildren<Renderer>();
 		if (renderer.enabled && Input.GetMouseButton(0)) {
 			Vector3 camPos = Camera.main.WorldToScreenPoint(this.transform.position);
 			camPos.y = Screen.height - camPos.y;
-			this.isBoxedSelected = Selection.selectionArea.Contains(camPos);
-			if (!this.isBoxedSelected) {
+			this.isBoxSelected = Selection.selectionArea.Contains(camPos);
+			if (!this.isBoxSelected) {
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				RaycastHit HitInfo;
 				if (Physics.Raycast(ray, out HitInfo)) {
 					GameObject obj = HitInfo.collider.gameObject;
-					if (!obj.name.Equals("Floor") && !obj.name.EndsWith("Location")){
+					if (!obj.name.Equals("Floor") && !obj.name.EndsWith("Location")) {
 						Selectable selectable = obj.GetComponent<Selectable>();
 						if (selectable.SelectableID == this.SelectableID && selectable.UUID.Equals(this.UUID)) {
-							this.isBoxedSelected = true;
+							this.isBoxSelected = true;
 						}
 					}
 				}
 			}
 		}
 
-		if (this.isBoxedSelected) {
+		if (this.isBoxSelected) {
+			if (Input.GetMouseButtonUp(0)) {
+				this.Select();
+			}
 			if (this.selectedColor.Equals(null)) {
 				Debug.Log("[Selectable] Color is null.");
 				return;
@@ -44,40 +47,44 @@ public class Selectable : MonoBehaviour {
 			if (!this.attackable.isReadyToAttack) {
 				renderer.material.color = selectColor;
 			}
-			if (Input.GetMouseButtonUp(0)) {
-				this.isSelected = true;
-				if (!Selectable.selectedObjects.Contains(this)) {
-					Selectable.selectedObjects.Add(this);
-				}
-			}
 		}
 		else {
 			if (Input.GetMouseButtonUp(0)) {
-				this.isSelected = false;
+				this.Deselect();
 			}
 			if (!this.attackable.isReadyToAttack) {
 				renderer.material.color = this.initialColor;
 			}
 		}
 
-		if (Input.GetMouseButtonUp(0)) {
-			while (!this.isSelected && Selectable.selectedObjects.Contains(this)) {
+		if (this.isSelected) {
+			if (!Selectable.selectedObjects.Contains(this)) {
+				Selectable.selectedObjects.Add(this);
+			}
+		}
+		else {
+			if (Selectable.selectedObjects.Contains(this)) {
 				Selectable.selectedObjects.Remove(this);
 			}
 		}
 	}
 
 	public void Awake() {
-		 this.UUID = System.Guid.NewGuid();
+		this.UUID = System.Guid.NewGuid();
 	}
 
 	public void Deselect() {
 		this.isSelected = false;
 	}
 
+	public void Select() {
+		this.isSelected = true;
+	}
+
 	public void DisableSelection() {
 		this.isEnabled = false;
-		this.isSelected = false;
+		this.Deselect();
+		this.isBoxSelected = false;
 	}
 
 	public void EnableSelection() {
@@ -122,10 +129,10 @@ public class Selectable : MonoBehaviour {
 		NetworkView networkView = this.GetComponent<NetworkView>();
 		if (networkView != null) {
 			if (networkView.isMine) {
-				Select(this.selectedColor);
+				SelectAction(this.selectedColor);
 			}
 			else if (!networkView.isMine) {
-				Select(Color.magenta);
+				SelectAction(Color.magenta);
 			}
 		}
 	}
