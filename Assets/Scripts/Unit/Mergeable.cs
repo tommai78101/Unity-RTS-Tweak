@@ -39,11 +39,12 @@ public class Mergeable : MonoBehaviour {
 			if (this.playerNetworkView != null) {
 				foreach (Selectable sel in Selectable.selectedObjects) {
 					sel.Deselect();
+					sel.isBoxSelected = false;
 				}
 				int count = Selectable.selectedObjects.Count;
 				int countCheck = count;
 				int index = 0;
-				while (count >= 2 && countCheck >= 2) {
+				while (count >= 2 && countCheck > 0) {
 					Selectable firstSelectable = Selectable.selectedObjects[index];
 					Selectable secondSelectable = Selectable.selectedObjects[index+1];
 					if (firstSelectable != null && secondSelectable != null) {
@@ -60,20 +61,21 @@ public class Mergeable : MonoBehaviour {
 						}
 						else {
 							Selectable.selectedObjects.Remove(firstSelectable);
-							Selectable.selectedObjects.Remove(secondSelectable);
 							Selectable.selectedObjects.Add(firstSelectable);
-							Selectable.selectedObjects.Add(secondSelectable);
-							countCheck -= 2;
+							countCheck--;
+							continue;
 						}
 					}
 					else {
 						index++;
-						if (index >= count) {
+						if (index > count) {
 							break;
 						}
+						countCheck = count;
 						continue;
 					}
 					count -= 2;
+					countCheck = count;
 				}
 				Selectable.selectedObjects.Clear();
 			}
