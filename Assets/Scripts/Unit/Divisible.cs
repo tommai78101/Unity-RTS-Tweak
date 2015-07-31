@@ -147,7 +147,7 @@ public class Divisible : MonoBehaviour {
 	[RPC]
 	private void RPC_Other_Spawn(Vector3 spawn, Vector3 rotated, int index) {
 		this.spawnedLocation = spawn;
-		this.rotatedVector.Add(rotated);
+		this.rotatedVector.Insert(index, rotated);
 	}
 
 	private IEnumerator CR_MoveToPosition(GameObject gameObject, Vector3 target) {
