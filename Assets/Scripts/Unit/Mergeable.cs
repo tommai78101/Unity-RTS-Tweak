@@ -23,7 +23,7 @@ public class Mergeable : MonoBehaviour {
 	public void Start() {
 		this.mergeManager = GameObject.Find("Merge Manager").GetComponent<MergeManager>();
 		if (this.mergeManager == null) {
-			Debug.LogError("Something is wrong here.");
+			Debug.LogError("Merge Manager is wrong here.");
 		}
 		this.ownerSelectable = this.GetComponent<Selectable>();
 		this.playerNetworkView = this.GetComponent<NetworkView>();
