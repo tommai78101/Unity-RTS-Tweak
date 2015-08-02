@@ -84,24 +84,30 @@ public class Attackable : MonoBehaviour {
 				this.isAttacking = true;
 				this.receivedAttackCommand = false;
 			}
-			else if (this.selectable.isSelected && (Input.GetMouseButtonUp(0) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))) {
-				//Left click
-				this.isReadyToAttack = false;
-				this.isAttacking = false;
-				this.selectable.Deselect();
-				this.attackableRenderer.material.color = Color.white;
+			else if ((Input.GetMouseButtonUp(0) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))) {
+				if (this.selectable.isSelected) {
+					//Left click
+					this.isReadyToAttack = false;
+					this.isAttacking = false;
+					this.selectable.Deselect();
+					this.attackableRenderer.material.color = Color.white;
+				}
 			}
 		}
 		else if (this.isAttacking) {
-			if (Input.GetMouseButtonUp(1) && this.selectable.isSelected && !this.isReadyToAttack && this.receivedAttackCommand) {
-				Debug.Log("Cancelling attack.");
-				this.isAttacking = false;
-				this.receivedAttackCommand = false;
+			if (Input.GetMouseButtonUp(1)) {
+				if (this.selectable.isSelected && !this.isReadyToAttack && this.receivedAttackCommand) {
+					Debug.Log("Cancelling attack.");
+					this.isAttacking = false;
+					this.receivedAttackCommand = false;
+				}
 			}
 		}
-		else if (Input.GetKeyUp(KeyCode.A) && this.selectable.isSelected && this.attackableNetworkView.isMine && !this.isReadyToAttack && !this.isAttacking) {
-			this.isReadyToAttack = true;
-			this.attackableRenderer.material.color = Color.yellow;
+		else if (Input.GetKeyUp(KeyCode.A)) {
+			if (this.selectable.isSelected && this.attackableNetworkView.isMine && !this.isReadyToAttack && !this.isAttacking) {
+				this.isReadyToAttack = true;
+				this.attackableRenderer.material.color = Color.yellow;
+			}
 		}
 	}
 
@@ -127,12 +133,12 @@ public class Attackable : MonoBehaviour {
 	[RPC]
 	public void RPC_Attack(Vector3 targetPosition) {
 		//if (Network.isClient) {
-			Debug.Log("RPC_Attack has been called. Vector: " + targetPosition.ToString());
-			this.attackTargetPosition = targetPosition;
-			this.agent.SetDestination(this.attackTargetPosition);
+		Debug.Log("RPC_Attack has been called. Vector: " + targetPosition.ToString());
+		this.attackTargetPosition = targetPosition;
+		this.agent.SetDestination(this.attackTargetPosition);
 		//}
 		//else {
-			//Debug.LogError("Client RPC_Attack was not called.");
+		//Debug.LogError("Client RPC_Attack was not called.");
 		//}
 	}
 
@@ -140,7 +146,7 @@ public class Attackable : MonoBehaviour {
 	public void RPC_DecreaseHealth(NetworkViewID viewID) {
 		NetworkView view = NetworkView.Find(viewID);
 		HealthBar bar = view.gameObject.GetComponent<HealthBar>();
-		if (bar != null){
+		if (bar != null) {
 			bar.DecreaseHealth(this.attackPower);
 		}
 	}
@@ -190,7 +196,7 @@ public class Attackable : MonoBehaviour {
 						if (!DeathCheck.pairs.Contains(p)) {
 							//TODO: Swap this to another script that keeps track of strength and HP.
 							Attackable attack = enemy.GetComponent<Attackable>();
-							if (attack != null){
+							if (attack != null) {
 								if (attack.attackCooldown <= 0f) {
 									NetworkViewID viewID = enemy.GetComponent<NetworkView>().viewID;
 									this.attackableNetworkView.RPC("RPC_DecreaseHealth", RPCMode.AllBuffered, viewID);

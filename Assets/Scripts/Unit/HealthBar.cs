@@ -6,7 +6,9 @@ public class HealthBar : MonoBehaviour {
 	public int maxHealth;
 	public int currentHealth;
 	public float redCountdown;
+	public float healingTime;
 
+	private float healingCooldown;
 	private Material material;
 	private Color initialColor;
 	private bool isTakingDamage = false;
@@ -17,6 +19,10 @@ public class HealthBar : MonoBehaviour {
 		this.initialColor = this.material.color;
 		this.redCountdown = 0f;
 		this.isTakingDamage = false;
+		if (this.healingTime < 3f) {
+			this.healingTime = 3f;
+		}
+		this.healingCooldown = 0f;
 	}
 
 	public void DecreaseHealth(int attackPower) {
@@ -68,6 +74,20 @@ public class HealthBar : MonoBehaviour {
 				this.isTakingDamage = false;
 			}
 		}
+		HealUpdate();
+	}
+
+	private void HealUpdate() {
+		if (this.healthPercentage < 1f || this.currentHealth < this.maxHealth) {
+			if (this.healingCooldown < 1f) {
+				this.healingCooldown += Time.deltaTime / this.healingTime;
+			}
+			else {
+				this.healingCooldown = 0f;
+				IncreaseHealth(1);
+			}
+		}
+
 	}
 
 	private void FlashRed() {

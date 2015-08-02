@@ -54,6 +54,14 @@ public class SplitManager : MonoBehaviour {
 		}
 		if (this.remove.Count > 0) {
 			foreach (SpawnGroup group in this.remove) {
+				Divisible div = group.owner.GetComponent<Divisible>();
+				if (!div.IsDivisibleStateReady()) {
+					div.SetDivisibleReady();
+				}
+				div = group.spawnedUnit.GetComponent<Divisible>();
+				if (!div.IsDivisibleStateReady()) {
+					div.SetDivisibleReady();
+				}
 				this.spawnGroups.Remove(group);
 			}
 			this.remove.Clear();

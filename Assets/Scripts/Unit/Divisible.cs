@@ -17,7 +17,7 @@ public class Divisible : MonoBehaviour {
 
 	public void Start() {
 		this.ownerSelectable = this.GetComponent<Selectable>();
-		this.isReady = true;
+		this.SetDivisibleReady();
 		this.playerNetworkView = this.GetComponent<NetworkView>();
 		this.ownerAttackable = this.GetComponent<Attackable>();
 		this.canDivide = true;
@@ -38,9 +38,12 @@ public class Divisible : MonoBehaviour {
 
 				for (int j = 0; j < Selectable.selectedObjects.Count; j++) {
 					Selectable ownerSelectable = Selectable.selectedObjects[j];
+					if (ownerSelectable == null) {
+						continue;
+					}
 					ownerSelectable.Deselect();
 					Divisible ownerDivisible = ownerSelectable.gameObject.GetComponent<Divisible>();
-					ownerDivisible.isReady = false;
+					ownerDivisible.SetDivisibleNotReady();
 
 					for (int i = 0; i < this.numberOfUnitsPerSpawn; i++) {
 						Vector3 spawnedLocation = ownerSelectable.gameObject.transform.position;
@@ -82,10 +85,10 @@ public class Divisible : MonoBehaviour {
 		NetworkView secondView = NetworkView.Find(second);
 
 		Divisible div = firstView.gameObject.GetComponent<Divisible>();
-		div.isReady = false;
+		div.SetDivisibleNotReady();
 
 		Divisible div2 = secondView.gameObject.GetComponent<Divisible>();
-		div2.isReady = false;
+		div.SetDivisibleNotReady();
 
 		HealthBar foo = firstView.gameObject.GetComponent<HealthBar>();
 		HealthBar bar = secondView.gameObject.GetComponent<HealthBar>();
@@ -105,5 +108,13 @@ public class Divisible : MonoBehaviour {
 
 	public bool IsDivisibleStateReady() {
 		return this.isReady;
+	}
+
+	public void SetDivisibleReady() {
+		this.isReady = true;
+	}
+
+	public void SetDivisibleNotReady() {
+		this.isReady = false;
 	}
 }
