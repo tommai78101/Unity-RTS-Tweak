@@ -61,6 +61,10 @@ Once both players are in the game, both players will start off with 1 unit each.
 
 ### Changelog  
 
+**v0.04:**
+
+* Added ability for units to heal over time.
+
 **v0.03:**
  
 * Fixed splitting units creating glitchy split animation on the client side.
