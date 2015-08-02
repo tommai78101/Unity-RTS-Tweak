@@ -61,32 +61,32 @@ Once both players are in the game, both players will start off with 1 unit each.
 
 ### Changelog  
 
-- v0.03:
+**v0.03:**
  
 * Fixed splitting units creating glitchy split animation on the client side.
 * Streamlined merging and splitting for each units.
 
-- v0.02:
+**v0.02:**
  
 * Fixed merging may go out of sync. May introduce new bugs. 
 * Fixed scaling issues related to scaling exponentially and not incrementally. 
 * Tweaked selection so that players can now select units without any hassles. 
 
-- v0.01b: 
+**v0.01b:**
 
 * Fixed being able to merge with other units of different levels.
 * Fixed a few bugs.
 * Added prototype number. Numbering scheme is as follows: ◦[Game Build Type] - v[Big Release].[Small Release][Minor Fixes]
 
-- v0.01a: 
+**v0.01a:**
 
 * Fixed issue with inconsistent dividing behavior.
 
-- v0.01-minus: 
+**v0.01-minus:**
 
 * Reverted back to previous version due to some changes causing inconsistent behaviors. 
 
-- v0.01:
+**v0.01:**
 
 * Fixed issue such that the player cannot see if their units are taking damage.
 * Decrease max health point.
