@@ -34,15 +34,15 @@ Player 1 is the host of the game. Player 2 is the client of the game.
 
 **Player 1 instructions (Host):**
 
-1.Press "Host New Server".
-2.Once you are in the game, you must wait until Player 2 joins the game.
+1.Press "Host New Server".    
+2.Once you are in the game, you must wait until Player 2 joins the game.    
 
 **Player 2 instructions (Client):**
 
-1.When you know the host is currently hosting a new server, press "Find Servers".
-2.Wait for 1 second.
-3.There should be at least 1 server found. If not, then it means your computer could not locate the host server.
-4.Click on the server titled, "Unity RTS Prototype".
+1.When you know the host is currently hosting a new server, press "Find Servers".    
+2.Wait for 1 second.    
+3.There should be at least 1 server found. If not, then it means your computer could not locate the host server.    
+4.Click on the server titled, "Unity RTS Prototype".    
 
 Once both players are in the game, both players will start off with 1 unit each. Please continue to read Controls section for how to play. 
 
