@@ -76,7 +76,27 @@ public class Attackable : MonoBehaviour {
 		this.attackPower = 1;
 	}
 
-	public void OnGUI() {
+	public void Update() {
+		this.AttackInput();
+		if (this.attackableNetworkView.isMine) {
+			if (this.isReadyToAttack && !this.isAttacking) {
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				RaycastHit hit;
+				Physics.Raycast(ray, out hit);
+				Debug.DrawLine(this.gameObject.transform.position, hit.point);
+			}
+			else if (!this.isReadyToAttack && this.isAttacking && !this.receivedAttackCommand) {
+				if (this.attackableNetworkView != null) {
+					this.receivedAttackCommand = true;
+					this.attackableNetworkView.RPC("RPC_Attack", RPCMode.AllBuffered, Input.mousePosition);
+				}
+			}
+		}
+		CheckForEnemies();
+		AttackEnemies();
+	}
+
+	private void AttackInput() {
 		if (this.isReadyToAttack && !this.isAttacking) {
 			if (Input.GetMouseButtonUp(1)) {
 				//Right click
@@ -111,24 +131,6 @@ public class Attackable : MonoBehaviour {
 		}
 	}
 
-	public void Update() {
-		if (this.attackableNetworkView.isMine) {
-			if (this.isReadyToAttack && !this.isAttacking) {
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				RaycastHit hit;
-				Physics.Raycast(ray, out hit);
-				Debug.DrawLine(this.gameObject.transform.position, hit.point);
-			}
-			else if (!this.isReadyToAttack && this.isAttacking && !this.receivedAttackCommand) {
-				if (this.attackableNetworkView != null) {
-					this.receivedAttackCommand = true;
-					this.attackableNetworkView.RPC("RPC_Attack", RPCMode.AllBuffered, Input.mousePosition);
-				}
-			}
-		}
-		CheckForEnemies();
-		AttackEnemies();
-	}
 
 	[RPC]
 	public void RPC_Attack(Vector3 targetPosition) {

@@ -31,8 +31,12 @@ public class Mergeable : MonoBehaviour {
 		//this.mergeLevel = 1;
 	}
 
+	public void Update() {
+		this.MergeInput();
+	}
 
-	public void OnGUI() {
+
+	private void MergeInput() {
 		if (Input.GetKeyDown(KeyCode.D) && this.ownerSelectable.isSelected && !(this.ownerAttackable.isReadyToAttack || this.ownerAttackable.isAttacking)) {
 			this.ownerSelectable.Deselect();
 			//this.ownerSelectable.DisableSelection();
@@ -81,83 +85,6 @@ public class Mergeable : MonoBehaviour {
 			}
 		}
 	}
-
-	//private IEnumerator CR_Action() {
-	//	for (int i = 0; i < this.mergeManager.pairs.Count; i++) {
-	//		MoveTo(i);
-	//		Scale(i, 0f, 1f);
-	//		Update(i);
-
-	//		MergePair pair = this.mergeManager.pairs[i];
-	//		if (pair.elapsedTime > 1f) {
-	//			if (pair.first != null) {
-	//				Selectable select = pair.first.GetComponent<Selectable>();
-	//				if (select != null) {
-	//					select.EnableSelection();
-	//				}
-	//			}
-
-	//			bool isDestroyed = false;
-	//			if (pair.second != null) {
-	//				if (pair.second.activeSelf && this.playerNetworkView.isMine) {
-	//					Network.RemoveRPCsInGroup(0);
-	//					Network.Destroy(pair.second);
-					
-	//					Divisible div = pair.first.GetComponent<Divisible>();
-	//					if (div != null && div.IsDivisible()) {
-	//						div.SetDivisible(false);
-	//					}
-	//				}
-
-	//				Mergeable secondMerge = pair.second.GetComponent<Mergeable>();
-	//				if (secondMerge.confirmedDestroyed) {
-	//					isDestroyed = true;
-	//					pair.second = null;
-	//				}
-	//			}
-
-	//			if (pair.first == null || isDestroyed) {
-	//				this.mergeManager.pairs.Remove(pair);
-	//			}
-	//		}
-	//		else {
-	//			Selectable select = pair.first.GetComponent<Selectable>();
-	//			if (select != null) {
-	//				select.DisableSelection();
-	//			}
-	//			select = pair.second.GetComponent<Selectable>();
-	//			if (select != null) {
-	//				select.DisableSelection();
-	//			}
-	//		}
-	//		yield return null;
-	//	}
-	//}
-
-	//private void Scale(int i, float multiplierFrom, float multiplierTo) {
-	//	MergePair pair = this.mergeManager.pairs[i];
-	//	if (pair.first != null && pair.second != null) {
-	//		float value = Mathf.Lerp(multiplierFrom, multiplierTo, pair.elapsedTime);
-	//		pair.first.transform.localScale = pair.firstInitialScale + new Vector3(value, value, value);
-	//		pair.second.transform.localScale = pair.secondInitialScale + new Vector3(value, value, value);
-	//		this.mergeManager.pairs[i] = pair;
-	//	}
-	//}
-
-	//private void MoveTo(int i) {
-	//	MergePair pair = this.mergeManager.pairs[i];
-	//	if (pair.first != null && pair.second != null) {
-	//		pair.first.transform.position = Vector3.Lerp(pair.firstInitialPosition, pair.average, pair.elapsedTime);
-	//		pair.second.transform.position = Vector3.Lerp(pair.secondInitialPosition, pair.average, pair.elapsedTime);
-	//		this.mergeManager.pairs[i] = pair;
-	//	}
-	//}
-
-	//private void Update(int i) {
-	//	MergePair pair = this.mergeManager.pairs[i];
-	//	pair.elapsedTime += Time.deltaTime / 15f;
-	//	this.mergeManager.pairs[i] = pair;
-	//}
 
 	public void OnDestroy() {
 		this.pairReference.confirmedDestroyed = true;

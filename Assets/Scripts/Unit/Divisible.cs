@@ -32,7 +32,11 @@ public class Divisible : MonoBehaviour {
 		}
 	}
 
-	public void OnGUI() {
+	public void Update() {
+		this.DivisibleInput();
+	}
+
+	private void DivisibleInput() {
 		if (this.playerNetworkView.isMine) {
 			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady && (!this.ownerAttackable.isReadyToAttack || !this.ownerAttackable.isAttacking) && this.canDivide) {
 
