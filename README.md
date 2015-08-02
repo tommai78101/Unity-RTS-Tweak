@@ -4,6 +4,8 @@
 
 Using Unity to develop a real-time strategy game involving tweaking the game balances to reduce complexity and flatten the learning curve associated with it.
 
+Link to an online playable demo:  [http://tom-mai78101.itch.io/multiplier](http://tom-mai78101.itch.io/multiplier)
+
 ------
 
 ### Disclaimer
