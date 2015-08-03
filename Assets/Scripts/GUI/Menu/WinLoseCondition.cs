@@ -22,7 +22,11 @@ public class WinLoseCondition : MonoBehaviour {
 
 	private void OnGUI() {
 		if (this.playerHasLost) {
-			GUI.Label(new Rect((Screen.width - 50) / 2f, (Screen.height - 15) / 2f, 100f, 30f), "YOU LOSE!");
+			GUIStyle losing = new GUIStyle();
+			losing.normal.textColor = Color.yellow;
+			losing.fontStyle = FontStyle.Bold;
+			losing.fontSize = 24;
+			GUI.Label(new Rect((Screen.width - 75) / 2f, (Screen.height - 10) / 2f, 100f, 50f), "YOU LOSE!", losing);
 			if (Analytics.Instance.isTimerStarted()) {
 				if (this.playerNetworkView != null) {
 					this.playerNetworkView.RPC("RPC_LogTime", RPCMode.AllBuffered);
