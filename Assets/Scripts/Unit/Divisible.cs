@@ -91,7 +91,7 @@ public class Divisible : MonoBehaviour {
 		Divisible div = firstView.gameObject.GetComponent<Divisible>();
 		div.SetDivisibleNotReady();
 
-		Divisible div2 = secondView.gameObject.GetComponent<Divisible>();
+		div = secondView.gameObject.GetComponent<Divisible>();
 		div.SetDivisibleNotReady();
 
 		HealthBar foo = firstView.gameObject.GetComponent<HealthBar>();
