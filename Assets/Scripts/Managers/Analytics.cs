@@ -12,7 +12,7 @@ public class Analytics : MonoBehaviour {
 
 	private NetworkView analyticNetworkView;
 
-	public void Start(){
+	public void Start() {
 		Analytics.Instance = this;
 		this.sessionTimer = 0f;
 		this.sessionTimerTickFlag = false;
@@ -42,6 +42,14 @@ public class Analytics : MonoBehaviour {
 	public void StartTimer() {
 		Debug.LogWarning("Session Timer has started.");
 		this.sessionTimerTickFlag = true;
+	}
+
+	public bool isTimerStarted() {
+		return this.sessionTimerTickFlag;
+	}
+
+	public void CreateTimerLogData() {
+		System.IO.File.WriteAllText("analytics.txt", "Total Gameplay Time: " + this.sessionTimer.ToString() + "s.");
 	}
 
 	[RPC]

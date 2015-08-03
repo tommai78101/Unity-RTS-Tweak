@@ -16,14 +16,26 @@ public class WinLoseCondition : MonoBehaviour {
 			Debug.LogError(new System.NullReferenceException("WinLoseCondition: Unable to find network view."));
 		}
 		this.playerHasLost = false;
-		Debug.Log("WinLoseCondition: Adding SetPlayerLost() to event delegate.");
+		//Debug.Log("WinLoseCondition: Adding SetPlayerLost() to event delegate.");
 		this.EVENT_PlayerHasLost += new WinLoseCondition.DG_PlayerLost(SetPlayerLost);
 	}
 
 	private void OnGUI() {
 		if (this.playerHasLost) {
 			GUI.Label(new Rect((Screen.width - 50) / 2f, (Screen.height - 15) / 2f, 100f, 30f), "YOU LOSE!");
+			if (Analytics.Instance.isTimerStarted()) {
+				if (this.playerNetworkView != null) {
+					this.playerNetworkView.RPC("RPC_LogTime", RPCMode.AllBuffered);
+				}
+				Debug.Log("Total Gameplay Time: " + Analytics.Instance.sessionTimer.ToString() + "s");
+			}
 		}
+	}
+
+	[RPC]
+	public void RPC_LogTime() {
+		Analytics.Instance.StopTimer();
+		Analytics.Instance.CreateTimerLogData();
 	}
 
 	//[RPC]
@@ -37,7 +49,7 @@ public class WinLoseCondition : MonoBehaviour {
 	//}
 
 	public void PlayerHasLost() {
-		Debug.Log("WinLoseCondition: The player has just lost. Calling PlayerHasLost().");
+		//Debug.Log("WinLoseCondition: The player has just lost. Calling PlayerHasLost().");
 		//if (UnitManager.Instance.PlayerUnits.Count <= 0 && !this.playerHasLost && Network.connections.Length > 0) {
 		//	this.playerNetworkView.RPC("RPC_NotifyWinLose", RPCMode.AllBuffered, this.playerNetworkView.viewID);
 		//}
@@ -45,7 +57,7 @@ public class WinLoseCondition : MonoBehaviour {
 	}
 
 	public void SetPlayerLost() {
-		Debug.Log("WinLoseCondition: Calling SetPlayerLost().");
+		//Debug.Log("WinLoseCondition: Calling SetPlayerLost().");
 		this.playerHasLost = true;
 	}
 
