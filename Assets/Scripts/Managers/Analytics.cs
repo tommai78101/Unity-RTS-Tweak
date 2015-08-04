@@ -2,12 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public struct AnalyticData {
+	public float timeStamp;
+	public string readableTimeStamp;
+	public string input;
+
+	public AnalyticData(string data) {
+		this.timeStamp = Analytics.Instance.sessionTimer;
+		this.input = data;
+
+		int minutes = ((int) Mathf.Floor(Analytics.Instance.sessionTimer)) / 60;
+		int seconds = ((int) Mathf.Floor(Analytics.Instance.sessionTimer)) % 60;
+		int normalized = ((int) Analytics.Instance.sessionTimer);
+		float mantissa = Analytics.Instance.sessionTimer - (float) normalized;
+		mantissa *= 1000f;
+		normalized = (int) mantissa;
+		this.readableTimeStamp = minutes.ToString() + "m " + seconds.ToString() + "." + normalized.ToString() + "s";
+	}
+}
+
 public class Analytics : MonoBehaviour {
 	public static Analytics Instance;
 
 	public float sessionTimer;
 	public bool sessionTimerTickFlag;
-	public List<float> sessionTimerData;
+	public List<AnalyticData> sessionTimerData;
 	public bool serverSessionReadyFlag;
 
 	private NetworkView analyticNetworkView;
@@ -18,7 +37,7 @@ public class Analytics : MonoBehaviour {
 		Analytics.Instance = this;
 		this.sessionTimer = 0f;
 		this.sessionTimerTickFlag = false;
-		this.sessionTimerData = new List<float>();
+		this.sessionTimerData = new List<AnalyticData>();
 		this.analyticNetworkView = this.GetComponent<NetworkView>();
 		this.showTimerFlag = false;
 	}
@@ -49,7 +68,7 @@ public class Analytics : MonoBehaviour {
 	public void StopTimer() {
 		Debug.LogWarning("Session Timer has stopped.");
 		this.sessionTimerTickFlag = false;
-		this.sessionTimerData.Add(this.sessionTimer);
+		this.AddEvent("Session Timer has stopped.");
 
 		int minutes = ((int) Mathf.Floor(this.sessionTimer)) / 60;
 		int seconds = ((int) Mathf.Floor(this.sessionTimer)) % 60;
@@ -76,7 +95,10 @@ public class Analytics : MonoBehaviour {
 		if (!this.showTimerFlag) {
 			this.showTimerFlag = true;
 		}
+	}
 
+	public void AddEvent(string data) {
+		this.sessionTimerData.Add(new AnalyticData(data));
 	}
 
 	[RPC]
