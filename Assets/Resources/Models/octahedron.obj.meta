@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: 410d4cb4e1244db43b2d1b1e404db15d
-timeCreated: 1438715660
+guid: d5dc9998da9e8e646a836dfacc0d8135
+timeCreated: 1438716302
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: Object001
-    100002: //RootNode
-    400000: Object001
-    400002: //RootNode
-    2300000: Object001
-    3300000: Object001
-    4300000: Object001
+    100000: //RootNode
+    100002: Octohedron
+    400000: //RootNode
+    400002: Octohedron
+    2300000: Octohedron
+    3300000: Octohedron
+    4300000: Octohedron
   materials:
     importMaterials: 1
     materialName: 0
