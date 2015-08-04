@@ -38,6 +38,7 @@ public class Mergeable : MonoBehaviour {
 
 	private void MergeInput() {
 		if (Input.GetKeyDown(KeyCode.D) && this.ownerSelectable.isSelected && !(this.ownerAttackable.isReadyToAttack || this.ownerAttackable.isAttacking)) {
+			Analytics.Instance.AddEvent("D key pressed to merge " + Selectable.selectedObjects.Count.ToString() + " units.");
 			this.ownerSelectable.Deselect();
 			//this.ownerSelectable.DisableSelection();
 			if (this.playerNetworkView != null) {

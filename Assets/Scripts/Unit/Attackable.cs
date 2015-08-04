@@ -103,6 +103,7 @@ public class Attackable : MonoBehaviour {
 				this.isReadyToAttack = false;
 				this.isAttacking = true;
 				this.receivedAttackCommand = false;
+				Analytics.Instance.AddEvent("Right clicking to issue attack order to a unit, " + this.gameObject.name + ".");
 			}
 			else if ((Input.GetMouseButtonUp(0) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))) {
 				if (this.selectable.isSelected) {
@@ -111,15 +112,25 @@ public class Attackable : MonoBehaviour {
 					this.isAttacking = false;
 					this.selectable.Deselect();
 					this.attackableRenderer.material.color = Color.white;
+					if (Input.GetMouseButtonUp(0)) {
+						Analytics.Instance.AddEvent("Left clicking to cancel an attack order to unit, " + this.gameObject.name + ".");
+					}
+					else if (Input.GetKeyDown(KeyCode.S)){
+						Analytics.Instance.AddEvent("S key pressed to cancel an attack order to unit, " + this.gameObject.name + ".");
+					}
+					else if (Input.GetKeyDown(KeyCode.D)) {
+						Analytics.Instance.AddEvent("D key pressed to cancel an attack order to unit, " + this.gameObject.name + ".");
+					}
 				}
 			}
 		}
 		else if (this.isAttacking) {
 			if (Input.GetMouseButtonUp(1)) {
 				if (this.selectable.isSelected && !this.isReadyToAttack && this.receivedAttackCommand) {
-					Debug.Log("Cancelling attack.");
+					//Debug.Log("Cancelling attack.");
 					this.isAttacking = false;
 					this.receivedAttackCommand = false;
+					Analytics.Instance.AddEvent("Right clicking to order to go somewhere else to the unit, " + this.gameObject.name + ".");
 				}
 			}
 		}
@@ -127,6 +138,7 @@ public class Attackable : MonoBehaviour {
 			if (this.selectable.isSelected && this.attackableNetworkView.isMine && !this.isReadyToAttack && !this.isAttacking) {
 				this.isReadyToAttack = true;
 				this.attackableRenderer.material.color = Color.yellow;
+				Analytics.Instance.AddEvent("A key pressed to initiate attack order to unit, " + this.gameObject.name + ".");
 			}
 		}
 	}

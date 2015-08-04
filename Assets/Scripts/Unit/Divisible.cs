@@ -40,6 +40,8 @@ public class Divisible : MonoBehaviour {
 		if (this.playerNetworkView.isMine) {
 			if (Input.GetKeyDown(KeyCode.S) && this.ownerSelectable.isSelected && this.isReady && (!this.ownerAttackable.isReadyToAttack || !this.ownerAttackable.isAttacking) && this.canDivide) {
 
+				Analytics.Instance.AddEvent("S key pressed to split selected units. Count: " + Selectable.selectedObjects.Count.ToString());
+
 				for (int j = 0; j < Selectable.selectedObjects.Count; j++) {
 					Selectable ownerSelectable = Selectable.selectedObjects[j];
 					if (ownerSelectable == null) {

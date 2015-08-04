@@ -58,6 +58,7 @@ public class WinLoseCondition : MonoBehaviour {
 		//	this.playerNetworkView.RPC("RPC_NotifyWinLose", RPCMode.AllBuffered, this.playerNetworkView.viewID);
 		//}
 		this.EVENT_PlayerHasLost();
+		Analytics.Instance.AddEvent("Player has lost.");
 	}
 
 	public void SetPlayerLost() {

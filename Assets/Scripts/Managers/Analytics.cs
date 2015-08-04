@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public struct AnalyticData {
 	public float timeStamp;
 	public string readableTimeStamp;
@@ -44,6 +45,7 @@ public class Analytics : MonoBehaviour {
 
 	public void OnPlayerConnected(NetworkPlayer player) {
 		Debug.LogWarning("Player has connected. Timer analytic stuff set to start.");
+		Analytics.Instance.AddEvent("Game session begins.");
 		if (this.analyticNetworkView != null && this.analyticNetworkView.isMine) {
 			this.analyticNetworkView.RPC("RPC_StartTimer", RPCMode.AllBuffered);
 		}
