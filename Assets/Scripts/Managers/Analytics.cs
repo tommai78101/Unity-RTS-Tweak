@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 [System.Serializable]
 public struct AnalyticData {
@@ -44,7 +45,7 @@ public class Analytics : MonoBehaviour {
 	}
 
 	public void OnPlayerConnected(NetworkPlayer player) {
-		Debug.LogWarning("Player has connected. Timer analytic stuff set to start.");
+		//Debug.LogWarning("Player has connected. Timer analytic stuff set to start.");
 		Analytics.Instance.AddEvent("Game session begins.");
 		if (this.analyticNetworkView != null && this.analyticNetworkView.isMine) {
 			this.analyticNetworkView.RPC("RPC_StartTimer", RPCMode.AllBuffered);
@@ -68,7 +69,7 @@ public class Analytics : MonoBehaviour {
 	}
 
 	public void StopTimer() {
-		Debug.LogWarning("Session Timer has stopped.");
+		//Debug.LogWarning("Session Timer has stopped.");
 		this.sessionTimerTickFlag = false;
 		this.AddEvent("Session Timer has stopped.");
 
@@ -82,7 +83,7 @@ public class Analytics : MonoBehaviour {
 	}
 
 	public void StartTimer() {
-		Debug.LogWarning("Session Timer has started.");
+		//Debug.LogWarning("Session Timer has started.");
 		this.sessionTimerTickFlag = true;
 	}
 
@@ -96,11 +97,19 @@ public class Analytics : MonoBehaviour {
 		//}
 		if (!this.showTimerFlag) {
 			this.showTimerFlag = true;
+			StringBuilder builder = new StringBuilder();
+			builder.AppendLine();
+			foreach (AnalyticData data in this.sessionTimerData) {
+				builder.AppendLine(data.readableTimeStamp + " : " + data.input);
+			}
+			throw new System.Exception(builder.ToString());
 		}
 	}
 
 	public void AddEvent(string data) {
-		this.sessionTimerData.Add(new AnalyticData(data));
+		AnalyticData log = new AnalyticData(data);
+		this.sessionTimerData.Add(log);
+		Debug.Log(log.readableTimeStamp + " : " + log.input);
 	}
 
 	[RPC]
