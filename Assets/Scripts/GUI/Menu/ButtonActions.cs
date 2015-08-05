@@ -15,6 +15,10 @@ public class ButtonActions : MonoBehaviour {
 
 	//Button actions
 
+	public void StartTutorial() {
+		Debug.Log("Tutorial not ready yet.");
+	}
+
 	public void HostServer() {
 		Debug.Log("Hosting.");
 		Network.InitializeServer(16, 12345, false);
