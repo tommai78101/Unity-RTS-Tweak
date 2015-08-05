@@ -18,16 +18,23 @@ public class InputManager : NetworkBehaviour {
 	}
 
 	private void Update() {
-		TEST_input();
-		//InputEvent();
-		//if (this.selectedObjects.Count > 0) {
-		//	if (this.isLocalPlayer) {
-		//		SetSelectionColor(this.selectedObjects, Color.green);
-		//	}
-		//	else {
-		//		SetSelectionColor(this.selectedObjects, Color.magenta);
-		//	}
-		//}
+		//TEST_input();
+		InputEvent();
+		if (this.selectedObjects.Count > 0) {
+			if (this.hasAuthority) {
+				Debug.Log("This has authority");
+			}
+			else {
+				Debug.Log("This has no authority");
+			}
+
+			if (this.isLocalPlayer) {
+				SetSelectionColor(this.selectedObjects, Color.green);
+			}
+			else {
+				SetSelectionColor(this.selectedObjects, Color.magenta);
+			}
+		}
 	}
 
 
