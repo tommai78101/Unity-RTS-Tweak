@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
+# Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityVS.Unity-RTS-Tweak.CSharp", "UnityVS.Unity-RTS-Tweak.CSharp.csproj", "{70BFF965-63E5-013D-9DA4-058C69675B7D}"
 EndProject
 Global
