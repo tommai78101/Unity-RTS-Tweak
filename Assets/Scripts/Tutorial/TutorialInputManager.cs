@@ -11,6 +11,7 @@ namespace Tutorial {
 
 		public bool selectionTutorialFlag;
 		public bool attackOrderTutorialFlag;
+		public bool moveOrderTutorialFlag;
 
 		public bool attackStandingByFlag;
 
@@ -25,7 +26,7 @@ namespace Tutorial {
 			this.allObjects = new List<GameObject>();
 			this.boxSelectedObjects = new List<GameObject>();
 
-			this.selectionTutorialFlag = this.attackOrderTutorialFlag = true;
+			this.selectionTutorialFlag = this.attackOrderTutorialFlag = this.moveOrderTutorialFlag = true;
 
 
 
@@ -42,7 +43,7 @@ namespace Tutorial {
 		void Update() {
 			Select();
 			AttackOrder();
-
+			MoveOrder();
 
 			UpdateStatus();
 		}
@@ -105,6 +106,7 @@ namespace Tutorial {
 			if (Input.GetMouseButton(0)) {
 				foreach (GameObject obj in this.allObjects) {
 					Vector2 screenPoint = Camera.main.WorldToScreenPoint(obj.transform.position);
+					screenPoint.y = Screen.height - screenPoint.y;
 					if (Selection.selectionArea.Contains(screenPoint) && !this.boxSelectedObjects.Contains(obj)) {
 						this.boxSelectedObjects.Add(obj);
 					}
@@ -167,7 +169,27 @@ namespace Tutorial {
 		//----------------------------------
 
 		private void MoveOrder() {
-
+			if (!this.moveOrderTutorialFlag) {
+				return;
+			}
+			if (!this.attackStandingByFlag) {
+				if (this.selectedObjects.Count > 0) {
+					if (Input.GetMouseButtonDown(1)) {
+						Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+						RaycastHit[] hits = Physics.RaycastAll(ray);
+						foreach (RaycastHit hit in hits) {
+							GameObject obj = hit.collider.gameObject;
+							if (obj.name.Equals("Floor")) {
+								foreach (GameObject select in this.selectedObjects) {
+									NavMeshAgent agent = select.GetComponent<NavMeshAgent>();
+									agent.SetDestination(hit.point);
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }
