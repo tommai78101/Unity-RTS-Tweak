@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Selection : MonoBehaviour {
+	[SerializeField]
 	public static Rect selectionArea = new Rect();
 	public Material borderMaterial;
 
