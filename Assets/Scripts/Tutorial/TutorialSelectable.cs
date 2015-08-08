@@ -8,15 +8,21 @@ namespace Tutorial {
 		public bool isSelected;
 		public bool isStandingBy;
 		public bool isAttacking;
+		public bool isSplitting;
+		public bool canBeSelected;
 
 		private Color initialColor;
 
 		private void Start() {
 			Renderer renderer = this.GetComponent<Renderer>();
 			this.initialColor = renderer.material.color;
+			this.canBeSelected = true;
 		}
 
 		public void SetSelect() {
+			if (!this.canBeSelected) {
+				return;
+			}
 			this.isSelected = true;
 			if (this.isAttacking) {
 				SetColor(this.initialColor);
@@ -46,6 +52,14 @@ namespace Tutorial {
 			this.isStandingBy = false;
 			this.isAttacking = false;
 			SetColor(this.initialColor);
+		}
+
+		public void EnableSelection() {
+			this.canBeSelected = true;
+		}
+
+		public void DisableSelection() {
+			this.canBeSelected = false;
 		}
 
 		private void SetColor(Color newColor){

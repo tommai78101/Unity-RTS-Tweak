@@ -12,10 +12,13 @@ namespace Tutorial {
 		public bool selectionTutorialFlag;
 		public bool attackOrderTutorialFlag;
 		public bool moveOrderTutorialFlag;
+		public bool splitTutorialFlag;
 
 		public bool attackStandingByFlag;
+		public GameObject tutorialUnitPrefab;
 
 		public TutorialAttackManager attackManager;
+		public TutorialSplitManager splitManager;
 
 
 		//----------------------------------
@@ -26,12 +29,13 @@ namespace Tutorial {
 			this.allObjects = new List<GameObject>();
 			this.boxSelectedObjects = new List<GameObject>();
 
-			this.selectionTutorialFlag = this.attackOrderTutorialFlag = this.moveOrderTutorialFlag = true;
-
-
+			this.selectionTutorialFlag = this.attackOrderTutorialFlag = this.moveOrderTutorialFlag = this.splitTutorialFlag = true;
 
 			if (this.attackManager == null) {
 				Debug.LogError("Cannot find attack manager for the tutorial.");
+			}
+			if (this.splitManager == null) {
+				Debug.LogError("Cannot find split manager for the tutorial.");
 			}
 
 			GameObject[] existingObjects = GameObject.FindGameObjectsWithTag("Tutorial_Unit");
@@ -41,9 +45,10 @@ namespace Tutorial {
 		}
 
 		void Update() {
-			Select();
+			SelectOrder();
 			AttackOrder();
 			MoveOrder();
+			SplitOrder();
 
 			UpdateStatus();
 		}
@@ -78,7 +83,7 @@ namespace Tutorial {
 
 		//----------------------------------
 
-		private void Select() {
+		private void SelectOrder() {
 			if (!this.selectionTutorialFlag) {
 				return;
 			}
@@ -188,6 +193,29 @@ namespace Tutorial {
 							}
 						}
 					}
+				}
+			}
+		}
+
+		//----------------------------------
+
+		private void SplitOrder() {
+			if (!this.splitTutorialFlag) {
+				return;
+			}
+			if (this.selectedObjects.Count > 0) {
+				if (Input.GetKeyDown(KeyCode.S)) {
+					foreach (GameObject owner in this.selectedObjects) {
+						GameObject duplicate = GameObject.Instantiate<GameObject>(this.tutorialUnitPrefab);
+						duplicate.transform.position = owner.transform.position;
+						TutorialSelectable select = owner.GetComponent<TutorialSelectable>();
+						select.DisableSelection();
+						select = duplicate.GetComponent<TutorialSelectable>();
+						select.DisableSelection();
+						this.allObjects.Add(duplicate);
+						this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
+					}
+					this.selectedObjects.Clear();
 				}
 			}
 		}
