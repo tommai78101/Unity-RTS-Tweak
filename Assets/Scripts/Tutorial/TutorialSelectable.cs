@@ -16,6 +16,9 @@ namespace Tutorial {
 		private void Start() {
 			Renderer renderer = this.GetComponent<Renderer>();
 			this.initialColor = renderer.material.color;
+			if (this.initialColor.Equals(Color.black)) {
+				this.initialColor = Color.white;
+			}
 			this.canBeSelected = true;
 		}
 

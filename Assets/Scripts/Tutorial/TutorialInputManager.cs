@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 namespace Tutorial {
 	public class TutorialInputManager : MonoBehaviour {
-
 		public List<GameObject> selectedObjects;
-		public List<GameObject> allObjects;
 		public List<GameObject> boxSelectedObjects;
 
 		public bool selectionTutorialFlag;
@@ -22,16 +20,14 @@ namespace Tutorial {
 		public TutorialSplitManager splitManager;
 		public TutorialMergeManager mergeManager;
 
-
 		//----------------------------------
-
 
 		void Start() {
 			this.selectedObjects = new List<GameObject>();
-			this.allObjects = new List<GameObject>();
+			TutorialUnitManager.Instance.allObjects = new List<GameObject>();
 			this.boxSelectedObjects = new List<GameObject>();
 
-			this.selectionTutorialFlag = this.attackOrderTutorialFlag = this.moveOrderTutorialFlag = this.splitTutorialFlag = true;
+			this.selectionTutorialFlag = this.attackOrderTutorialFlag = this.moveOrderTutorialFlag = this.splitTutorialFlag = this.mergeTutorialFlag = true;
 
 			if (this.attackManager == null) {
 				Debug.LogError("Cannot find attack manager for the tutorial.");
@@ -42,7 +38,7 @@ namespace Tutorial {
 
 			GameObject[] existingObjects = GameObject.FindGameObjectsWithTag("Tutorial_Unit");
 			foreach (GameObject obj in existingObjects) {
-				this.allObjects.Add(obj);
+				TutorialUnitManager.Instance.allObjects.Add(obj);
 			}
 		}
 
@@ -51,6 +47,7 @@ namespace Tutorial {
 			AttackOrder();
 			MoveOrder();
 			SplitOrder();
+			MergeOrder();
 
 			UpdateStatus();
 		}
@@ -59,7 +56,7 @@ namespace Tutorial {
 
 		private void UpdateStatus() {
 			if (this.attackStandingByFlag) {
-				foreach (GameObject obj in this.allObjects) {
+				foreach (GameObject obj in TutorialUnitManager.Instance.allObjects) {
 					TutorialSelectable select = obj.GetComponent<TutorialSelectable>();
 					if (this.selectedObjects.Contains(obj)) {
 						select.SetAttackStandby();
@@ -70,7 +67,7 @@ namespace Tutorial {
 				}
 			}
 			else {
-				foreach (GameObject obj in this.allObjects) {
+				foreach (GameObject obj in TutorialUnitManager.Instance.allObjects) {
 					TutorialSelectable select = obj.GetComponent<TutorialSelectable>();
 					if (this.selectedObjects.Contains(obj) || this.boxSelectedObjects.Contains(obj)) {
 						select.SetSelect();
@@ -111,7 +108,7 @@ namespace Tutorial {
 				}
 			}
 			if (Input.GetMouseButton(0)) {
-				foreach (GameObject obj in this.allObjects) {
+				foreach (GameObject obj in TutorialUnitManager.Instance.allObjects) {
 					Vector2 screenPoint = Camera.main.WorldToScreenPoint(obj.transform.position);
 					screenPoint.y = Screen.height - screenPoint.y;
 					if (Selection.selectionArea.Contains(screenPoint) && !this.boxSelectedObjects.Contains(obj)) {
@@ -186,8 +183,8 @@ namespace Tutorial {
 				return;
 			}
 			if (!this.attackStandingByFlag) {
-				if (this.selectedObjects.Count > 0) {
-					if (Input.GetMouseButtonDown(1)) {
+				if (Input.GetMouseButtonDown(1)) {
+					if (this.selectedObjects.Count > 0) {
 						Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 						RaycastHit[] hits = Physics.RaycastAll(ray);
 						foreach (RaycastHit hit in hits) {
@@ -212,8 +209,8 @@ namespace Tutorial {
 			if (!this.splitTutorialFlag) {
 				return;
 			}
-			if (this.selectedObjects.Count > 0) {
-				if (Input.GetKeyDown(KeyCode.S)) {
+			if (Input.GetKeyDown(KeyCode.S)) {
+				if (this.selectedObjects.Count > 0) {
 					foreach (GameObject owner in this.selectedObjects) {
 						GameObject duplicate = GameObject.Instantiate<GameObject>(this.tutorialUnitPrefab);
 						duplicate.transform.position = owner.transform.position;
@@ -221,7 +218,7 @@ namespace Tutorial {
 						select.DisableSelection();
 						select = duplicate.GetComponent<TutorialSelectable>();
 						select.DisableSelection();
-						this.allObjects.Add(duplicate);
+						TutorialUnitManager.Instance.allObjects.Add(duplicate);
 						this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
 					}
 					this.selectedObjects.Clear();
@@ -235,15 +232,17 @@ namespace Tutorial {
 			if (!this.mergeTutorialFlag) {
 				return;
 			}
-			if (this.selectedObjects.Count > 0) {
-				for (int i = 0; i < this.selectedObjects.Count; i += 2) {
-					TutorialSelectable select = this.selectedObjects[i].GetComponent<TutorialSelectable>();
-					select.DisableSelection();
-					select = this.selectedObjects[i+1].GetComponent<TutorialSelectable>();
-					select.DisableSelection();
-					this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[i + 1]));
+			if (Input.GetKeyDown(KeyCode.D)) {
+				if (this.selectedObjects.Count > 0) {
+					for (int i = 0; i < this.selectedObjects.Count && (i + 1 < this.selectedObjects.Count); i += 2) {
+						TutorialSelectable select = this.selectedObjects[i].GetComponent<TutorialSelectable>();
+						select.DisableSelection();
+						select = this.selectedObjects[i + 1].GetComponent<TutorialSelectable>();
+						select.DisableSelection();
+						this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[i + 1]));
+					}
+					this.selectedObjects.Clear();
 				}
-				this.selectedObjects.Clear();
 			}
 		}
 	}
