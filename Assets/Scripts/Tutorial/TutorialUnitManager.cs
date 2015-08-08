@@ -4,14 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Tutorial {
-	public class TutorialUnitManager : NetworkBehaviour {
+	public class TutorialUnitManager : MonoBehaviour {
 		public static TutorialUnitManager Instance;
 
 		public List<GameObject> allObjects;
 		public List<GameObject> removeList;
 
-		void Start() {
+		void Awake() {
 			TutorialUnitManager.Instance = this;
+		}
+
+		void Start() {
 			this.allObjects = new List<GameObject>();
 		}
 

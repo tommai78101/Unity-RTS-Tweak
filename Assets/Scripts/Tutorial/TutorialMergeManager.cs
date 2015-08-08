@@ -25,7 +25,7 @@ namespace Tutorial {
 		}
 	}
 
-	public class TutorialMergeManager : NetworkBehaviour {
+	public class TutorialMergeManager : MonoBehaviour {
 		public List<MergeGroup> mergeGroups;
 		public List<MergeGroup> removeList;
 

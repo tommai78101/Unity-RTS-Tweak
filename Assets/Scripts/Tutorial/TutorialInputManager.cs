@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Tutorial {
-	public class TutorialInputManager : NetworkBehaviour {
+	public class TutorialInputManager : MonoBehaviour {
 		public List<GameObject> selectedObjects;
 		public List<GameObject> boxSelectedObjects;
 
@@ -174,6 +174,11 @@ namespace Tutorial {
 							AttackOrder order = new AttackOrder();
 							order.Create(hit.point, this.selectedObjects);
 							this.attackManager.attackOrders.Add(order);
+							foreach (GameObject select in this.selectedObjects) {
+								TutorialAttackable attack = select.GetComponent<TutorialAttackable>();
+								attack.canExamineArea = true;
+								attack.isOrderedToMove = false;
+							}
 							hasOrderedAttackTarget = true;
 							break;
 						}
@@ -202,6 +207,9 @@ namespace Tutorial {
 								foreach (GameObject select in this.selectedObjects) {
 									NavMeshAgent agent = select.GetComponent<NavMeshAgent>();
 									agent.SetDestination(hit.point);
+									TutorialAttackable attackable = select.GetComponent<TutorialAttackable>();
+									attackable.canExamineArea = false;
+									attackable.isOrderedToMove = true;
 								}
 								break;
 							}

@@ -8,7 +8,7 @@ TODO: This is for Leveling, Health, Attack Power, and Death.
 
 */
 
-public class TutorialAttribute : NetworkBehaviour {
+public class TutorialAttribute : MonoBehaviour {
 	public int level;
 	public int attackPower;
 	public int maxHealth;

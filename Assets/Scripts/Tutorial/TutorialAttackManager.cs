@@ -17,12 +17,14 @@ namespace Tutorial {
 		}
 	};
 
-	public class TutorialAttackManager : NetworkBehaviour {
+	public class TutorialAttackManager : MonoBehaviour {
 		public List<AttackOrder> attackOrders;
+		public List<AttackOrder> destinationSet;
 
 		// Use this for initialization
 		void Start() {
 			this.attackOrders = new List<AttackOrder>();
+			this.destinationSet = new List<AttackOrder>();
 		}
 
 		// Update is called once per frame
@@ -32,9 +34,16 @@ namespace Tutorial {
 					foreach (GameObject obj in order.attackingUnits) {
 						NavMeshAgent agent = obj.GetComponent<NavMeshAgent>();
 						agent.SetDestination(order.target);
+						this.destinationSet.Add(order);
 					}
 				}
-				this.attackOrders.Clear();
+			}
+			if (this.destinationSet.Count > 0) {
+				foreach (AttackOrder order in this.destinationSet) {
+					if (this.attackOrders.Contains(order)) {
+						this.attackOrders.Remove(order);
+					}
+				}
 			}
 		}
 	}

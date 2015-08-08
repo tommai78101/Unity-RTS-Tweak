@@ -30,7 +30,7 @@ namespace Tutorial {
 	}
 
 
-	public class TutorialSplitManager : NetworkBehaviour {
+	public class TutorialSplitManager : MonoBehaviour {
 		[SerializeField]
 		public List<SplitGroup> splitGroups;
 		[SerializeField]

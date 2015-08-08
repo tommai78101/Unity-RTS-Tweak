@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 
 namespace Tutorial {
-	public class TutorialSelectable : NetworkBehaviour {
+	public class TutorialSelectable : MonoBehaviour {
 		public Color selectionColor;
 		public Color standbyColor;
 		public bool isSelected;
