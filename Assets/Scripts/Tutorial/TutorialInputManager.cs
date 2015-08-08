@@ -13,12 +13,14 @@ namespace Tutorial {
 		public bool attackOrderTutorialFlag;
 		public bool moveOrderTutorialFlag;
 		public bool splitTutorialFlag;
+		public bool mergeTutorialFlag;
 
 		public bool attackStandingByFlag;
 		public GameObject tutorialUnitPrefab;
 
 		public TutorialAttackManager attackManager;
 		public TutorialSplitManager splitManager;
+		public TutorialMergeManager mergeManager;
 
 
 		//----------------------------------
@@ -146,6 +148,7 @@ namespace Tutorial {
 							TutorialSelectable select = obj.GetComponent<TutorialSelectable>();
 							select.SetAttackStandby();
 						}
+						this.selectedObjects.Clear();
 					}
 				}
 			}
@@ -158,14 +161,19 @@ namespace Tutorial {
 					this.attackStandingByFlag = false;
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					RaycastHit[] hits = Physics.RaycastAll(ray);
+					bool hasOrderedAttackTarget = false;
 					foreach (RaycastHit hit in hits) {
 						GameObject obj = hit.collider.gameObject;
 						if (obj.name.Equals("Floor")) {
 							AttackOrder order = new AttackOrder();
 							order.Create(hit.point, this.selectedObjects);
 							this.attackManager.attackOrders.Add(order);
+							hasOrderedAttackTarget = true;
 							break;
 						}
+					}
+					if (hasOrderedAttackTarget) {
+						this.selectedObjects.Clear();
 					}
 				}
 			}
@@ -193,6 +201,7 @@ namespace Tutorial {
 							}
 						}
 					}
+					this.selectedObjects.Clear();
 				}
 			}
 		}
@@ -217,6 +226,24 @@ namespace Tutorial {
 					}
 					this.selectedObjects.Clear();
 				}
+			}
+		}
+
+		//----------------------------------
+
+		private void MergeOrder() {
+			if (!this.mergeTutorialFlag) {
+				return;
+			}
+			if (this.selectedObjects.Count > 0) {
+				for (int i = 0; i < this.selectedObjects.Count; i += 2) {
+					TutorialSelectable select = this.selectedObjects[i].GetComponent<TutorialSelectable>();
+					select.DisableSelection();
+					select = this.selectedObjects[i+1].GetComponent<TutorialSelectable>();
+					select.DisableSelection();
+					this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[i + 1]));
+				}
+				this.selectedObjects.Clear();
 			}
 		}
 	}
