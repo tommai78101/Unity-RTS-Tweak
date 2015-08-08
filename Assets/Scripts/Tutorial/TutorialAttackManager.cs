@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -16,7 +17,7 @@ namespace Tutorial {
 		}
 	};
 
-	public class TutorialAttackManager : MonoBehaviour {
+	public class TutorialAttackManager : NetworkBehaviour {
 		public List<AttackOrder> attackOrders;
 
 		// Use this for initialization

@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 namespace Tutorial {
-	public class TutorialSelectable : MonoBehaviour {
+	public class TutorialSelectable : NetworkBehaviour {
 		public Color selectionColor;
 		public Color standbyColor;
 		public bool isSelected;

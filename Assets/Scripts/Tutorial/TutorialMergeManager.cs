@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace Tutorial {
 		}
 	}
 
-	public class TutorialMergeManager : MonoBehaviour {
+	public class TutorialMergeManager : NetworkBehaviour {
 		public List<MergeGroup> mergeGroups;
 		public List<MergeGroup> removeList;
 

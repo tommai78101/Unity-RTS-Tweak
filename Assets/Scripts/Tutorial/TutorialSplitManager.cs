@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Tutorial {
 	}
 
 
-	public class TutorialSplitManager : MonoBehaviour {
+	public class TutorialSplitManager : NetworkBehaviour {
 		[SerializeField]
 		public List<SplitGroup> splitGroups;
 		[SerializeField]

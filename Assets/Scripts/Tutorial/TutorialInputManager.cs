@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Tutorial {
-	public class TutorialInputManager : MonoBehaviour {
+	public class TutorialInputManager : NetworkBehaviour {
 		public List<GameObject> selectedObjects;
 		public List<GameObject> boxSelectedObjects;
 

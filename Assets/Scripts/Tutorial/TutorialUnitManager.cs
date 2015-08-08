@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Tutorial {
-	public class TutorialUnitManager : MonoBehaviour {
+	public class TutorialUnitManager : NetworkBehaviour {
 		public static TutorialUnitManager Instance;
 
 		public List<GameObject> allObjects;
