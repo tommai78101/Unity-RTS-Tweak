@@ -11,8 +11,7 @@ namespace Tutorial {
 		public bool isAttacking;
 		public bool isSplitting;
 		public bool canBeSelected;
-
-		private Color initialColor;
+		public Color initialColor;
 
 		private void Start() {
 			Renderer renderer = this.GetComponent<Renderer>();
@@ -21,6 +20,7 @@ namespace Tutorial {
 				this.initialColor = Color.white;
 			}
 			this.canBeSelected = true;
+			TutorialUnitManager.Instance.allObjects.Add(this.gameObject);
 		}
 
 		public void SetSelect() {

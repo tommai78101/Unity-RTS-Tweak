@@ -69,7 +69,15 @@ namespace Tutorial {
 			}
 			else {
 				foreach (GameObject obj in TutorialUnitManager.Instance.allObjects) {
+					if (obj == null) {
+						TutorialUnitManager.Instance.removeList.Add(obj);
+						continue;
+					}
 					TutorialSelectable select = obj.GetComponent<TutorialSelectable>();
+					if (select == null) {
+						TutorialUnitManager.Instance.removeList.Add(obj);
+						continue;
+					}
 					if (this.selectedObjects.Contains(obj) || this.boxSelectedObjects.Contains(obj)) {
 						select.SetSelect();
 					}
@@ -219,6 +227,7 @@ namespace Tutorial {
 						select.DisableSelection();
 						select = duplicate.GetComponent<TutorialSelectable>();
 						select.DisableSelection();
+						select.initialColor = Color.white;
 						TutorialUnitManager.Instance.allObjects.Add(duplicate);
 						this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
 					}
