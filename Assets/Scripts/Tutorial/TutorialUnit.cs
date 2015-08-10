@@ -111,6 +111,7 @@ namespace Tutorial {
 					else {
 						if (agent.reachedDestination()) {
 							SetAttackCancel();
+							SetSelect();
 						}
 					}
 				}
