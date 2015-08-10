@@ -22,6 +22,7 @@ namespace Tutorial {
 			if (this.removeList.Count > 0) {
 				foreach (GameObject obj in this.removeList) {
 					if (this.allObjects.Contains(obj)) {
+						GameObject.Destroy(obj);
 						this.allObjects.Remove(obj);
 					}
 				}
