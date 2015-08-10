@@ -77,18 +77,18 @@ namespace Tutorial {
 								TutorialUnitManager.Instance.removeList.Add(obj);
 								continue;
 							}
-							if (unit.isAttacking) {
-								unit.SetAttack();
-							}
 							if (unit.isStandingBy) {
 								unit.SetAttackStandby();
 							}
-							if (unit.isSelected) {
-								unit.SetSelect();
+							if (unit.isAttacking) {
+								unit.SetAttack();
 							}
 							if (unit.isSplitting) {
 								unit.SetDeselect();
 								unit.SetAttackCancel();
+							}
+							if (unit.isSelected) {
+								unit.SetSelect();
 							}
 						}
 					}
@@ -96,6 +96,10 @@ namespace Tutorial {
 			}
 			else {
 				foreach (GameObject obj in TutorialUnitManager.Instance.allObjects) {
+					if (obj == null) {
+						TutorialUnitManager.Instance.removeList.Add(obj);
+						continue;
+					}
 					TutorialUnit unit = obj.GetComponent<TutorialUnit>();
 					if (!unit.isEnemy) {
 						unit.SetDeselect();
@@ -135,6 +139,10 @@ namespace Tutorial {
 			}
 			if (Input.GetMouseButton(0)) {
 				foreach (GameObject obj in TutorialUnitManager.Instance.allObjects) {
+					if (obj == null) {
+						TutorialUnitManager.Instance.removeList.Add(obj);
+						continue;
+					}
 					Vector2 screenPoint = Camera.main.WorldToScreenPoint(obj.transform.position);
 					screenPoint.y = Screen.height - screenPoint.y;
 					if (Selection.selectionArea.Contains(screenPoint) && !this.boxSelectedObjects.Contains(obj)) {
@@ -196,7 +204,7 @@ namespace Tutorial {
 					this.attackStandingByFlag = false;
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					RaycastHit[] hits = Physics.RaycastAll(ray);
-					bool hasOrderedAttackTarget = false;
+					//bool hasOrderedAttackTarget = false;
 					foreach (RaycastHit hit in hits) {
 						GameObject obj = hit.collider.gameObject;
 						if (obj.name.Equals("Floor")) {
@@ -214,13 +222,13 @@ namespace Tutorial {
 								unit.SetNewDestination(hit.point);
 								unit.SetAttack();
 							}
-							hasOrderedAttackTarget = true;
+							//hasOrderedAttackTarget = true;
 							break;
 						}
 					}
-					if (hasOrderedAttackTarget) {
-						this.selectedObjects.Clear();
-					}
+					//if (hasOrderedAttackTarget) {
+					//	this.selectedObjects.Clear();
+					//}
 				}
 			}
 		}
@@ -249,7 +257,7 @@ namespace Tutorial {
 							}
 						}
 					}
-					this.selectedObjects.Clear();
+					//this.selectedObjects.Clear();
 				}
 			}
 		}
@@ -266,9 +274,13 @@ namespace Tutorial {
 						GameObject duplicate = GameObject.Instantiate<GameObject>(this.tutorialUnitPrefab);
 						duplicate.transform.position = owner.transform.position;
 						TutorialUnit unit = owner.GetComponent<TutorialUnit>();
+						unit.SetDeselect();
 						unit.DisableSelection();
+						unit.SetSplitting();
 						unit = duplicate.GetComponent<TutorialUnit>();
+						unit.SetDeselect();
 						unit.DisableSelection();
+						unit.SetSplitting();
 						unit.initialColor = Color.white;
 						TutorialUnitManager.Instance.allObjects.Add(duplicate);
 						this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
@@ -288,9 +300,13 @@ namespace Tutorial {
 				if (this.selectedObjects.Count > 0) {
 					for (int i = 0; i < this.selectedObjects.Count && (i + 1 < this.selectedObjects.Count); i += 2) {
 						TutorialUnit unit = this.selectedObjects[i].GetComponent<TutorialUnit>();
+						unit.SetDeselect();
 						unit.DisableSelection();
+						unit.SetMerging();
 						unit = this.selectedObjects[i + 1].GetComponent<TutorialUnit>();
+						unit.SetDeselect();
 						unit.DisableSelection();
+						unit.SetMerging();
 						this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[i + 1]));
 					}
 					this.selectedObjects.Clear();

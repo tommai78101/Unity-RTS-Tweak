@@ -55,6 +55,7 @@ namespace Tutorial {
 					if (this.mergeGroups.Contains(group)) {
 						TutorialUnit unit = group.owner.GetComponent<TutorialUnit>();
 						unit.EnableSelection();
+						unit.SetNotMerging();
 						if (TutorialUnitManager.Instance.allObjects.Contains(group.merger)) {
 							TutorialUnitManager.Instance.allObjects.Remove(group.merger);
 						}

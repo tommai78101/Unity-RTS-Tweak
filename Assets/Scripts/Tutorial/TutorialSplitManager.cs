@@ -67,8 +67,10 @@ namespace Tutorial {
 					if (this.splitGroups.Contains(group)) {
 						TutorialUnit unit = group.owner.GetComponent<TutorialUnit>();
 						unit.EnableSelection();
+						unit.SetNotSplitting();
 						unit = group.clone.GetComponent<TutorialUnit>();
 						unit.EnableSelection();
+						unit.SetNotSplitting();
 						this.splitGroups.Remove(group);
 					}
 				}

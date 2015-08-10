@@ -19,6 +19,7 @@ namespace Tutorial {
 		public bool isStandingBy;
 		public bool isAttacking;
 		public bool isSplitting;
+		public bool isMerging;
 		public bool isMoving;
 		public bool canBeSelected;
 		public bool isDead;
@@ -67,7 +68,7 @@ namespace Tutorial {
 					else if (this.isSelected) {
 						SetColor(this.selectionColor);
 					}
-					else if (agent.reachedDestination()) {
+					else if (agent.reachedDestination() || this.isSplitting || this.isMerging) {
 						SetColor(this.initialColor);
 					}
 				}
@@ -234,6 +235,22 @@ namespace Tutorial {
 
 		public void SetEnemyFlag(bool value) {
 			this.isEnemy = value;
+		}
+
+		public void SetMerging() {
+			this.isMerging = true;
+		}
+
+		public void SetNotMerging() {
+			this.isMerging = false;
+		}
+
+		public void SetSplitting() {
+			this.isSplitting = true;
+		}
+
+		public void SetNotSplitting() {
+			this.isSplitting = false;
 		}
 
 		public void TakeDamage(int damage) {
