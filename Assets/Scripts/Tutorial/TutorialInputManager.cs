@@ -87,7 +87,7 @@ namespace Tutorial {
 								unit.SetDeselect();
 								unit.SetAttackCancel();
 							}
-							else if (unit.isSelected || unit.isMoving) {
+							else if (unit.isSelected) {
 								unit.SetSelect();
 							}
 						}
@@ -246,12 +246,9 @@ namespace Tutorial {
 							if (obj.name.Equals("Floor")) {
 								foreach (GameObject select in this.selectedObjects) {
 									TutorialUnit unit = select.GetComponent<TutorialUnit>();
-									if (!unit.isAttacking) {
+									if (unit.isAttacking) {
 										unit.SetAttackCancel();
 										unit.SetStartMoving();
-									}
-									else {
-										unit.SetAttack();
 									}
 									unit.SetNewDestination(hit.point);
 								}
@@ -298,8 +295,10 @@ namespace Tutorial {
 				if (this.selectedObjects.Count > 0) {
 					for (int i = 0; i < this.selectedObjects.Count && (i + 1 < this.selectedObjects.Count); i += 2) {
 						TutorialUnit unit = this.selectedObjects[i].GetComponent<TutorialUnit>();
+						unit.SetDeselect();
 						unit.DisableSelection();
 						unit = this.selectedObjects[i + 1].GetComponent<TutorialUnit>();
+						unit.SetDeselect();
 						unit.DisableSelection();
 						this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[i + 1]));
 					}
