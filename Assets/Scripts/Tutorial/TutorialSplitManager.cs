@@ -65,10 +65,10 @@ namespace Tutorial {
 			if (this.removeList.Count > 0) {
 				foreach (SplitGroup group in this.removeList) {
 					if (this.splitGroups.Contains(group)) {
-						TutorialSelectable select = group.owner.GetComponent<TutorialSelectable>();
-						select.EnableSelection();
-						select = group.clone.GetComponent<TutorialSelectable>();
-						select.EnableSelection();
+						TutorialUnit unit = group.owner.GetComponent<TutorialUnit>();
+						unit.EnableSelection();
+						unit = group.clone.GetComponent<TutorialUnit>();
+						unit.EnableSelection();
 						this.splitGroups.Remove(group);
 					}
 				}

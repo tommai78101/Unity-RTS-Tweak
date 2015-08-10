@@ -20,7 +20,7 @@ namespace Tutorial {
 
 
 	public class TutorialAttackable : MonoBehaviour {
-		public TutorialAttribute unitAttribute;
+		public TutorialUnit unit;
 		public List<GameObject> targets;
 		public List<GameObject> removeList;
 		public TutorialAttackManager attackManager;
@@ -28,7 +28,7 @@ namespace Tutorial {
 		public bool isOrderedToMove;
 
 		void Start() {
-			this.unitAttribute = this.GetComponent<TutorialAttribute>();
+			this.unit= this.GetComponent<TutorialUnit>();
 			this.targets = new List<GameObject>();
 			this.removeList = new List<GameObject>();
 			this.canExamineArea = false;
@@ -43,7 +43,7 @@ namespace Tutorial {
 				this.isOrderedToMove = false;
 			}
 			if (this.canExamineArea) {
-				ExamineArea(this.unitAttribute.attackRadius);
+				ExamineArea(this.unit.attackRadius);
 			}
 			else if (this.isOrderedToMove) {
 				NavMeshAgent agent = this.GetComponent<NavMeshAgent>();
@@ -83,7 +83,7 @@ namespace Tutorial {
 			Vector3 start = this.transform.position;
 			Vector3 end = b.transform.position;
 			Vector3 unitVector = (end - start).normalized;
-			return (this.transform.position - ((getRadius(this.gameObject) + this.unitAttribute.attackRadius)) * unitVector);
+			return (this.transform.position - ((getRadius(this.gameObject) + this.unit.attackRadius)) * unitVector);
 		}
 
 		private float getRadius(GameObject obj) {

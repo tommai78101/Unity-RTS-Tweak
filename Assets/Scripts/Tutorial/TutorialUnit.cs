@@ -1,9 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Tutorial {
-	public class TutorialSelectable : MonoBehaviour {
+	public class TutorialUnit: MonoBehaviour {
+		public int level;
+		public int attackPower;
+		public int maxHealth;
+		public int currentHealth;
+		public float attackRadius;
+		public bool isEnemy;
 		public Color selectionColor;
 		public Color standbyColor;
 		public bool isSelected;
@@ -12,15 +19,31 @@ namespace Tutorial {
 		public bool isSplitting;
 		public bool canBeSelected;
 		public Color initialColor;
+		public List<TutorialUnit> enemies;
 
 		private void Start() {
+			TutorialUnitManager.Instance.allObjects.Add(this.gameObject);
+
 			Renderer renderer = this.GetComponent<Renderer>();
 			this.initialColor = renderer.material.color;
 			if (this.initialColor.Equals(Color.black)) {
 				this.initialColor = Color.white;
 			}
+			Vector3 size = renderer.bounds.size;
+			this.attackRadius = 2.5f + ((size / 2f).magnitude);
+
 			this.canBeSelected = true;
-			TutorialUnitManager.Instance.allObjects.Add(this.gameObject);
+			this.level = 1;
+			this.attackPower = 1;
+			this.maxHealth = 5;
+			this.currentHealth = 5;
+			this.isEnemy = false;
+
+			this.enemies = new List<TutorialUnit>();
+		}
+
+		private void Update() {
+
 		}
 
 		public void SetSelect() {
@@ -66,9 +89,25 @@ namespace Tutorial {
 			this.canBeSelected = false;
 		}
 
-		private void SetColor(Color newColor){
+		public void SetColor(Color newColor){
 			Renderer renderer = this.GetComponent<Renderer>();
 			renderer.material.color = newColor;
+		}
+
+		public void SetEnemyFlag(bool value) {
+			this.isEnemy = value;
+		}
+
+		public void LocateEnemies() {
+			Collider[] colliders = Physics.OverlapSphere(this.transform.position, this.attackRadius);
+			if (colliders.Length > 0) {
+				foreach (Collider col in colliders) {
+					TutorialUnit unit = col.GetComponent<TutorialUnit>();
+					if (unit != null) {
+						this.enemies.Add(unit);
+					}
+				}
+			}
 		}
 	}
 }

@@ -58,12 +58,12 @@ namespace Tutorial {
 		private void UpdateStatus() {
 			if (this.attackStandingByFlag) {
 				foreach (GameObject obj in TutorialUnitManager.Instance.allObjects) {
-					TutorialSelectable select = obj.GetComponent<TutorialSelectable>();
+					TutorialUnit unit = obj.GetComponent<TutorialUnit>();
 					if (this.selectedObjects.Contains(obj)) {
-						select.SetAttackStandby();
+						unit.SetAttackStandby();
 					}
 					else {
-						select.SetDeselect();
+						unit.SetDeselect();
 					}
 				}
 			}
@@ -73,17 +73,17 @@ namespace Tutorial {
 						TutorialUnitManager.Instance.removeList.Add(obj);
 						continue;
 					}
-					TutorialSelectable select = obj.GetComponent<TutorialSelectable>();
-					if (select == null) {
+					TutorialUnit unit = obj.GetComponent<TutorialUnit>();
+					if (unit == null) {
 						TutorialUnitManager.Instance.removeList.Add(obj);
 						continue;
 					}
 					if (this.selectedObjects.Contains(obj) || this.boxSelectedObjects.Contains(obj)) {
-						select.SetSelect();
+						unit.SetSelect();
 					}
 					else {
-						select.SetDeselect();
-						select.SetAttackCancel();
+						unit.SetDeselect();
+						unit.SetAttackCancel();
 					}
 				}
 			}
@@ -151,8 +151,8 @@ namespace Tutorial {
 					if (this.selectedObjects.Count > 0) {
 						this.attackStandingByFlag = true;
 						foreach (GameObject obj in this.selectedObjects) {
-							TutorialSelectable select = obj.GetComponent<TutorialSelectable>();
-							select.SetAttackStandby();
+							TutorialUnit unit = obj.GetComponent<TutorialUnit>();
+							unit.SetAttackStandby();
 						}
 						this.selectedObjects.Clear();
 					}
@@ -231,11 +231,11 @@ namespace Tutorial {
 					foreach (GameObject owner in this.selectedObjects) {
 						GameObject duplicate = GameObject.Instantiate<GameObject>(this.tutorialUnitPrefab);
 						duplicate.transform.position = owner.transform.position;
-						TutorialSelectable select = owner.GetComponent<TutorialSelectable>();
-						select.DisableSelection();
-						select = duplicate.GetComponent<TutorialSelectable>();
-						select.DisableSelection();
-						select.initialColor = Color.white;
+						TutorialUnit unit = owner.GetComponent<TutorialUnit>();
+						unit.DisableSelection();
+						unit = duplicate.GetComponent<TutorialUnit>();
+						unit.DisableSelection();
+						unit.initialColor = Color.white;
 						TutorialUnitManager.Instance.allObjects.Add(duplicate);
 						this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
 					}
@@ -253,10 +253,10 @@ namespace Tutorial {
 			if (Input.GetKeyDown(KeyCode.D)) {
 				if (this.selectedObjects.Count > 0) {
 					for (int i = 0; i < this.selectedObjects.Count && (i + 1 < this.selectedObjects.Count); i += 2) {
-						TutorialSelectable select = this.selectedObjects[i].GetComponent<TutorialSelectable>();
-						select.DisableSelection();
-						select = this.selectedObjects[i + 1].GetComponent<TutorialSelectable>();
-						select.DisableSelection();
+						TutorialUnit unit = this.selectedObjects[i].GetComponent<TutorialUnit>();
+						unit.DisableSelection();
+						unit = this.selectedObjects[i + 1].GetComponent<TutorialUnit>();
+						unit.DisableSelection();
 						this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[i + 1]));
 					}
 					this.selectedObjects.Clear();

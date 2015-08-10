@@ -53,8 +53,8 @@ namespace Tutorial {
 			if (this.removeList.Count > 0) {
 				foreach (MergeGroup group in this.removeList) {
 					if (this.mergeGroups.Contains(group)) {
-						TutorialSelectable select = group.owner.GetComponent<TutorialSelectable>();
-						select.EnableSelection();
+						TutorialUnit unit = group.owner.GetComponent<TutorialUnit>();
+						unit.EnableSelection();
 						if (TutorialUnitManager.Instance.allObjects.Contains(group.merger)) {
 							TutorialUnitManager.Instance.allObjects.Remove(group.merger);
 						}
