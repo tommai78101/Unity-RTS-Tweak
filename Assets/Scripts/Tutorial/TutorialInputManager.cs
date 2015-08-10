@@ -80,15 +80,15 @@ namespace Tutorial {
 							if (unit.isAttacking) {
 								unit.SetAttack();
 							}
-							if (unit.isStandingBy) {
+							else if (unit.isStandingBy) {
 								unit.SetAttackStandby();
 							}
-							if (unit.isSelected) {
-								unit.SetSelect();
-							}
-							if (unit.isSplitting) {
+							else if (unit.isSplitting) {
 								unit.SetDeselect();
 								unit.SetAttackCancel();
+							}
+							else if (unit.isSelected || unit.isMoving) {
+								unit.SetSelect();
 							}
 						}
 					}
@@ -96,6 +96,10 @@ namespace Tutorial {
 			}
 			else {
 				foreach (GameObject obj in TutorialUnitManager.Instance.allObjects) {
+					if (obj == null) {
+						TutorialUnitManager.Instance.removeList.Add(obj);
+						continue;
+					}
 					TutorialUnit unit = obj.GetComponent<TutorialUnit>();
 					if (!unit.isEnemy) {
 						unit.SetDeselect();
@@ -196,7 +200,7 @@ namespace Tutorial {
 					this.attackStandingByFlag = false;
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					RaycastHit[] hits = Physics.RaycastAll(ray);
-					bool hasOrderedAttackTarget = false;
+					//bool hasOrderedAttackTarget = false;
 					foreach (RaycastHit hit in hits) {
 						GameObject obj = hit.collider.gameObject;
 						if (obj.name.Equals("Floor")) {
@@ -210,17 +214,18 @@ namespace Tutorial {
 							//}
 							foreach (GameObject selected in this.selectedObjects) {
 								TutorialUnit unit = selected.GetComponent<TutorialUnit>();
+								unit.SetDeselect();
 								unit.SetAttackCancel();
 								unit.SetNewDestination(hit.point);
 								unit.SetAttack();
 							}
-							hasOrderedAttackTarget = true;
+							//hasOrderedAttackTarget = true;
 							break;
 						}
 					}
-					if (hasOrderedAttackTarget) {
-						this.selectedObjects.Clear();
-					}
+					//if (hasOrderedAttackTarget) {
+					//	this.selectedObjects.Clear();
+					//}
 				}
 			}
 		}
@@ -241,15 +246,20 @@ namespace Tutorial {
 							if (obj.name.Equals("Floor")) {
 								foreach (GameObject select in this.selectedObjects) {
 									TutorialUnit unit = select.GetComponent<TutorialUnit>();
-									unit.SetAttackCancel();
-									unit.SetStartMoving();
+									if (!unit.isAttacking) {
+										unit.SetAttackCancel();
+										unit.SetStartMoving();
+									}
+									else {
+										unit.SetAttack();
+									}
 									unit.SetNewDestination(hit.point);
 								}
 								break;
 							}
 						}
 					}
-					this.selectedObjects.Clear();
+					//this.selectedObjects.Clear();
 				}
 			}
 		}
