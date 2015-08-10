@@ -67,14 +67,14 @@ namespace Tutorial {
 					else if (this.isSelected) {
 						SetColor(this.selectionColor);
 					}
-					else {
+					else if (agent.reachedDestination()) {
 						SetColor(this.initialColor);
 					}
 				}
 
 				if (this.isMoving) {
 					SetAttackCancel();
-					this.enemyTarget = null;
+					SetNoEnemyTarget();
 					this.enemies.Clear();
 					if (agent.reachedDestination()) {
 						SetStopMoving();
@@ -90,9 +90,9 @@ namespace Tutorial {
 						}
 					}
 					if (this.enemyTarget != null && this.enemyTarget.isEnemy) {
-						SetAttack();
 						if (Vector3.Distance(this.transform.position, this.enemyTarget.transform.position) <= ObtainRadius(this) + this.attackRadius) {
 							if (this.enemyTarget.currentHealth > 0) {
+								SetAttack();
 								if (this.attackCooldownTimer <= 0f) {
 									this.attackCooldownTimer = this.attackCooldown;
 									this.enemyTarget.TakeDamage(this.attackPower);
@@ -103,11 +103,8 @@ namespace Tutorial {
 							}
 						}
 						else {
-							SetAttackCancel();
-							if (this.enemyTarget != null) {
-								agent.stoppingDistance = ObtainRadius(this.enemyTarget) + this.attackRadius;
-								agent.SetDestination(this.enemyTarget.transform.position);
-							}
+							agent.stoppingDistance = ObtainRadius(this.enemyTarget) + this.attackRadius;
+							agent.SetDestination(this.enemyTarget.transform.position);
 						}
 					}
 					else {
@@ -142,7 +139,7 @@ namespace Tutorial {
 						}
 					}
 					else {
-						this.enemyTarget = null;
+						SetNoEnemyTarget();
 					}
 				}
 
@@ -207,10 +204,13 @@ namespace Tutorial {
 		public void SetAttackCancel() {
 			this.isStandingBy = false;
 			this.isAttacking = false;
-			this.enemyTarget = null;
 			//if (!this.isTakingDamage) {
 			//	SetColor(this.initialColor);
 			//}
+		}
+
+		public void SetNoEnemyTarget() {
+			this.enemyTarget = null;
 		}
 
 		public void SetNewDestination(Vector3 point) {
