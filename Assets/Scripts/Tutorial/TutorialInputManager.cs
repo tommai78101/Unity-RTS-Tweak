@@ -61,7 +61,9 @@ namespace Tutorial {
 					foreach (GameObject obj in TutorialUnitManager.Instance.allObjects) {
 						if (this.selectedObjects.Contains(obj)) {
 							TutorialUnit unit = obj.GetComponent<TutorialUnit>();
-							unit.SetAttackStandby();
+							if (!unit.isEnemy) {
+								unit.SetAttackStandby();
+							}
 						}
 					}
 				}
@@ -77,18 +79,20 @@ namespace Tutorial {
 								TutorialUnitManager.Instance.removeList.Add(obj);
 								continue;
 							}
-							if (unit.isStandingBy) {
-								unit.SetAttackStandby();
-							}
-							if (unit.isAttacking) {
-								unit.SetAttack();
-							}
-							if (unit.isSplitting) {
-								unit.SetDeselect();
-								unit.SetAttackCancel();
-							}
-							if (unit.isSelected) {
-								unit.SetSelect();
+							if (!unit.isEnemy) {
+								if (unit.isStandingBy) {
+									unit.SetAttackStandby();
+								}
+								if (unit.isAttacking) {
+									unit.SetAttack();
+								}
+								if (unit.isSplitting) {
+									unit.SetDeselect();
+									unit.SetAttackCancel();
+								}
+								if (unit.isSelected) {
+									unit.SetSelect();
+								}
 							}
 						}
 					}
@@ -101,9 +105,7 @@ namespace Tutorial {
 						continue;
 					}
 					TutorialUnit unit = obj.GetComponent<TutorialUnit>();
-					if (!unit.isEnemy) {
-						unit.SetDeselect();
-					}
+					unit.SetDeselect();
 				}
 			}
 		}
@@ -118,6 +120,13 @@ namespace Tutorial {
 				return;
 			}
 			if (Input.GetMouseButtonDown(0)) {
+				if (this.selectedObjects.Count > 0) {
+					foreach (GameObject obj in this.selectedObjects) {
+						TutorialUnit unit = obj.GetComponent<TutorialUnit>();
+						unit.SetDeselect();
+					}
+					this.selectedObjects.Clear();
+				}
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				RaycastHit[] hits = Physics.RaycastAll(ray);
 				bool hasHitUnit = false;
@@ -147,13 +156,17 @@ namespace Tutorial {
 					screenPoint.y = Screen.height - screenPoint.y;
 					if (Selection.selectionArea.Contains(screenPoint) && !this.boxSelectedObjects.Contains(obj)) {
 						this.boxSelectedObjects.Add(obj);
-						this.selectedObjects.Add(obj);
+						if (!this.selectedObjects.Contains(obj)) {
+							this.selectedObjects.Add(obj);
+						}
 						TutorialUnit unit = obj.GetComponent<TutorialUnit>();
 						unit.SetSelect();
 					}
 					else if (!Selection.selectionArea.Contains(screenPoint) && this.boxSelectedObjects.Contains(obj)) {
 						this.boxSelectedObjects.Remove(obj);
-						this.selectedObjects.Remove(obj);
+						if (this.selectedObjects.Contains(obj)) {
+							this.selectedObjects.Remove(obj);
+						}
 						TutorialUnit unit = obj.GetComponent<TutorialUnit>();
 						unit.SetDeselect();
 					}
@@ -185,7 +198,9 @@ namespace Tutorial {
 						this.attackStandingByFlag = true;
 						foreach (GameObject obj in this.selectedObjects) {
 							TutorialUnit unit = obj.GetComponent<TutorialUnit>();
-							unit.SetAttackStandby();
+							if (!unit.isEnemy) {
+								unit.SetAttackStandby();
+							}
 						}
 						//this.selectedObjects.Clear();
 					}
@@ -208,19 +223,13 @@ namespace Tutorial {
 					foreach (RaycastHit hit in hits) {
 						GameObject obj = hit.collider.gameObject;
 						if (obj.name.Equals("Floor")) {
-							//AttackOrder order = new AttackOrder();
-							//order.Create(hit.point, this.selectedObjects);
-							//this.attackManager.attackOrders.Add(order);
-							//foreach (GameObject select in this.selectedObjects) {
-							//	TutorialAttackable attack = select.GetComponent<TutorialAttackable>();
-							//	attack.canExamineArea = true;
-							//	attack.isOrderedToMove = false;
-							//}
 							foreach (GameObject selected in this.selectedObjects) {
 								TutorialUnit unit = selected.GetComponent<TutorialUnit>();
-								unit.SetAttackCancel();
-								unit.SetNewDestination(hit.point);
-								unit.SetAttack();
+								if (!unit.isEnemy) {
+									unit.SetAttackCancel();
+									unit.SetNewDestination(hit.point);
+									unit.SetAttack();
+								}
 							}
 							//hasOrderedAttackTarget = true;
 							break;
@@ -249,9 +258,11 @@ namespace Tutorial {
 							if (obj.name.Equals("Floor")) {
 								foreach (GameObject select in this.selectedObjects) {
 									TutorialUnit unit = select.GetComponent<TutorialUnit>();
-									unit.SetAttackCancel();
-									unit.SetStartMoving();
-									unit.SetNewDestination(hit.point);
+									if (!unit.isEnemy) {
+										unit.SetAttackCancel();
+										unit.SetStartMoving();
+										unit.SetNewDestination(hit.point);
+									}
 								}
 								break;
 							}
@@ -270,20 +281,29 @@ namespace Tutorial {
 			}
 			if (Input.GetKeyDown(KeyCode.S)) {
 				if (this.selectedObjects.Count > 0) {
-					foreach (GameObject owner in this.selectedObjects) {
-						GameObject duplicate = GameObject.Instantiate<GameObject>(this.tutorialUnitPrefab);
-						duplicate.transform.position = owner.transform.position;
-						TutorialUnit unit = owner.GetComponent<TutorialUnit>();
-						unit.SetDeselect();
-						unit.DisableSelection();
-						unit.SetSplitting();
-						unit = duplicate.GetComponent<TutorialUnit>();
-						unit.SetDeselect();
-						unit.DisableSelection();
-						unit.SetSplitting();
-						unit.initialColor = Color.white;
-						TutorialUnitManager.Instance.allObjects.Add(duplicate);
-						this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
+					bool enemyCheck = false;
+					foreach (GameObject obj in this.selectedObjects) {
+						TutorialUnit unit = obj.GetComponent<TutorialUnit>();
+						if (unit.isEnemy) {
+							enemyCheck = true;
+						}
+					}
+					if (!enemyCheck) {
+						foreach (GameObject owner in this.selectedObjects) {
+							TutorialUnit unit = owner.GetComponent<TutorialUnit>();
+							GameObject duplicate = GameObject.Instantiate<GameObject>(this.tutorialUnitPrefab);
+							duplicate.transform.position = owner.transform.position;
+							unit.SetDeselect();
+							unit.DisableSelection();
+							unit.SetSplitting();
+							unit = duplicate.GetComponent<TutorialUnit>();
+							unit.SetDeselect();
+							unit.DisableSelection();
+							unit.SetSplitting();
+							unit.initialColor = Color.white;
+							TutorialUnitManager.Instance.allObjects.Add(duplicate);
+							this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
+						}
 					}
 					this.selectedObjects.Clear();
 				}
@@ -298,16 +318,25 @@ namespace Tutorial {
 			}
 			if (Input.GetKeyDown(KeyCode.D)) {
 				if (this.selectedObjects.Count > 0) {
-					for (int i = 0; i < this.selectedObjects.Count && (i + 1 < this.selectedObjects.Count); i += 2) {
-						TutorialUnit unit = this.selectedObjects[i].GetComponent<TutorialUnit>();
-						unit.SetDeselect();
-						unit.DisableSelection();
-						unit.SetMerging();
-						unit = this.selectedObjects[i + 1].GetComponent<TutorialUnit>();
-						unit.SetDeselect();
-						unit.DisableSelection();
-						unit.SetMerging();
-						this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[i + 1]));
+					bool enemyCheck = false;
+					foreach (GameObject obj in this.selectedObjects) {
+						TutorialUnit unit = obj.GetComponent<TutorialUnit>();
+						if (unit.isEnemy) {
+							enemyCheck = true;
+						}
+					}
+					if (!enemyCheck) {
+						for (int i = 0; i < this.selectedObjects.Count && (i + 1 < this.selectedObjects.Count); i += 2) {
+							TutorialUnit unit = this.selectedObjects[i].GetComponent<TutorialUnit>();
+							unit.SetDeselect();
+							unit.DisableSelection();
+							unit.SetMerging();
+							unit = this.selectedObjects[i + 1].GetComponent<TutorialUnit>();
+							unit.SetDeselect();
+							unit.DisableSelection();
+							unit.SetMerging();
+							this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[i + 1]));
+						}
 					}
 					this.selectedObjects.Clear();
 				}

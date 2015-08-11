@@ -16,6 +16,7 @@ public class Selection : MonoBehaviour {
 	void Start() {
 		this.initialClick = this.startingVertex = this.endingVertex = -Vector3.one;
 		this.borderColor = new Color(1f, 128f / 255f, 1f, 1f); //Dark green
+		borderMaterial.color = this.borderColor;
 	}
 
 	// Update is called once per frame

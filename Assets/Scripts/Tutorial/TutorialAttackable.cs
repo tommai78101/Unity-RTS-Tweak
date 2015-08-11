@@ -4,21 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Tutorial {
-	public static class ExtensionClass {
-		public static bool reachedDestination(this NavMeshAgent agent) {
-			if (!agent.pathPending) {
-				if (agent.remainingDistance <= agent.stoppingDistance) {
-					if (!agent.hasPath || agent.velocity.sqrMagnitude <= float.Epsilon) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-	}
-
-
-
 	public class TutorialAttackable : MonoBehaviour {
 		public TutorialUnit unit;
 		public List<GameObject> targets;

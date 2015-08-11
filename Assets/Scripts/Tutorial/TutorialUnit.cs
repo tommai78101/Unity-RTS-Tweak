@@ -4,6 +4,19 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Tutorial {
+	public static class ExtensionClass {
+		public static bool reachedDestination(this NavMeshAgent agent) {
+			if (!agent.pathPending) {
+				if (agent.remainingDistance <= agent.stoppingDistance) {
+					if (!agent.hasPath || agent.velocity.sqrMagnitude <= float.Epsilon) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+	}
+
 	public class TutorialUnit : MonoBehaviour {
 		public int level;
 		public int attackPower;
@@ -65,9 +78,6 @@ namespace Tutorial {
 					if (this.isStandingBy || this.isAttacking) {
 						SetColor(this.standbyColor);
 					}
-					else if (this.isSelected) {
-						SetColor(this.selectionColor);
-					}
 					else if (agent.reachedDestination() || this.isSplitting || this.isMerging) {
 						SetColor(this.initialColor);
 					}
@@ -111,7 +121,7 @@ namespace Tutorial {
 					else {
 						if (agent.reachedDestination()) {
 							SetAttackCancel();
-							SetSelect();
+							//SetSelect();
 						}
 					}
 				}
@@ -161,23 +171,33 @@ namespace Tutorial {
 				return;
 			}
 			this.isSelected = true;
-			//if (this.isAttacking) {
-			//	if (!this.isTakingDamage) {
-			//		SetColor(this.initialColor);
-			//	}
-			//}
-			//else {
-			//	if (!this.isTakingDamage) {
-			//		SetColor(this.selectionColor);
-			//	}
-			//}
+			TutorialRing ring = this.GetComponentInChildren<TutorialRing>();
+			if (ring != null) {
+				ring.isSelected = true;
+				if (this.isEnemy) {
+					ring.SetColor(Color.red);
+				}
+				else {
+					ring.SetColor(Color.green);
+				}
+			}
 		}
 
 		public void SetDeselect() {
+			if (!this.canBeSelected) {
+				return;
+			}
 			this.isSelected = false;
-			//if (!this.isTakingDamage) {
-			//	SetColor(this.initialColor);
-			//}
+			TutorialRing ring = this.GetComponentInChildren<TutorialRing>();
+			if (ring != null) {
+				ring.isSelected = false;
+				if (this.isEnemy) {
+					ring.SetColor(Color.red);
+				}
+				else {
+					ring.SetColor(Color.green);
+				}
+			}
 		}
 
 		public void SetStartMoving() {
@@ -191,24 +211,15 @@ namespace Tutorial {
 		public void SetAttack() {
 			this.isStandingBy = false;
 			this.isAttacking = true;
-			//if (!this.isTakingDamage) {
-			//	SetColor(this.initialColor);
-			//}
 		}
 
 		public void SetAttackStandby() {
 			this.isStandingBy = true;
-			//if (!this.isTakingDamage) {
-			//	SetColor(this.standbyColor);
-			//}
 		}
 
 		public void SetAttackCancel() {
 			this.isStandingBy = false;
 			this.isAttacking = false;
-			//if (!this.isTakingDamage) {
-			//	SetColor(this.initialColor);
-			//}
 		}
 
 		public void SetNoEnemyTarget() {
@@ -295,6 +306,5 @@ namespace Tutorial {
 			Renderer renderer = unit.GetComponent<Renderer>();
 			return renderer.bounds.extents.magnitude / 2f;
 		}
-
 	}
 }
