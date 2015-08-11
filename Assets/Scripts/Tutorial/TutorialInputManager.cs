@@ -45,8 +45,8 @@ namespace Tutorial {
 
 		void Update() {
 			SelectOrder();
-			AttackOrder();
 			MoveOrder();
+			AttackOrder();
 			SplitOrder();
 			MergeOrder();
 
@@ -260,6 +260,8 @@ namespace Tutorial {
 									TutorialUnit unit = select.GetComponent<TutorialUnit>();
 									if (!unit.isEnemy) {
 										unit.SetAttackCancel();
+										unit.SetNoEnemyTarget();
+										unit.enemies.Clear();
 										unit.SetStartMoving();
 										unit.SetNewDestination(hit.point);
 									}
