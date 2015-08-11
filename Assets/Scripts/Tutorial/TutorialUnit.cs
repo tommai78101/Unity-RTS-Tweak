@@ -63,7 +63,7 @@ namespace Tutorial {
 			this.attackPower = 1;
 			this.maxHealth = 5;
 			this.currentHealth = 5;
-			this.isEnemy = false;
+			//this.isEnemy = false;
 			this.isDead = false;
 			this.isTakingDamage = false;
 
