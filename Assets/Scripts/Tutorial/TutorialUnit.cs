@@ -102,11 +102,7 @@ namespace Tutorial {
 									if (this.enemyTarget.currentHealth > 0) {
 										SetAttack();
 										if (this.attackCooldownTimer <= 0f) {
-											this.attackCooldownTimer = this.attackCooldown;
 											this.enemyTarget.TakeDamage(this.attackPower);
-										}
-										else {
-											this.attackCooldownTimer -= Time.deltaTime;
 										}
 									}
 								}
@@ -165,6 +161,14 @@ namespace Tutorial {
 				if (this.currentHealth <= 0) {
 					this.isDead = true;
 					TutorialUnitManager.Instance.removeList.Add(this.gameObject);
+				}
+				if (this.attackCooldownTimer < 0f) {
+					if (this.isAttacking) {
+						this.attackCooldownTimer = this.attackCooldown;
+					}
+				}
+				else {
+					this.attackCooldownTimer -= Time.deltaTime;
 				}
 			}
 		}
