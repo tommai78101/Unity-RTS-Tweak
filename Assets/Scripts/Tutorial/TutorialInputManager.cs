@@ -28,7 +28,7 @@ namespace Tutorial {
 			TutorialUnitManager.Instance.allObjects = new List<GameObject>();
 			this.boxSelectedObjects = new List<GameObject>();
 
-			this.selectionTutorialFlag = this.attackOrderTutorialFlag = this.moveOrderTutorialFlag = this.splitTutorialFlag = this.mergeTutorialFlag = true;
+			//this.selectionTutorialFlag = this.attackOrderTutorialFlag = this.moveOrderTutorialFlag = this.splitTutorialFlag = this.mergeTutorialFlag = true;
 
 			if (this.attackManager == null) {
 				Debug.LogError("Cannot find attack manager for the tutorial.");
