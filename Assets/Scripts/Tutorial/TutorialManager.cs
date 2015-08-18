@@ -33,25 +33,21 @@ namespace Tutorial {
 				case 0:
 					break;
 				case 1:
-					selectionManager.selectionTutorialFlag = true;
 					inputManager.selectionTutorialFlag = true;
 					break;
 				case 2:
 					selectionManager.selectionTutorialFlag = true;
 					inputManager.selectionTutorialFlag = true;
-					mainCamera.cameraPanningTutorialFlag = true;
 					break;
 				case 3:
 					selectionManager.selectionTutorialFlag = true;
 					inputManager.selectionTutorialFlag = true;
-					inputManager.moveOrderTutorialFlag = true;
 					mainCamera.cameraPanningTutorialFlag = true;
 					break;
 				case 4:
 					selectionManager.selectionTutorialFlag = true;
 					inputManager.selectionTutorialFlag = true;
 					inputManager.moveOrderTutorialFlag = true;
-					inputManager.attackOrderTutorialFlag = true;
 					mainCamera.cameraPanningTutorialFlag = true;
 					break;
 				case 5:
@@ -59,10 +55,17 @@ namespace Tutorial {
 					inputManager.selectionTutorialFlag = true;
 					inputManager.moveOrderTutorialFlag = true;
 					inputManager.attackOrderTutorialFlag = true;
-					inputManager.splitTutorialFlag = true;
 					mainCamera.cameraPanningTutorialFlag = true;
 					break;
 				case 6:
+					selectionManager.selectionTutorialFlag = true;
+					inputManager.selectionTutorialFlag = true;
+					inputManager.moveOrderTutorialFlag = true;
+					inputManager.attackOrderTutorialFlag = true;
+					inputManager.splitTutorialFlag = true;
+					mainCamera.cameraPanningTutorialFlag = true;
+					break;
+				case 7:
 					selectionManager.selectionTutorialFlag = true;
 					inputManager.selectionTutorialFlag = true;
 					inputManager.moveOrderTutorialFlag = true;

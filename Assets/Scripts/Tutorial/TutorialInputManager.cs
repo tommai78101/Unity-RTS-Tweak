@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,13 +45,15 @@ namespace Tutorial {
 		}
 
 		void Update() {
-			SelectOrder();
-			MoveOrder();
-			AttackOrder();
-			SplitOrder();
-			MergeOrder();
+			if (!EventSystem.current.IsPointerOverGameObject()) {
+				SelectOrder();
+				MoveOrder();
+				AttackOrder();
+				SplitOrder();
+				MergeOrder();
 
-			UpdateStatus();
+				UpdateStatus();
+			}
 		}
 
 		//----------------------------------

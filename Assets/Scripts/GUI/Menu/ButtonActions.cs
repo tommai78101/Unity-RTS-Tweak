@@ -16,7 +16,7 @@ public class ButtonActions : MonoBehaviour {
 	//Button actions
 
 	public void StartTutorial() {
-		Debug.Log("Tutorial not ready yet.");
+		Application.LoadLevel("tutorial");
 	}
 
 	public void HostServer() {

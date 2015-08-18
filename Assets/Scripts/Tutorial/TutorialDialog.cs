@@ -22,7 +22,12 @@ namespace Tutorial {
 		public string message;
 
 		public DialogText(float x, float y, string message) {
-			this.position = new Vector2(x, y);
+			if (x > 1f || y > 1f) {
+				this.position = new Vector2(x, y).normalizePosition();
+			}
+			else {
+				this.position = new Vector2(x, y);
+			}
 			this.message = message;
 		}
 	}
@@ -66,6 +71,7 @@ namespace Tutorial {
 			this.properties = new List<DialogProperty>();
 			this.runCoroutine = false;
 			Initialize();
+			this.dialogTransform.position = this.properties[0].dialogText.position.unnormalizePosition();
 		}
 
 		void OnGUI() {
@@ -77,7 +83,7 @@ namespace Tutorial {
 				}
 				if (property.changePosition) {
 					if (this.dialogTransform != null) {
-						this.dialogTransform.anchoredPosition = property.dialogText.position;
+						this.dialogTransform.anchoredPosition = property.dialogText.position.unnormalizePosition();
 					}
 				}
 				if (property.showArrow) {
@@ -91,6 +97,9 @@ namespace Tutorial {
 		}
 
 		void Update() {
+			if (Input.GetKeyDown(KeyCode.Escape)) {
+				QuitTutorial();
+			}
 			if (this.runCoroutine) {
 				this.StartCoroutine(CR_DialogSwitch());
 			}
@@ -122,29 +131,39 @@ namespace Tutorial {
 			if (this.propertyIterator < this.properties.Count) {
 				this.runCoroutine = true;
 			}
+			else {
+				QuitTutorial();
+			}
 			switch (this.propertyIterator) {
 				default:
 					break;
-				case 6:
+				case 7:
 				case 9:
 				case 11:
-				case 15:
+				case 13:
+				case 17:
 					TutorialManager.Instance.IncrementState();
 					break;
 			}
 		}
 
+		private void QuitTutorial() {
+			Application.LoadLevel("menu");
+		}
+
 		private void Initialize() {
-			Vector2 center = new Vector2((Screen.width - 300f) / 2f, -(Screen.height + 95f) / 2f);
-			Vector2 upperLeftCorner = new Vector2(0f, -95f);
+			Vector2 center = new Vector2((Screen.width - 300f) / 2f, -(Screen.height + 95f) / 2f).normalizePosition();
+			Vector2 upperLeftCorner = new Vector2(0f, -(Screen.height / 2f - 100f)).normalizePosition();
 			DialogArrow empty = new DialogArrow(0f, 0f, 0f);
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "Hello! Let's get started on how to play this game."), empty, true, false, 0f));
+			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "If you don't want to continue, press ESCAPE key at any time."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(83.82f, -259.75f, "This is your unit."), new DialogArrow(-193.24f, -91.92f, 110.5f), true, true, 0f));
-			this.properties.Add(new DialogProperty(new DialogText(83.82f, -259.75f, "There are no other units."), empty, true, false, 0f));
+			this.properties.Add(new DialogProperty(new DialogText(83.82f, -259.75f, "There are no other types of units you get to play with."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(400f, -259.75f, "This is your opponent's unit."), new DialogArrow(174.92f, 101.9f, 287.9f), true, true, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "All units behave the same, regardless of faction."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "First up is unit selection."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "To select your unit, left click on the unit."), empty, true, false, 0f));
+			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "To deselect your unit, left click on the ground."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "You can also select your unit by dragging a box."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "Next is camera panning."), new DialogArrow(0f, 0f, 0f), true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "To pan the camera around, move the mouse cursor near the edge."), empty, true, false, 0f));
