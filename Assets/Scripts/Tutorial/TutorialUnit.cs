@@ -58,6 +58,15 @@ namespace Tutorial {
 			this.enemyTarget = null;
 		}
 
+		private void OnGUI() {
+			GUIStyle style = new GUIStyle();
+			style.normal.textColor = Color.black;
+			style.alignment = TextAnchor.MiddleCenter;
+			Vector3 healthPosition = Camera.main.WorldToScreenPoint(this.transform.position);
+			Rect rectPosition = new Rect(healthPosition.x - 50f, (Screen.height - healthPosition.y) - 45f, 100f, 25f);
+			GUI.Label(rectPosition, new GUIContent(this.currentHealth.ToString() + "/" + this.maxHealth.ToString()), style);
+		}
+
 		private void Update() {
 			if (!this.isDead) {
 				NavMeshAgent agent = this.GetComponent<NavMeshAgent>();
