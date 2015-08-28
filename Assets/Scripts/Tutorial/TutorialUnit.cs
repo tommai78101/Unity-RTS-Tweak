@@ -62,52 +62,82 @@ namespace Tutorial {
 			if (!this.isDead) {
 				NavMeshAgent agent = this.GetComponent<NavMeshAgent>();
 				if (!this.isTakingDamage) {
-					if (this.isMoving) {
-						if (this.isAttacking) {
-							SetColor(this.standbyColor);
-						}
-						else {
-							SetColor(this.initialColor);
-						}
+					if (this.isMoving || this.isAttacking) {
+						//if (this.isAttacking) {
+						//	SetColor(this.standbyColor);
+						//}
+						//else {
+						//	SetColor(this.initialColor);
+						//}
 						if (agent.reachedDestination()) {
 							SetStopMoving();
 						}
-					}
-					else if (this.isStandingBy || this.isAttacking) {
-						SetColor(this.standbyColor);
-						if (this.isAttacking) {
-							if (this.enemies.Count <= 0) {
-								LocateEnemies();
+						if (this.enemies.Count <= 0) {
+							LocateEnemies();
+						}
+						if (this.enemies.Count > 0) {
+							if (this.enemies[0] != null) {
+								this.enemyTarget = this.enemies[0];
 							}
-							if (this.enemies.Count > 0) {
-								if (this.enemies[0] != null) {
-									this.enemyTarget = this.enemies[0];
-								}
-							}
-							if (this.enemyTarget != null && this.enemyTarget.isEnemy) {
-								if (Vector3.Distance(this.transform.position, this.enemyTarget.transform.position) <= ObtainRadius(this) + this.attackRadius) {
-									if (this.enemyTarget.currentHealth > 0) {
-										SetAttack();
-										if (this.attackCooldownTimer <= 0f) {
-											this.enemyTarget.TakeDamage(this.attackPower);
-										}
+						}
+						if (this.enemyTarget != null && this.enemyTarget.isEnemy) {
+							if (Vector3.Distance(this.transform.position, this.enemyTarget.transform.position) <= ObtainRadius(this) + this.attackRadius) {
+								if (this.enemyTarget.currentHealth > 0) {
+									SetAttack();
+									if (this.attackCooldownTimer <= 0f) {
+										this.enemyTarget.TakeDamage(this.attackPower);
 									}
-								}
-								else {
-									agent.stoppingDistance = ObtainRadius(this.enemyTarget) + this.attackRadius;
-									agent.SetDestination(this.enemyTarget.transform.position);
 								}
 							}
 							else {
-								if (agent.reachedDestination()) {
-									SetAttackCancel();
-									if (this.isSelected) {
-										SetSelect();
-									}
+								agent.stoppingDistance = ObtainRadius(this.enemyTarget) + this.attackRadius;
+								agent.SetDestination(this.enemyTarget.transform.position);
+							}
+						}
+						else {
+							if (agent.reachedDestination()) {
+								SetAttackCancel();
+								if (this.isSelected) {
+									SetSelect();
 								}
 							}
 						}
 					}
+					//else if (this.isStandingBy || this.isAttacking) {
+					//	SetColor(this.standbyColor);
+					//	if (this.isAttacking) {
+					//		if (this.enemies.Count <= 0) {
+					//			LocateEnemies();
+					//		}
+					//		if (this.enemies.Count > 0) {
+					//			if (this.enemies[0] != null) {
+					//				this.enemyTarget = this.enemies[0];
+					//			}
+					//		}
+					//		if (this.enemyTarget != null && this.enemyTarget.isEnemy) {
+					//			if (Vector3.Distance(this.transform.position, this.enemyTarget.transform.position) <= ObtainRadius(this) + this.attackRadius) {
+					//				if (this.enemyTarget.currentHealth > 0) {
+					//					SetAttack();
+					//					if (this.attackCooldownTimer <= 0f) {
+					//						this.enemyTarget.TakeDamage(this.attackPower);
+					//					}
+					//				}
+					//			}
+					//			else {
+					//				agent.stoppingDistance = ObtainRadius(this.enemyTarget) + this.attackRadius;
+					//				agent.SetDestination(this.enemyTarget.transform.position);
+					//			}
+					//		}
+					//		else {
+					//			if (agent.reachedDestination()) {
+					//				SetAttackCancel();
+					//				if (this.isSelected) {
+					//					SetSelect();
+					//				}
+					//			}
+					//		}
+					//	}
+					//}
 					else if (agent.reachedDestination() || this.isSplitting || this.isMerging) {
 						SetColor(this.initialColor);
 					}

@@ -42,20 +42,20 @@ namespace Tutorial {
 				case 3:
 					selectionManager.selectionTutorialFlag = true;
 					inputManager.selectionTutorialFlag = true;
-					mainCamera.cameraPanningTutorialFlag = true;
+					mainCamera.EnableTutorialFlag();
 					break;
 				case 4:
 					selectionManager.selectionTutorialFlag = true;
 					inputManager.selectionTutorialFlag = true;
 					inputManager.moveOrderTutorialFlag = true;
-					mainCamera.cameraPanningTutorialFlag = true;
+					mainCamera.EnableTutorialFlag();
 					break;
 				case 5:
 					selectionManager.selectionTutorialFlag = true;
 					inputManager.selectionTutorialFlag = true;
 					inputManager.moveOrderTutorialFlag = true;
 					inputManager.attackOrderTutorialFlag = true;
-					mainCamera.cameraPanningTutorialFlag = true;
+					mainCamera.EnableTutorialFlag();
 					break;
 				case 6:
 					selectionManager.selectionTutorialFlag = true;
@@ -63,7 +63,7 @@ namespace Tutorial {
 					inputManager.moveOrderTutorialFlag = true;
 					inputManager.attackOrderTutorialFlag = true;
 					inputManager.splitTutorialFlag = true;
-					mainCamera.cameraPanningTutorialFlag = true;
+					mainCamera.EnableTutorialFlag();
 					break;
 				case 7:
 					selectionManager.selectionTutorialFlag = true;
@@ -72,7 +72,7 @@ namespace Tutorial {
 					inputManager.attackOrderTutorialFlag = true;
 					inputManager.splitTutorialFlag = true;
 					inputManager.mergeTutorialFlag = true;
-					mainCamera.cameraPanningTutorialFlag = true;
+					mainCamera.EnableTutorialFlag();
 					break;
 			}
 		}

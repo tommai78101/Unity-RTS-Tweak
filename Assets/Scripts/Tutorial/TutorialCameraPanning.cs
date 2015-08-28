@@ -19,4 +19,9 @@ public class TutorialCameraPanning : CameraPanning {
 		}
 		base.Update();
 	}
+
+	public void EnableTutorialFlag() {
+		this.cameraPanningTutorialFlag = true;
+		this.mouseInFocus = true;
+	}
 }

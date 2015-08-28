@@ -48,7 +48,7 @@ namespace Tutorial {
 			if (!EventSystem.current.IsPointerOverGameObject()) {
 				SelectOrder();
 				MoveOrder();
-				AttackOrder();
+				//AttackOrder();
 				SplitOrder();
 				MergeOrder();
 

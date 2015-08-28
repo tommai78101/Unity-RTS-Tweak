@@ -11,10 +11,12 @@ public class CameraPanning : MonoBehaviour {
 	public bool useDebugSceneCamBorder;
 	public float camSpeed;
 	public bool mouseInFocus;
+	public float distanceFromEdge;
 
 	// Use this for initialization
 	void Start () {
 		this.mouseInFocus = false;
+		this.distanceFromEdge = 0f;
 	}
 
 	public void OnApplicationFocus(bool focus) {
@@ -24,6 +26,7 @@ public class CameraPanning : MonoBehaviour {
 	// Update is called once per frame
 	public virtual void Update () {
 		if (!this.mouseInFocus) {
+			Debug.Log("Mouse not in focus.");
 			return;
 		}
 		
@@ -47,8 +50,8 @@ public class CameraPanning : MonoBehaviour {
 		 */
 
 
-		float aspectRatio = Screen.currentResolution.width / Screen.currentResolution.height;
-		float distance = distanceFromScreenBorders * aspectRatio;
+		float aspectRatio = (float) Screen.currentResolution.width / (float) Screen.currentResolution.height;
+		this.distanceFromEdge = distanceFromScreenBorders * aspectRatio;
 		Vector2 mousePos = Input.mousePosition;
 #if UNITY_EDITOR
 		Vector2 screen = useDebugSceneCamBorder ? Handles.GetMainGameViewSize () : new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
@@ -58,29 +61,30 @@ public class CameraPanning : MonoBehaviour {
 
 		
 
-		if (mousePos.x > 0 && mousePos.x < distance){
+		if (mousePos.x > 0 && mousePos.x < this.distanceFromEdge){
 			//Moving left
 			Vector3 camPos = this.transform.position;
 			camPos.x -= camSpeed;
 			this.transform.position = camPos;
 		}
-		if (mousePos.y > 0 && mousePos.y < distance){
+		if (mousePos.y > 0 && mousePos.y < this.distanceFromEdge){
 			//Moving backward
 			Vector3 camPos = this.transform.position;
 			camPos.z -= camSpeed;
 			this.transform.position = camPos;
 		}
-		if (mousePos.x > (screen.x - distance) && mousePos.x <= screen.x){
+		if (mousePos.x > (screen.x - this.distanceFromEdge) && mousePos.x <= screen.x){
 			//Moving right
 			Vector3 camPos = this.transform.position;
 			camPos.x += camSpeed;
 			this.transform.position = camPos;
 		}
-		if (mousePos.y > (screen.y - distance) && mousePos.y <= screen.y){
+		if (mousePos.y > (screen.y - this.distanceFromEdge) && mousePos.y <= screen.y){
 			//Moving forward
 			Vector3 camPos = this.transform.position;
 			camPos.z += camSpeed;
 			this.transform.position = camPos;
 		}
+		//Debug.Log("Distance From Edges: " + this.distanceFromEdge.ToString() + " Mouse From Edges: {" + Input.mousePosition.x + ", " + (screen.y - Input.mousePosition.y) + ", " + (screen.x - Input.mousePosition.x) + ", " + Input.mousePosition.y + "}");
 	}
 }
