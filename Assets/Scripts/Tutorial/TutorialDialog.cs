@@ -137,11 +137,13 @@ namespace Tutorial {
 			switch (this.propertyIterator) {
 				default:
 					break;
-				case 7:
-				case 9:
-				case 11:
-				case 13:
-				case 17:
+				case 7:		//Lesson 1 - Selecting
+				case 11:    //Lesson 2 - Camera Panning
+				case 13:    //Lesson 3 - Moving
+				case 15:	//Lesson 4 - Attacking
+				case 24:    //Lesson 4 - Splitting
+				case 28:    //Lesson 4 - Merging
+				case 34:    //Lesson 5 - Winning/Losing
 					TutorialManager.Instance.IncrementState();
 					break;
 			}
@@ -164,7 +166,7 @@ namespace Tutorial {
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "Lesson 1: Unit Selection."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "To select your unit, left click on the unit."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "To deselect your unit, left click on the ground."), empty, true, false, 0f));
-			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "You can also select your unit by dragging a box."), empty, true, false, 0f));
+			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "You can also select your unit by dragging a box over them."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "Lesson 2: Camera Panning."), new DialogArrow(0f, 0f, 0f), true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "To pan the camera around, move the mouse cursor near the edge."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "Lesson 3: Moving your unit."), empty, true, false, 0f));
@@ -181,7 +183,7 @@ namespace Tutorial {
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "For the next ability, let's work on Splitting."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "To split, select your unit and press the S key."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "Your unit will then clone itself. Try and see!"), empty, true, false, 0f));
-			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "That is how you get a large army."), empty, true, false, 0f));
+			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "You get a large army if you keep repeating and splitting."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "Finally, there's Merging."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "Select 2 units by box selecting them."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(upperLeftCorner.x, upperLeftCorner.y, "When you have 2 units selected, press the D key."), empty, true, false, 0f));
