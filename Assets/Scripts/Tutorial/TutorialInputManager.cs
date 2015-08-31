@@ -331,16 +331,30 @@ namespace Tutorial {
 						}
 					}
 					if (!enemyCheck) {
-						for (int i = 0; i < this.selectedObjects.Count && (i + 1 < this.selectedObjects.Count); i += 2) {
-							TutorialUnit unit = this.selectedObjects[i].GetComponent<TutorialUnit>();
-							unit.SetDeselect();
-							unit.DisableSelection();
-							unit.SetMerging();
-							unit = this.selectedObjects[i + 1].GetComponent<TutorialUnit>();
-							unit.SetDeselect();
-							unit.DisableSelection();
-							unit.SetMerging();
-							this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[i + 1]));
+						List<GameObject> pairedUnitsList = new List<GameObject>();
+						for (int i = 0; i < this.selectedObjects.Count - 1; i++) {
+							if (pairedUnitsList.Contains(this.selectedObjects[i])){
+								continue;
+							}
+							TutorialUnit unpairedUnit = this.selectedObjects[i].GetComponent<TutorialUnit>();
+							for (int j = i + 1; j < this.selectedObjects.Count; j++) {
+								if (pairedUnitsList.Contains(this.selectedObjects[j])) {
+									continue;
+								}
+								TutorialUnit undeterminedUnit = this.selectedObjects[j].GetComponent<TutorialUnit>();
+								if (unpairedUnit.level == undeterminedUnit.level) {
+									unpairedUnit.DisableSelection();
+									unpairedUnit.SetDeselect();
+									unpairedUnit.SetMerging();
+									undeterminedUnit.DisableSelection();
+									undeterminedUnit.SetDeselect();
+									undeterminedUnit.SetMerging();
+									this.mergeManager.mergeGroups.Add(new MergeGroup(this.selectedObjects[i], this.selectedObjects[j]));
+									pairedUnitsList.Add(this.selectedObjects[i]);
+									pairedUnitsList.Add(this.selectedObjects[j]);
+									break;
+								}
+							}
 						}
 					}
 					this.selectedObjects.Clear();
