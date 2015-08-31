@@ -77,42 +77,42 @@ public class ButtonActions : MonoBehaviour {
 		}
 	}
 
-	public void OnGUI() {
-		if (Network.isServer) {
-			GUILayout.Label("Running as server.");
-		}
-		else if (Network.isClient) {
-			GUILayout.Label("Running as client.");
-		}
+	//public void OnGUI() {
+	//	//if (Network.isServer) {
+	//	//	GUILayout.Label("Running as server.");
+	//	//}
+	//	//else if (Network.isClient) {
+	//	//	GUILayout.Label("Running as client.");
+	//	//}
 
-		//if (Network.isClient || Network.isServer) {
-		//	if (GUI.Button(new Rect(50f, 50f, 150f, 30f), "Disconnect")) {
+	//	//if (Network.isClient || Network.isServer) {
+	//	//	if (GUI.Button(new Rect(50f, 50f, 150f, 30f), "Disconnect")) {
 
-		//	}
-		//}
+	//	//	}
+	//	//}
 
-		if (!Network.isClient && !Network.isServer) {
-			GUILayout.Label("Doing nothing.");
+	//	//if (!Network.isClient && !Network.isServer) {
+	//		//GUILayout.Label("Doing nothing.");
 
-			//if (GUI.Button(new Rect(50f, 50f, 150f, 30f), "Start New Server")) {
-			//	this.StartServer();
-			//}
-			//else if (GUI.Button(new Rect(50f, 90f, 150f, 30f), "Refresh Server List")) {
+	//		//if (GUI.Button(new Rect(50f, 50f, 150f, 30f), "Start New Server")) {
+	//		//	this.StartServer();
+	//		//}
+	//		//else if (GUI.Button(new Rect(50f, 90f, 150f, 30f), "Refresh Server List")) {
 
-			//}
+	//		//}
 
-			//if (HostDataArray != null) {
-			//	for (int i = 0; i < HostDataArray.Length; i++) {
-			//		if (GUI.Button(new Rect(Screen.width / 2f, 65f + (30f * i), 300f, 30f), HostDataArray[i].gameName)) {
-			//			NetworkConnectionError Error = Network.Connect(HostDataArray[i]);
-			//			if (Error != NetworkConnectionError.NoError) {
-			//				Debug.Log("Error: " + Error.ToString());
-			//			}
-			//		}
-			//	}
-			//}
-		}
-	}
+	//		//if (HostDataArray != null) {
+	//		//	for (int i = 0; i < HostDataArray.Length; i++) {
+	//		//		if (GUI.Button(new Rect(Screen.width / 2f, 65f + (30f * i), 300f, 30f), HostDataArray[i].gameName)) {
+	//		//			NetworkConnectionError Error = Network.Connect(HostDataArray[i]);
+	//		//			if (Error != NetworkConnectionError.NoError) {
+	//		//				Debug.Log("Error: " + Error.ToString());
+	//		//			}
+	//		//		}
+	//		//	}
+	//		//}
+	//	//}
+	//}
 
 	//Co routines
 
