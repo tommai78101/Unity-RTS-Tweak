@@ -334,6 +334,16 @@ namespace Tutorial {
 			}
 		}
 
+		public void MultiplyAttributes(int value) {
+			this.currentHealth *= value;
+			this.maxHealth *= value;
+			this.attackRadius *= value;
+			this.attackPower *= value;
+			this.attackCooldown *= (value * 0.4f);
+			this.fieldOfViewRadius *= 1.2f;
+			this.level++;
+		}
+
 		//-------------------------------------------
 
 		private float ObtainRadius(TutorialUnit unit) {

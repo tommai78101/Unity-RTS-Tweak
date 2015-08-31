@@ -22,6 +22,11 @@ namespace Tutorial {
 			this.ownerOrigin = owner.transform.position;
 			this.mergerOrigin = merger.transform.position;
 			this.center = this.ownerOrigin + ((this.mergerOrigin - this.ownerOrigin) / 2f);
+
+			TutorialUnit ownerUnit = owner.GetComponent<TutorialUnit>();
+			TutorialUnit mergerUnit = merger.GetComponent<TutorialUnit>();
+			ownerUnit.MultiplyAttributes(2);
+			mergerUnit.MultiplyAttributes(2);
 		}
 	}
 
