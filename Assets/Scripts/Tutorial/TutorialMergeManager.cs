@@ -13,6 +13,8 @@ namespace Tutorial {
 		public Vector3 center;
 		public Vector3 ownerOrigin;
 		public Vector3 mergerOrigin;
+		public Vector3 initialLocalScale;
+		public Vector3 newLocalScale;
 
 		public MergeGroup(GameObject owner, GameObject merger) {
 			this.owner = owner;
@@ -21,6 +23,8 @@ namespace Tutorial {
 
 			this.ownerOrigin = owner.transform.position;
 			this.mergerOrigin = merger.transform.position;
+			this.initialLocalScale = owner.transform.localScale;
+			this.newLocalScale = this.initialLocalScale * 1.4f;
 			this.center = this.ownerOrigin + ((this.mergerOrigin - this.ownerOrigin) / 2f);
 
 			TutorialUnit ownerUnit = owner.GetComponent<TutorialUnit>();
@@ -47,6 +51,8 @@ namespace Tutorial {
 					if (group.elapsedTime < 1f) {
 						group.owner.transform.position = Vector3.Lerp(group.ownerOrigin, group.center, group.elapsedTime);
 						group.merger.transform.position = Vector3.Lerp(group.mergerOrigin, group.center, group.elapsedTime);
+						group.owner.transform.localScale = Vector3.Lerp(group.initialLocalScale, group.newLocalScale, group.elapsedTime);
+						group.merger.transform.localScale = Vector3.Lerp(group.initialLocalScale, group.newLocalScale, group.elapsedTime);
 						group.elapsedTime += Time.deltaTime;
 						this.mergeGroups[i] = group;
 					}
