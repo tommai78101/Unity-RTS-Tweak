@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using Extension;
 
 namespace Common {
-	public class CommonUnit : MonoBehaviour {
+	public class CommonUnit : NetworkBehaviour {
 		public int level;
 		public int attackPower;
 		public int maxHealth;

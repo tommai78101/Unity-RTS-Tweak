@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Common {
-	public class CommonInputManager : MonoBehaviour {
+	public class CommonInputManager : NetworkBehaviour {
 		protected List<GameObject> selectedObjects;
 		protected List<GameObject> boxSelectedObjects;
 

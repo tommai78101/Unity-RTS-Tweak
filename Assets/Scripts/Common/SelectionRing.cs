@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 namespace Common {
-	public class SelectionRing : MonoBehaviour {
+	public class SelectionRing : NetworkBehaviour {
 		public bool isSelected;
 		public MeshRenderer meshRenderer;
 		public Color color;

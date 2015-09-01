@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace Common {
 		}
 	}
 
-	public class CommonSplitManager : MonoBehaviour {
+	public class CommonSplitManager : NetworkBehaviour {
 		[SerializeField]
 		public List<SplitGroup> splitGroups;
 		[SerializeField]

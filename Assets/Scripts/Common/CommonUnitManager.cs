@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Common {
-	public class CommonUnitManager : MonoBehaviour {
+	public class CommonUnitManager : NetworkBehaviour {
 		public static CommonUnitManager Instance;
 
 		protected List<GameObject> allObjects;

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -16,7 +17,7 @@ namespace Common {
 		}
 	};
 
-	public class CommonAttackManager : MonoBehaviour {
+	public class CommonAttackManager : NetworkBehaviour {
 		public List<AttackOrder> attackOrders;
 		public List<AttackOrder> destinationSet;
 

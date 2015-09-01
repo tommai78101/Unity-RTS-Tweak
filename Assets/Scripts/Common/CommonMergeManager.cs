@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace Common {
 		}
 	}
 
-	public class CommonMergeManager : MonoBehaviour {
+	public class CommonMergeManager : NetworkBehaviour {
 		public List<MergeGroup> mergeGroups;
 		public List<MergeGroup> removeList;
 
