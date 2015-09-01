@@ -51,9 +51,9 @@ namespace Tutorial {
 			if (!this.selectionTutorialFlag) {
 				return;
 			}
-			if (this.attackStandingByFlag) {
-				return;
-			}
+			//if (this.attackStandingByFlag) {
+			//	return;
+			//}
 			if (Input.GetMouseButtonDown(0)) {
 				if (this.selectedObjects.Count > 0) {
 					foreach (GameObject obj in this.selectedObjects) {
@@ -121,12 +121,12 @@ namespace Tutorial {
 			}
 		}
 
-		protected new void AttackOrder() {
-			if (!this.attackOrderTutorialFlag) {
-				return;
-			}
-			base.AttackOrder();
-		}
+		//protected new void AttackOrder() {
+		//	if (!this.attackOrderTutorialFlag) {
+		//		return;
+		//	}
+		//	base.AttackOrder();
+		//}
 
 
 		protected new void MoveOrder() {

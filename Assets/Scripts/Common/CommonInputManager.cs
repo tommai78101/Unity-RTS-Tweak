@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Extension;
 
 namespace Common {
 	public class CommonInputManager : NetworkBehaviour {
+		[SerializeField]
 		protected List<GameObject> selectedObjects;
+		[SerializeField]
 		protected List<GameObject> boxSelectedObjects;
 
 		public CommonAttackManager attackManager;
@@ -14,7 +17,7 @@ namespace Common {
 		public CommonMergeManager mergeManager;
 		public CommonUnitManager unitManager;
 
-		public bool attackStandingByFlag;
+		//public bool attackStandingByFlag;
 		public GameObject commonUnitPrefab;
 		public string unitTagName;
 
@@ -166,84 +169,87 @@ namespace Common {
 
 		//----------------------------------
 
-		protected void AttackOrder() {
-			if (Input.GetKeyDown(KeyCode.A)) {
-				if (!this.attackStandingByFlag) {
-					if (this.selectedObjects.Count > 0) {
-						this.attackStandingByFlag = true;
-						foreach (GameObject obj in this.selectedObjects) {
-							CommonUnit unit = obj.GetComponent<CommonUnit>();
-							if (!unit.isEnemy) {
-								unit.SetAttackStandby();
-							}
-						}
-						//this.selectedObjects.Clear();
-					}
-				}
-			}
-			if (this.attackStandingByFlag) {
-				if (Input.GetMouseButtonDown(0)) {
-					this.attackStandingByFlag = false;
-					foreach (GameObject obj in this.selectedObjects) {
-						CommonUnit unit = obj.GetComponent<CommonUnit>();
-						unit.SetAttackCancel();
-					}
-					this.selectedObjects.Clear();
-				}
-				else if (Input.GetMouseButtonDown(1)) {
-					this.attackStandingByFlag = false;
-					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-					RaycastHit[] hits = Physics.RaycastAll(ray);
-					//bool hasOrderedAttackTarget = false;
-					foreach (RaycastHit hit in hits) {
-						GameObject obj = hit.collider.gameObject;
-						if (obj.name.Equals("Floor")) {
-							foreach (GameObject selected in this.selectedObjects) {
-								CommonUnit unit = selected.GetComponent<CommonUnit>();
-								if (!unit.isEnemy) {
-									unit.SetAttackCancel();
-									unit.SetNewDestination(hit.point);
-									unit.SetAttack();
-								}
-							}
-							//hasOrderedAttackTarget = true;
-							break;
-						}
-					}
-					//if (hasOrderedAttackTarget) {
-					//	this.selectedObjects.Clear();
-					//}
-				}
-			}
-		}
+		//protected void AttackOrder() {
+		//	if (Input.GetKeyDown(KeyCode.A)) {
+		//		if (!this.attackStandingByFlag) {
+		//			if (this.selectedObjects.Count > 0) {
+		//				this.attackStandingByFlag = true;
+		//				foreach (GameObject obj in this.selectedObjects) {
+		//					CommonUnit unit = obj.GetComponent<CommonUnit>();
+		//					if (!unit.isEnemy) {
+		//						unit.SetAttackStandby();
+		//					}
+		//				}
+		//				//this.selectedObjects.Clear();
+		//			}
+		//		}
+		//	}
+		//	if (this.attackStandingByFlag) {
+		//		if (Input.GetMouseButtonDown(0)) {
+		//			this.attackStandingByFlag = false;
+		//			foreach (GameObject obj in this.selectedObjects) {
+		//				CommonUnit unit = obj.GetComponent<CommonUnit>();
+		//				unit.SetAttackCancel();
+		//			}
+		//			this.selectedObjects.Clear();
+		//		}
+		//		else if (Input.GetMouseButtonDown(1)) {
+		//			this.attackStandingByFlag = false;
+		//			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		//			RaycastHit[] hits = Physics.RaycastAll(ray);
+		//			//bool hasOrderedAttackTarget = false;
+		//			foreach (RaycastHit hit in hits) {
+		//				GameObject obj = hit.collider.gameObject;
+		//				if (obj.name.Equals("Floor")) {
+		//					foreach (GameObject selected in this.selectedObjects) {
+		//						CommonUnit unit = selected.GetComponent<CommonUnit>();
+		//						if (!unit.isEnemy) {
+		//							unit.SetAttackCancel();
+		//							unit.SetNewDestination(hit.point);
+		//							unit.SetAttack();
+		//						}
+		//					}
+		//					//hasOrderedAttackTarget = true;
+		//					break;
+		//				}
+		//			}
+		//			//if (hasOrderedAttackTarget) {
+		//			//	this.selectedObjects.Clear();
+		//			//}
+		//		}
+		//	}
+		//}
 
 		//----------------------------------
 
 		protected void MoveOrder() {
-			if (!this.attackStandingByFlag) {
-				if (Input.GetMouseButtonDown(1)) {
-					if (this.selectedObjects.Count > 0) {
-						Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-						RaycastHit[] hits = Physics.RaycastAll(ray);
-						foreach (RaycastHit hit in hits) {
-							GameObject obj = hit.collider.gameObject;
-							if (obj.name.Equals("Floor")) {
-								foreach (GameObject select in this.selectedObjects) {
-									CommonUnit unit = select.GetComponent<CommonUnit>();
-									if (!unit.isEnemy) {
-										unit.SetAttackCancel();
-										unit.SetNoEnemyTarget();
-										unit.enemies.Clear();
-										unit.SetStartMoving();
-										unit.SetNewDestination(hit.point);
-									}
-								}
-								break;
-							}
+			if (Input.GetMouseButtonDown(1)) {
+				if (this.selectedObjects.Count > 0) {
+					for (int i = 0; i < this.selectedObjects.Count; i++) {
+						if (this.selectedObjects[i] == null) {
+							this.selectedObjects.RemoveAt(i);
 						}
 					}
-					//this.selectedObjects.Clear();
+					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+					RaycastHit[] hits = Physics.RaycastAll(ray);
+					foreach (RaycastHit hit in hits) {
+						GameObject obj = hit.collider.gameObject;
+						if (obj.name.Equals("Floor")) {
+							foreach (GameObject select in this.selectedObjects) {
+								CommonUnit unit = select.GetComponent<CommonUnit>();
+								if (!unit.isEnemy) {
+									unit.SetAttackCancel();
+									unit.SetNoEnemyTarget();
+									unit.enemies.Clear();
+									unit.SetStartMoving();
+									unit.SetNewDestination(hit.point);
+								}
+							}
+							break;
+						}
+					}
 				}
+				//this.selectedObjects.Clear();
 			}
 		}
 

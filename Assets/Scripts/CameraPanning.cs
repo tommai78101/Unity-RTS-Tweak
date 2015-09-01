@@ -13,22 +13,21 @@ public class CameraPanning : MonoBehaviour {
 	public float camSpeed;
 	public bool mouseInFocus;
 	public float distanceFromEdge;
-	public bool EnableZoom;
+	public bool enableZoom;
 	public int zoomLevel;
 
 	// Use this for initialization
 	void Start() {
-		this.mouseInFocus = false;
 		this.distanceFromEdge = 20f;
 		this.zoomLevel = 3;
 		this.mouseInFocus = true;
 		this.camSpeed = 0.05f;
+		this.enableZoom = true;
 
 		SetCameraPosition(float.NaN, (float) this.zoomLevel, float.NaN);
 	}
 
 	public void OnApplicationFocus(bool focus) {
-		Debug.Log("OnApplicationFocus() is triggered. Mouse focus: " + focus.ToString());
 		this.mouseInFocus = focus;
 	}
 
@@ -112,7 +111,7 @@ public class CameraPanning : MonoBehaviour {
 	}
 
 	public void CameraZoom() {
-		if (this.EnableZoom) {
+		if (this.enableZoom) {
 			float delta = Input.GetAxis("Mouse ScrollWheel");
 			if (delta > 0f) {
 				//Scroll up
