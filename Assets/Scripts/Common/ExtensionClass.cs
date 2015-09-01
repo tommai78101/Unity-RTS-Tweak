@@ -21,5 +21,13 @@ namespace Extension {
 		public static Vector2 unnormalizePosition(this Vector2 vector) {
 			return new Vector2(vector.x * Screen.width, vector.y * Screen.height);
 		}
+
+		public static bool Similar(this float value, float other) {
+			float delta = Mathf.Abs(value - other);
+			if (delta <= float.Epsilon) {
+				return true;
+			}
+			return false;
+		}
 	}
 }
