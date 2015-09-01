@@ -13,7 +13,7 @@ namespace Common {
 		public CommonMergeManager mergeManager;
 
 		public bool attackStandingByFlag;
-		public GameObject tutorialUnitPrefab;
+		public GameObject commonUnitPrefab;
 
 		protected void Start() {
 			if (this.attackManager == null) { 
@@ -252,7 +252,7 @@ namespace Common {
 					if (!enemyCheck) {
 						foreach (GameObject owner in this.selectedObjects) {
 							CommonUnit unit = owner.GetComponent<CommonUnit>();
-							GameObject duplicate = GameObject.Instantiate<GameObject>(this.tutorialUnitPrefab);
+							GameObject duplicate = GameObject.Instantiate<GameObject>(this.commonUnitPrefab);
 							duplicate.transform.position = owner.transform.position;
 							unit.SetDeselect();
 							unit.DisableSelection();
