@@ -24,7 +24,7 @@ namespace Tutorial {
 
 		public DialogText(float x, float y, string message) {
 			if (x > 1f || y > 1f) {
-				this.position = new Vector2(x, y).normalizePosition();
+				this.position = new Vector2(x, y).NormalizePosition();
 			}
 			else {
 				this.position = new Vector2(x, y);
@@ -72,7 +72,7 @@ namespace Tutorial {
 			this.properties = new List<DialogProperty>();
 			this.runCoroutine = false;
 			Initialize();
-			this.dialogTransform.position = this.properties[0].dialogText.position.unnormalizePosition();
+			this.dialogTransform.position = this.properties[0].dialogText.position.UnnormalizePosition();
 		}
 
 		void OnGUI() {
@@ -84,7 +84,7 @@ namespace Tutorial {
 				}
 				if (property.changePosition) {
 					if (this.dialogTransform != null) {
-						this.dialogTransform.anchoredPosition = property.dialogText.position.unnormalizePosition();
+						this.dialogTransform.anchoredPosition = property.dialogText.position.UnnormalizePosition();
 					}
 				}
 				if (property.showArrow) {
@@ -155,8 +155,8 @@ namespace Tutorial {
 		}
 
 		private void Initialize() {
-			Vector2 center = new Vector2((Screen.width - 300f) / 2f, -(Screen.height + 95f) / 2f).normalizePosition();
-			Vector2 upperLeftCorner = new Vector2(0f, -(Screen.height / 2f - 100f)).normalizePosition();
+			Vector2 center = new Vector2((Screen.width - 300f) / 2f, -(Screen.height + 95f) / 2f).NormalizePosition();
+			Vector2 upperLeftCorner = new Vector2(0f, -(Screen.height / 2f - 100f)).NormalizePosition();
 			DialogArrow empty = new DialogArrow(0f, 0f, 0f);
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "Hello! Let's get started on how to play this game."), empty, true, false, 0f));
 			this.properties.Add(new DialogProperty(new DialogText(center.x, center.y, "If you don't want to continue, press ESCAPE key at any time."), empty, true, false, 0f));

@@ -2,6 +2,7 @@
 using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
+using Extension;
 
 namespace Common {
 	public class CommonInputManager : NetworkBehaviour {
@@ -11,9 +12,11 @@ namespace Common {
 		public CommonAttackManager attackManager;
 		public CommonSplitManager splitManager;
 		public CommonMergeManager mergeManager;
+		public CommonUnitManager unitManager;
 
 		public bool attackStandingByFlag;
 		public GameObject commonUnitPrefab;
+		public string unitTagName;
 
 		protected void Start() {
 			if (this.attackManager == null) { 
@@ -24,6 +27,12 @@ namespace Common {
 			}
 			if (this.mergeManager == null) {
 				Debug.LogError("Common: Cannot find merge manager.");
+			}
+			if (this.unitManager == null) {
+				Debug.LogError("Common: Cannot find unit manager.");
+			}
+			if (this.unitTagName.IsEmpty()) {
+				Debug.LogError("Common: Unit Tag Name is not set.");
 			}
 
 			this.selectedObjects = new List<GameObject>();
@@ -43,15 +52,15 @@ namespace Common {
 
 		protected virtual void UpdateStatus() {
 			if (this.selectedObjects.Count > 0 || this.boxSelectedObjects.Count > 0) {
-				foreach (GameObject obj in CommonUnitManager.Instance.getAllObjects()) {
+				foreach (GameObject obj in this.unitManager.getAllObjects()) {
 					if (obj == null) {
-						CommonUnitManager.Instance.getRemoveList().Add(obj);
+						this.unitManager.getRemoveList().Add(obj);
 						continue;
 					}
 					if (this.selectedObjects.Contains(obj) || this.boxSelectedObjects.Contains(obj)) {
 						CommonUnit unit = obj.GetComponent<CommonUnit>();
 						if (unit == null) {
-							CommonUnitManager.Instance.getRemoveList().Add(obj);
+							this.unitManager.getRemoveList().Add(obj);
 							continue;
 						}
 						if (!unit.isEnemy) {
@@ -73,9 +82,9 @@ namespace Common {
 				}
 			}
 			else {
-				foreach (GameObject obj in CommonUnitManager.Instance.getAllObjects()) {
+				foreach (GameObject obj in this.unitManager.getAllObjects()) {
 					if (obj == null) {
-						CommonUnitManager.Instance.getRemoveList().Add(obj);
+						this.unitManager.getRemoveList().Add(obj);
 						continue;
 					}
 					CommonUnit unit = obj.GetComponent<CommonUnit>();
@@ -100,7 +109,8 @@ namespace Common {
 				bool hasHitUnit = false;
 				foreach (RaycastHit hit in hits) {
 					GameObject obj = hit.collider.gameObject;
-					if (obj.tag.Equals("Unit")) {	//<-----------  Units of type CommonUnit must have this tag set in the editor.
+					//Units of type CommonUnit must have this tag set in the editor.
+					if (obj.tag.Equals(this.unitTagName)) {	
 						hasHitUnit = true;
 						if (!this.selectedObjects.Contains(obj)) {
 							CommonUnit unit = obj.GetComponent<CommonUnit>();
@@ -115,9 +125,9 @@ namespace Common {
 				}
 			}
 			if (Input.GetMouseButton(0)) {
-				foreach (GameObject obj in CommonUnitManager.Instance.getAllObjects()) {
+				foreach (GameObject obj in this.unitManager.getAllObjects()) {
 					if (obj == null) {
-						CommonUnitManager.Instance.getRemoveList().Add(obj);
+						this.unitManager.getRemoveList().Add(obj);
 						continue;
 					}
 					Vector2 screenPoint = Camera.main.WorldToScreenPoint(obj.transform.position);
@@ -262,7 +272,7 @@ namespace Common {
 							unit.DisableSelection();
 							unit.SetSplitting();
 							unit.initialColor = Color.white;
-							CommonUnitManager.Instance.getAllObjects().Add(duplicate);
+							this.unitManager.getAllObjects().Add(duplicate);
 							this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
 						}
 					}

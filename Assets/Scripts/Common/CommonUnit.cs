@@ -31,9 +31,21 @@ namespace Common {
 
 		public List<CommonUnit> enemies;
 		public CommonUnit enemyTarget;
+		public CommonUnitManager unitManager;
 
 		// Use this for initialization
 		protected void Start() {
+			GameObject gameObject = GameObject.Find("Unit Manager");
+			if (gameObject != null) {
+				this.unitManager = gameObject.GetComponent<CommonUnitManager>();
+				if (this.unitManager == null) {
+					Debug.LogError("Something is wrong.");
+				}
+				else {
+					this.unitManager.getAllObjects().Add(this.gameObject);
+				}
+			}
+
 			Renderer renderer = this.GetComponent<Renderer>();
 			this.initialColor = renderer.material.color;
 			if (this.initialColor.Equals(Color.black)) {
@@ -71,7 +83,7 @@ namespace Common {
 				}
 				if (this.currentHealth <= 0) {
 					this.isDead = true;
-					CommonUnitManager.Instance.getRemoveList().Add(this.gameObject);
+					this.unitManager.getRemoveList().Add(this.gameObject);
 				}
 				if (this.attackCooldownTimer < 0f) {
 					if (this.isAttacking) {
@@ -88,7 +100,7 @@ namespace Common {
 			if (!this.isTakingDamage) {
 				if (this.isMoving || this.isAttacking) {
 					NavMeshAgent agent = this.GetComponent<NavMeshAgent>();
-					if (agent.reachedDestination()) {
+					if (agent.ReachedDestination()) {
 						SetStopMoving();
 					}
 					if (this.enemies.Count <= 0) {
@@ -114,7 +126,7 @@ namespace Common {
 						}
 					}
 					else {
-						if (agent.reachedDestination()) {
+						if (agent.ReachedDestination()) {
 							SetAttackCancel();
 							if (this.isSelected) {
 								SetSelect();

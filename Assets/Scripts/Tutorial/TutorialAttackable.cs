@@ -33,7 +33,7 @@ namespace Tutorial {
 			}
 			else if (this.isOrderedToMove) {
 				NavMeshAgent agent = this.GetComponent<NavMeshAgent>();
-				if (agent.reachedDestination()) {
+				if (agent.ReachedDestination()) {
 					this.canExamineArea = true;
 					this.isOrderedToMove = false;
 				}

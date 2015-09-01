@@ -38,6 +38,8 @@ namespace Common {
 		public List<MergeGroup> mergeGroups;
 		public List<MergeGroup> removeList;
 
+		public CommonUnitManager unitManager;
+
 		protected void Start() {
 			this.mergeGroups = new List<MergeGroup>();
 		}
@@ -65,8 +67,8 @@ namespace Common {
 						CommonUnit unit = group.owner.GetComponent<CommonUnit>();
 						unit.EnableSelection();
 						unit.SetNotMerging();
-						if (CommonUnitManager.Instance.getAllObjects().Contains(group.merger)) {
-							CommonUnitManager.Instance.getAllObjects().Remove(group.merger);
+						if (this.unitManager.getAllObjects().Contains(group.merger)) {
+							this.unitManager.getAllObjects().Remove(group.merger);
 						}
 						GameObject.Destroy(group.merger);
 						this.mergeGroups.Remove(group);

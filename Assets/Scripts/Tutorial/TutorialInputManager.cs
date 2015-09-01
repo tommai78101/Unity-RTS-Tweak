@@ -16,8 +16,6 @@ namespace Tutorial {
 		//----------------------------------
 
 		protected new void Start() {
-			base.Start();
-
 			//this.selectionTutorialFlag = this.attackOrderTutorialFlag = this.moveOrderTutorialFlag = this.splitTutorialFlag = this.mergeTutorialFlag = true;
 
 			if (this.attackManager == null) {
@@ -26,6 +24,10 @@ namespace Tutorial {
 			if (this.splitManager == null) {
 				Debug.LogError("Tutorial: Cannot find split manager for the tutorial.");
 			}
+			if (this.mergeManager == null) {
+				Debug.LogError("Tutorial: Cannot find merge manager for the tutorial.");
+			}
+			base.Start();
 
 			TutorialUnitManager.Instance.InitializeObjectList();
 			GameObject[] existingObjects = GameObject.FindGameObjectsWithTag("Tutorial_Unit");
@@ -80,9 +82,9 @@ namespace Tutorial {
 				}
 			}
 			if (Input.GetMouseButton(0)) {
-				foreach (GameObject obj in CommonUnitManager.Instance.getAllObjects()) {
+				foreach (GameObject obj in this.unitManager.getAllObjects()) {
 					if (obj == null) {
-						CommonUnitManager.Instance.getRemoveList().Add(obj);
+						this.unitManager.getRemoveList().Add(obj);
 						continue;
 					}
 					Vector2 screenPoint = Camera.main.WorldToScreenPoint(obj.transform.position);

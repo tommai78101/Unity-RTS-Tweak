@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,7 +8,9 @@ namespace Common {
 	public class CommonUnitManager : NetworkBehaviour {
 		public static CommonUnitManager Instance;
 
+		[SerializeField]
 		protected List<GameObject> allObjects;
+		[SerializeField]
 		protected List<GameObject> removeList;
 
 		protected void Awake() {
@@ -32,10 +35,12 @@ namespace Common {
 		}
 
 		public List<GameObject> getAllObjects() {
+			this.InitializeObjectList();
 			return this.allObjects;
 		}
 
 		public List<GameObject> getRemoveList() {
+			this.InitializeRemoveList();
 			return this.removeList;
 		}
 
