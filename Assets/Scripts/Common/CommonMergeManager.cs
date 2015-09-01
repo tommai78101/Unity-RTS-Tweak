@@ -41,6 +41,9 @@ namespace Common {
 		public CommonUnitManager unitManager;
 
 		protected void Start() {
+			if (this.unitManager == null) {
+				Debug.LogError("Common: Unit manager is not initialized.");
+			}
 			this.mergeGroups = new List<MergeGroup>();
 		}
 

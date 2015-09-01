@@ -35,11 +35,13 @@ namespace Common {
 
 		// Use this for initialization
 		protected void Start() {
+
+
 			GameObject gameObject = GameObject.Find("Unit Manager");
 			if (gameObject != null) {
 				this.unitManager = gameObject.GetComponent<CommonUnitManager>();
 				if (this.unitManager == null) {
-					Debug.LogError("Something is wrong.");
+					Debug.LogError("Common: Unit Manager is not created in the editor.");
 				}
 				else {
 					this.unitManager.getAllObjects().Add(this.gameObject);
