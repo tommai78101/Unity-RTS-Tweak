@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Tutorial {
+namespace Extension {
 	public static class ExtensionClass {
 		public static bool reachedDestination(this NavMeshAgent agent) {
 			if (!agent.pathPending) {
