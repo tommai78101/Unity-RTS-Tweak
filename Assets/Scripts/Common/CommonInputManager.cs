@@ -85,7 +85,7 @@ namespace Common {
 
 		//----------------------------------
 
-		protected void SelectOrder() {
+		protected virtual void SelectOrder() {
 			if (Input.GetMouseButtonDown(0)) {
 				if (this.selectedObjects.Count > 0) {
 					foreach (GameObject obj in this.selectedObjects) {
