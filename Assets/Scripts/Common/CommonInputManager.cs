@@ -22,7 +22,7 @@ namespace Common {
 		public string unitTagName;
 
 		protected void Start() {
-			if (this.attackManager == null) { 
+			if (this.attackManager == null) {
 				Debug.LogError("Common: Cannot find attack manager.");
 			}
 			if (this.splitManager == null) {
@@ -113,7 +113,7 @@ namespace Common {
 				foreach (RaycastHit hit in hits) {
 					GameObject obj = hit.collider.gameObject;
 					//Units of type CommonUnit must have this tag set in the editor.
-					if (obj.tag.Equals(this.unitTagName)) {	
+					if (obj.tag.Equals(this.unitTagName)) {
 						hasHitUnit = true;
 						if (!this.selectedObjects.Contains(obj)) {
 							CommonUnit unit = obj.GetComponent<CommonUnit>();
@@ -268,18 +268,20 @@ namespace Common {
 					if (!enemyCheck) {
 						foreach (GameObject owner in this.selectedObjects) {
 							CommonUnit unit = owner.GetComponent<CommonUnit>();
-							GameObject duplicate = GameObject.Instantiate<GameObject>(this.commonUnitPrefab);
-							duplicate.transform.position = owner.transform.position;
-							unit.SetDeselect();
-							unit.DisableSelection();
-							unit.SetSplitting();
-							unit = duplicate.GetComponent<CommonUnit>();
-							unit.SetDeselect();
-							unit.DisableSelection();
-							unit.SetSplitting();
-							unit.initialColor = Color.white;
-							this.unitManager.getAllObjects().Add(duplicate);
-							this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
+							if (unit.level == 1) {
+								GameObject duplicate = GameObject.Instantiate<GameObject>(this.commonUnitPrefab);
+								duplicate.transform.position = owner.transform.position;
+								unit.SetDeselect();
+								unit.DisableSelection();
+								unit.SetSplitting();
+								unit = duplicate.GetComponent<CommonUnit>();
+								unit.SetDeselect();
+								unit.DisableSelection();
+								unit.SetSplitting();
+								unit.initialColor = Color.white;
+								this.unitManager.getAllObjects().Add(duplicate);
+								this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
+							}
 						}
 					}
 					this.selectedObjects.Clear();
