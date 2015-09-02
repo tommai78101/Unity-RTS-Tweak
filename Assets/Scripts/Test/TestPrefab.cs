@@ -5,34 +5,24 @@ using System.Collections;
 public class TestPrefab : NetworkBehaviour {
 	public GameObject something;
 
-	void Start() {
-		NetworkServer.Spawn(something);
-		ClientScene.RegisterPrefab(something);
-	}
-
 	void Update() {
-		if (this.isLocalPlayer) {
-			if (Input.GetMouseButton(0)) {
-				CmdInputs();
+		if (Input.GetMouseButton(0)) {
+			if (this.isServer) {
+				RpcCall();
+			}
+			else {
+				CmdCall();
 			}
 		}
 	}
 
 	[Command]
-	public void CmdInputs() {
-		Rpc_ChangeColor();
+	public void CmdCall() {
+		RpcCall();
 	}
 
 	[ClientRpc]
-	public void Rpc_ChangeColor() {
-		Renderer renderer = something.GetComponent<Renderer>();
-		if (renderer != null) {
-			if (renderer.material.color == Color.red) {
-				renderer.material.color = Color.white;
-			}
-			else {
-				renderer.material.color = Color.red;
-			}
-		}
+	public void RpcCall() {
+		Debug.Log("RPC Called.");
 	}
 }
