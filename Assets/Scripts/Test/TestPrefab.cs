@@ -10,10 +10,6 @@ public class TestPrefab : NetworkBehaviour {
 		}
 	}
 
-	public void Call() {
-		Debug.Log("Call");
-	}
-
 	[Command]
 	public void CmdCall() {
 		Debug.Log("CMD Call");
@@ -42,6 +38,10 @@ public class TestPrefab : NetworkBehaviour {
 
 	public void ClientTest() {
 		Debug.Log("Calling on client test.");
-		Call();
+		CmdCall();
 	}
 }
+
+
+
+
