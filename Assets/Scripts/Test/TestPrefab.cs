@@ -6,12 +6,15 @@ public class TestPrefab : NetworkBehaviour {
 	public GameObject something;
 
 	void Update() {
-		if (this.isLocalPlayer && Input.GetMouseButton(0)) {
-			if (this.isServer) {
-				RpcCall();
-			}
-			else {
-				CmdCall();
+		if (this.isLocalPlayer) {
+			Debug.Log("Is local player.");
+			if (Input.GetMouseButton(0)) {
+				if (this.isServer) {
+					RpcCall();
+				}
+				else {
+					CmdCall();
+				}
 			}
 		}
 	}
