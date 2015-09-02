@@ -6,7 +6,7 @@ public class TestPrefab : NetworkBehaviour {
 	public GameObject something;
 
 	void Update() {
-		if (Input.GetMouseButton(0)) {
+		if (this.isLocalPlayer && Input.GetMouseButton(0)) {
 			if (this.isServer) {
 				RpcCall();
 			}
