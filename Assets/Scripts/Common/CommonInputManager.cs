@@ -101,9 +101,15 @@ namespace Common {
 		protected virtual void SelectOrder() {
 			if (Input.GetMouseButtonDown(0)) {
 				if (this.selectedObjects.Count > 0) {
-					foreach (GameObject obj in this.selectedObjects) {
-						CommonUnit unit = obj.GetComponent<CommonUnit>();
-						unit.SetDeselect();
+					for (int i = 0; i < this.selectedObjects.Count; i++) {
+						GameObject obj = this.selectedObjects[i];
+						if (obj == null) {
+							this.selectedObjects.RemoveAt(i);
+						}
+						else {
+							CommonUnit unit = obj.GetComponent<CommonUnit>();
+							unit.SetDeselect();
+						}
 					}
 					this.selectedObjects.Clear();
 				}
@@ -236,20 +242,38 @@ namespace Common {
 						GameObject obj = hit.collider.gameObject;
 						if (obj.name.Equals("Floor")) {
 							foreach (GameObject select in this.selectedObjects) {
-								CommonUnit unit = select.GetComponent<CommonUnit>();
-								if (!unit.isEnemy) {
-									unit.SetAttackCancel();
-									unit.SetNoEnemyTarget();
-									unit.enemies.Clear();
-									unit.SetStartMoving();
-									unit.SetNewDestination(hit.point);
-								}
+								//CommonUnit unit = select.GetComponent<CommonUnit>();
+								//if (!unit.isEnemy) {
+								//	unit.SetAttackCancel();
+								//	unit.SetNoEnemyTarget();
+								//	unit.enemies.Clear();
+								//	unit.SetStartMoving();
+								//	unit.SetNewDestination(hit.point);
+								//}
+								CmdMoveOrder(select, hit.point);
 							}
 							break;
 						}
 					}
 				}
 				//this.selectedObjects.Clear();
+			}
+		}
+
+		[Command]
+		public void CmdMoveOrder(GameObject obj, Vector3 targetPoint) {
+			ServerMoveOrder(obj, targetPoint);
+		}
+
+		[ClientCallback]
+		public void ServerMoveOrder(GameObject obj, Vector3 targetPoint) {
+			CommonUnit unit = obj.GetComponent<CommonUnit>();
+			if (!unit.isEnemy) {
+				unit.SetAttackCancel();
+				unit.SetNoEnemyTarget();
+				unit.enemies.Clear();
+				unit.SetStartMoving();
+				unit.SetNewDestination(targetPoint);
 			}
 		}
 
@@ -269,16 +293,16 @@ namespace Common {
 						foreach (GameObject owner in this.selectedObjects) {
 							CommonUnit unit = owner.GetComponent<CommonUnit>();
 							if (unit.level == 1) {
-								GameObject duplicate = GameObject.Instantiate<GameObject>(this.commonUnitPrefab);
-								duplicate.transform.position = owner.transform.position;
 								unit.SetDeselect();
 								unit.DisableSelection();
 								unit.SetSplitting();
+								GameObject duplicate = GameObject.Instantiate(this.commonUnitPrefab, owner.transform.position, Quaternion.Euler(Vector3.zero)) as GameObject;
 								unit = duplicate.GetComponent<CommonUnit>();
 								unit.SetDeselect();
 								unit.DisableSelection();
 								unit.SetSplitting();
 								unit.initialColor = Color.white;
+								NetworkServer.Spawn(duplicate);
 								this.unitManager.getAllObjects().Add(duplicate);
 								this.splitManager.splitGroups.Add(new SplitGroup(owner, duplicate));
 							}
