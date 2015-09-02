@@ -6,7 +6,7 @@ public class TestPrefab : NetworkBehaviour {
 	public GameObject something;
 
 	void Update() {
-		if (this.isLocalPlayer) {
+		if (this.isLocalPlayer || this.hasAuthority) {
 			Debug.Log("Is local player.");
 			if (Input.GetMouseButton(0)) {
 				if (this.isServer) {
