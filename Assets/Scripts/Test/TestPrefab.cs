@@ -5,9 +5,11 @@ using System.Collections;
 public class TestPrefab : NetworkBehaviour {
 	void Update () {
 		if (this.isServer) {
+			Debug.Log("Server test.");
 			ServerTest();
 		}
 		else {
+			Debug.Log("Client test.");
 			ClientTest();
 		}
 	}
@@ -27,11 +29,23 @@ public class TestPrefab : NetworkBehaviour {
 		CmdCall();
 	}
 
+	public void MiddleRpcCall() {
+		Debug.Log("Middle -> RPC");
+		RpcCall();
+	}
+
+	public void MiddleCmdCall() {
+		Debug.Log("Middle -> Cmd");
+		CmdCall();
+	}
+
 	public void ServerTest() {
+		Debug.Log("Calling on server test.");
 		RpcCall();
 	}
 
 	public void ClientTest() {
+		Debug.Log("Calling on client test.");
 		Call();
 	}
 }
