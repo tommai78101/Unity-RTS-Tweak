@@ -3,45 +3,36 @@ using UnityEngine.Networking;
 using System.Collections;
 
 public class TestPrefab : NetworkBehaviour {
-	void Update () {
-		if (!this.isServer) {
-			Debug.Log("Client test.");
-			ClientTest();
+	public GameObject something;
+
+	void Start() {
+		NetworkServer.Spawn(something);
+		ClientScene.RegisterPrefab(something);
+	}
+
+	void Update() {
+		if (this.isLocalPlayer) {
+			if (Input.GetMouseButton(0)) {
+				CmdInputs();
+			}
 		}
 	}
 
 	[Command]
-	public void CmdCall() {
-		Debug.Log("CMD Call");
+	public void CmdInputs() {
+		Rpc_ChangeColor();
 	}
 
 	[ClientRpc]
-	public void RpcCall() {
-		Debug.Log("RPC Call");
-		CmdCall();
-	}
-
-	public void MiddleRpcCall() {
-		Debug.Log("Middle -> RPC");
-		RpcCall();
-	}
-
-	public void MiddleCmdCall() {
-		Debug.Log("Middle -> Cmd");
-		CmdCall();
-	}
-
-	public void ServerTest() {
-		Debug.Log("Calling on server test.");
-		RpcCall();
-	}
-
-	public void ClientTest() {
-		Debug.Log("Calling on client test.");
-		CmdCall();
+	public void Rpc_ChangeColor() {
+		Renderer renderer = something.GetComponent<Renderer>();
+		if (renderer != null) {
+			if (renderer.material.color == Color.red) {
+				renderer.material.color = Color.white;
+			}
+			else {
+				renderer.material.color = Color.red;
+			}
+		}
 	}
 }
-
-
-
-
