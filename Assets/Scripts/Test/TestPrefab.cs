@@ -4,11 +4,7 @@ using System.Collections;
 
 public class TestPrefab : NetworkBehaviour {
 	void Update () {
-		if (this.isServer) {
-			Debug.Log("Server test.");
-			ServerTest();
-		}
-		else {
+		if (!this.isServer) {
 			Debug.Log("Client test.");
 			ClientTest();
 		}
