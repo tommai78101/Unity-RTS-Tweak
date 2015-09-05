@@ -5,6 +5,11 @@ using System.Collections;
 public class TestPrefab : NetworkBehaviour {
 	public GameObject something;
 
+	public override void OnStartLocalPlayer() {
+		base.OnStartLocalPlayer();
+
+	}
+
 	void Update() {
 		if (this.isLocalPlayer || this.hasAuthority) {
 			Debug.Log("Is local player.");

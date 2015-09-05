@@ -267,6 +267,11 @@ namespace Common {
 
 		[ClientCallback]
 		public void ServerMoveOrder(GameObject obj, Vector3 targetPoint) {
+			RpcMoveOrder(obj, targetPoint);
+		}
+
+		[ClientRpc]
+		public void RpcMoveOrder(GameObject obj, Vector3 targetPoint) {
 			CommonUnit unit = obj.GetComponent<CommonUnit>();
 			if (!unit.isEnemy) {
 				unit.SetAttackCancel();

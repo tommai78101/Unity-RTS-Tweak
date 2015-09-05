@@ -40,7 +40,7 @@ namespace Common {
 
 		public CommonUnitManager unitManager;
 
-		protected void Start() {
+		public override void OnStartLocalPlayer() {
 			if (this.unitManager == null) {
 				Debug.LogError("Common: Unit manager is not initialized.");
 			}

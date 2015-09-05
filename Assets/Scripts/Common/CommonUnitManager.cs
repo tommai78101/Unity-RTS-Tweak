@@ -17,7 +17,7 @@ namespace Common {
 			CommonUnitManager.Instance = this;
 		}
 
-		protected void Start() {
+		public override void OnStartLocalPlayer() {
 			this.InitializeObjectList();
 			this.InitializeRemoveList();
 		}
@@ -47,6 +47,12 @@ namespace Common {
 		public void InitializeObjectList() {
 			if (this.allObjects == null) {
 				this.allObjects = new List<GameObject>();
+				GameObject[] objs = GameObject.FindGameObjectsWithTag("RPCLess_Unit");
+				foreach (GameObject obj in objs) {
+					if (!this.allObjects.Contains(obj)) {
+						this.allObjects.Add(obj);
+					}
+				}
 			}
 		}
 

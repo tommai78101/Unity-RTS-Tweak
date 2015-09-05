@@ -7,8 +7,8 @@ using Extension;
 
 namespace Tutorial {
 	public class TutorialUnit : CommonUnit {
-		protected new void Start() {
-			base.Start();
+		public override void OnStartLocalPlayer() {
+			base.OnStartLocalPlayer();
 			TutorialUnitManager.Instance.InitializeObjectList();
 			TutorialUnitManager.Instance.getAllObjects().Add(this.gameObject);
 		}

@@ -6,8 +6,12 @@ using Common;
 
 namespace Tutorial {
 	public class TutorialAttackManager : CommonAttackManager {
-		protected new void Start() {
-			base.Start();
+		protected void Start() {
+			this.OnStartLocalPlayer();
+		}
+
+		public override void OnStartLocalPlayer() {
+			base.OnStartLocalPlayer();
 		}
 
 		protected new void Update() {

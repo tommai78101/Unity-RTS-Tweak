@@ -34,20 +34,7 @@ namespace Common {
 		public CommonUnitManager unitManager;
 
 		// Use this for initialization
-		protected void Start() {
-
-
-			GameObject gameObject = GameObject.Find("Unit Manager");
-			if (gameObject != null) {
-				this.unitManager = gameObject.GetComponent<CommonUnitManager>();
-				if (this.unitManager == null) {
-					Debug.LogError("Common: Unit Manager is not created in the editor.");
-				}
-				else {
-					this.unitManager.getAllObjects().Add(this.gameObject);
-				}
-			}
-
+		public override void OnStartLocalPlayer() {
 			Renderer renderer = this.GetComponent<Renderer>();
 			this.initialColor = renderer.material.color;
 			if (this.initialColor.Equals(Color.black)) {
