@@ -40,6 +40,10 @@ namespace Common {
 
 		public CommonUnitManager unitManager;
 
+		public override void OnStartServer() {
+			this.OnStartLocalPlayer();
+		}
+
 		public override void OnStartLocalPlayer() {
 			if (this.unitManager == null) {
 				Debug.LogError("Common: Unit manager is not initialized.");

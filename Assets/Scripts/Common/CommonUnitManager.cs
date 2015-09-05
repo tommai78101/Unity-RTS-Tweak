@@ -9,12 +9,16 @@ namespace Common {
 		public static CommonUnitManager Instance;
 
 		[SerializeField]
-		protected List<GameObject> allObjects;
+		public List<GameObject> allObjects;
 		[SerializeField]
-		protected List<GameObject> removeList;
+		public List<GameObject> removeList;
 
 		protected void Awake() {
 			CommonUnitManager.Instance = this;
+		} 
+
+		public override void OnStartServer() {
+			this.OnStartLocalPlayer();
 		}
 
 		public override void OnStartLocalPlayer() {
@@ -47,11 +51,11 @@ namespace Common {
 		public void InitializeObjectList() {
 			if (this.allObjects == null) {
 				this.allObjects = new List<GameObject>();
-				GameObject[] objs = GameObject.FindGameObjectsWithTag("RPCLess_Unit");
-				foreach (GameObject obj in objs) {
-					if (!this.allObjects.Contains(obj)) {
-						this.allObjects.Add(obj);
-					}
+			}
+			GameObject[] objs = GameObject.FindGameObjectsWithTag("RPCLess_Unit");
+			foreach (GameObject obj in objs) {
+				if (!this.allObjects.Contains(obj)) {
+					this.allObjects.Add(obj);
 				}
 			}
 		}

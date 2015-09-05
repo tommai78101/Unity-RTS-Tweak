@@ -22,11 +22,14 @@ namespace Common {
 		public List<AttackOrder> destinationSet;
 
 		public override void OnStartServer() {
-			base.OnStartServer();
 			this.OnStartLocalPlayer();
 		}
 
 		public override void OnStartLocalPlayer() {
+			this.Start();
+		}
+
+		protected void Start() {
 			this.attackOrders = new List<AttackOrder>();
 			this.destinationSet = new List<AttackOrder>();
 		}

@@ -21,13 +21,14 @@ public class PrefabInitialization : NetworkBehaviour {
 
 	private void SpawnObject(int i) {
 		GameObject obj = GameObject.Instantiate(this.gameObjectList[i], Vector3.zero, Quaternion.identity) as GameObject;
+		//GameObject obj = this.gameObjectList[i];
 		obj.name = obj.name.Substring(0, obj.name.Length - "(Clone)".Length);
 		if (obj.tag.Equals("Input_Manager")) {
 			this.inputManager = obj.GetComponent<CommonInputManager>();
-			this.inputManager.attackManager = this.attackManager;
-			this.inputManager.splitManager = this.splitManager;
-			this.inputManager.mergeManager = this.mergeManager;
-			this.inputManager.unitManager = this.unitManager;
+			this.inputManager.SetUnitManager(this.unitManager);
+			this.inputManager.SetMergeManager(this.mergeManager);
+			this.inputManager.SetAttackManager(this.attackManager);
+			this.inputManager.SetSplitManager(this.splitManager);
 		}
 		else if (obj.tag.Equals("Merge_Manager")) {
 			this.mergeManager = obj.GetComponent<CommonMergeManager>();
@@ -53,12 +54,22 @@ public class PrefabInitialization : NetworkBehaviour {
 		NetworkServer.Spawn(obj);
 	}
 
-	public override void OnStartLocalPlayer() {
-		for (int i = 0; i < this.gameObjectList.Count; i++) {
-			SpawnObject(i);
-		}
+	//public override void OnStartServer() {
+	//	if (this.isServer) {
+	//		this.SpawningInitialization();
+	//	}
+	//}
+
+	public void SpawningInitialization() {
 		for (int i = 0; i < this.gameObjectList.Count; i++) {
 			this.gameObjectList[i].SetActive(true);
+			SpawnObject(i);
+		}
+	}
+
+	public override void OnStartLocalPlayer() {
+		if (this.isClient) {
+			this.SpawningInitialization();
 		}
 	}
 }

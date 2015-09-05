@@ -15,7 +15,7 @@ namespace Tutorial {
 
 		//----------------------------------
 
-		protected new void Start() {
+		protected void Start() {
 			//this.selectionTutorialFlag = this.attackOrderTutorialFlag = this.moveOrderTutorialFlag = this.splitTutorialFlag = this.mergeTutorialFlag = true;
 
 			if (this.attackManager == null) {
@@ -27,7 +27,7 @@ namespace Tutorial {
 			if (this.mergeManager == null) {
 				Debug.LogError("Tutorial: Cannot find merge manager for the tutorial.");
 			}
-			base.Start();
+			//base.Start();
 
 			TutorialUnitManager.Instance.InitializeObjectList();
 			GameObject[] existingObjects = GameObject.FindGameObjectsWithTag("Tutorial_Unit");

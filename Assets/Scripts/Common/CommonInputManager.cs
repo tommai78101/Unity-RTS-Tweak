@@ -8,9 +8,9 @@ using Extension;
 namespace Common {
 	public class CommonInputManager : NetworkBehaviour {
 		[SerializeField]
-		protected List<GameObject> selectedObjects;
+		public List<GameObject> selectedObjects;
 		[SerializeField]
-		protected List<GameObject> boxSelectedObjects;
+		public List<GameObject> boxSelectedObjects;
 
 		public CommonAttackManager attackManager;
 		public CommonSplitManager splitManager;
@@ -21,7 +21,11 @@ namespace Common {
 		public GameObject commonUnitPrefab;
 		public string unitTagName;
 
-		protected void Start() {
+		public override void OnStartServer() {
+			this.OnStartLocalPlayer();
+		}
+
+		public void OnStartLocalServer() {
 			if (this.attackManager == null) {
 				Debug.LogError("Common: Cannot find attack manager.");
 			}
@@ -38,8 +42,41 @@ namespace Common {
 				Debug.LogError("Common: Unit Tag Name is not set.");
 			}
 
+			this.Start();
+		}
+
+		public void SetUnitManager(CommonUnitManager manager) {
+			this.unitManager = manager;
+		}
+
+		public void SetMergeManager(CommonMergeManager manager) {
+			this.mergeManager = manager;
+		}
+
+		public void SetSplitManager(CommonSplitManager manager) {
+			this.splitManager = manager;
+		}
+
+		public void SetAttackManager(CommonAttackManager manager) {
+			this.attackManager = manager;
+		}
+
+		//----------------------------------
+
+		protected void Start() {
 			this.selectedObjects = new List<GameObject>();
 			this.boxSelectedObjects = new List<GameObject>();
+
+			//PrefabInitialization parent = this.GetComponentInParent<PrefabInitialization>();
+			//if (parent != null) {
+			//	this.attackManager = parent.attackManager;
+			//	this.unitManager = parent.unitManager;
+			//	this.splitManager = parent.splitManager;
+			//	this.mergeManager = parent.mergeManager;
+			//}
+			//else {
+			//	Debug.LogError("Common: Something is wrong.");
+			//}
 		}
 
 		protected virtual void Update() {
