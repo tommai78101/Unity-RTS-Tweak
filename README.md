@@ -1,5 +1,13 @@
 # Unity-RTS-Tweak
 
+### Update
+
+This project is to be deprecated due to Unity added a deprecation model on the old Networking codes. In its place, I have created a new project, [Unity-UNET-RTS](https://github.com/tommai78101/Unity-UNET-RTS), to continue with development, as well as to stay up-to-date with Unity 5.2.
+
+**TL;DR:** Development for this project is indefinitely set to hiatus. Please move to [Unity-UNET-RTS](https://github.com/tommai78101/Unity-UNET-RTS).
+
+------
+
 ### Abstract
 
 Using Unity to develop a real-time strategy game involving tweaking the game balances to reduce complexity and flatten the learning curve associated with it.
