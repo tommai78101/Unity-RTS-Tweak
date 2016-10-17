@@ -4,7 +4,7 @@
 
 This project is to be deprecated due to Unity added a deprecation model on the old Networking codes. In its place, I have created a new project, [Unity-UNET-RTS](https://github.com/tommai78101/Unity-UNET-RTS), to continue with development, as well as to stay up-to-date with Unity 5.2.
 
-**TL;DR:** Development for this project is indefinitely set to **discontinued**. Please migrate to [Unity-UNET-RTS](https://github.com/tommai78101/Unity-UNET-RTS), where the project is continuing.
+**TL;DR:** Development for this project is indefinitely set to **discontinued**. Please migrate to [Multiplier](https://github.com/tommai78101/Multiplier), where the project is continuing.
 
 ------
 
